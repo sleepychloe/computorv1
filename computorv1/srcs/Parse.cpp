@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/12 10:49:14 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/12 22:56:26 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ Parse::Parse()
 {
 }
 
-Parse::Parse(char *argv): _equal_sign(0), _degree(0), _variable(0)
+Parse::Parse(char *argv): _degree(0), _variable(0)
 {
 	std::string	str(argv);
 
@@ -32,7 +32,6 @@ Parse& Parse::operator=(const Parse& parse)
 {
 	if (this == &parse)
 		return (*this);
-	this->_equal_sign = parse._equal_sign;
 	this->_degree = parse._degree;
 	this->_variable = parse._variable;
 	this->_left_term = parse._left_term;
@@ -45,27 +44,30 @@ Parse::~Parse()
 {
 }
 
-void	Parse::check_str(std::string str)
+int	Parse::check_str(std::string str)
 {
-	if (is_equation_form(str))
-		check_variable(str);
+	if (!(is_equation_form(str) && check_variable(str) && check_syntax(str)))
+		return (0);
+	
+	return (1);
 }
 
 int	Parse::is_equation_form(std::string str)
 {
 	std::string	err_msg;
+	int		flag = 0;
 	size_t		i = 0;
 
 	while (i < str.length())
 	{
 		if (str[i] == '=')
-			this->_equal_sign++;
+			flag++;
 		i++;
 	}
-	if (this->_equal_sign != 1)
+	if (flag != 1)
 	{
 		err_msg = "equal(=) sign is missing";
-		if (this->_equal_sign != 0)
+		if (flag != 0)
 			err_msg = "equal(=) sign used multiple time";
 		throw (err_msg);
 	}
@@ -89,28 +91,23 @@ int	Parse::is_equation_form(std::string str)
 	return (1);
 }
 
-// a * X^0 + b * X^1 + c * X^2 = d * X^0 + e * X^1 + f * X^2
-// a + b * X + c * X^2 = 0
-// a + b * X + c * X * X = 0
-// a + b * X + a * X = 0
-// 0 = a + b * X + c * X^2
-
-void	Parse::check_variable(std::string str)
+int	Parse::check_variable(std::string str)
 {
 	std::string	err_msg;
 	size_t		i = 0;
 
 	while (('0' <= str[i] && str[i] <= '9') || str[i] == ' '
-			|| str[i] == '*' || str[i] == '+' || str[i] == '-' || str[i] == '=')
+		|| str[i] == '=' || str[i] == '('
+		|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' )
 		i++;
 	this->_variable = str[i];
 	i++;
-	std::cout << "variable: " << this->_variable << std::endl;
 
 	while (1)
 	{
 		if (str[i] == ' ' || str[i] == '^' || str[i] == '='
-			|| str[i] == '+' || str[i] == '-' || str[i] == '\0')
+			|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
+			|| str[i] == '(' || str[i] == '\0')
 			break ;
 		else
 		{
@@ -118,8 +115,26 @@ void	Parse::check_variable(std::string str)
 			throw (err_msg);
 		}
 	}
+	return (1);
 }
 
-//todo: check if invalid letter is in the str(only allow 0 to 9, space, +, -, *, =, variable)
+int	Parse::check_syntax(std::string str)
+{
+	std::string	err_msg;
+	size_t		i = 0;
 
-//how to handle 3/x = 1
+	while (i < str.length())
+	{
+		if (!(('0' <= str[i] && str[i] <= '9') || str[i] == this->_variable
+			|| str[i] == '^' || str[i] == '(' || str[i] == ')'
+			|| str[i] == ' ' || str[i] == '='
+			|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'))
+		{
+			err_msg = "invalid character exists";
+			throw (err_msg);
+		}
+		i++;
+	}
+	//syntax check
+	return (1);
+}
