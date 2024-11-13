@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/13 20:01:19 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/13 20:43:25 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,21 +141,45 @@ int	Parse::check_brackets(std::string str)
 	int	open = 0;
 	int	close = 0;
 	size_t	i = 0;
+	size_t	j = 0;
 
+	while (i < str.length())
+	{
+		if (str[i] == ')')
+		{
+			close++;
+			while (j < i)
+			{
+				if (str[j] == '(')
+				{
+					open++;
+					j++;
+					break ;
+				}
+				j++;
+			}
+			if (close != open)
+			{
+				this->_err_msg = "invalid syntax: brackets";
+				throw (this->_err_msg);
+			}
+		}
+		i++;
+	}
+
+	i = 0;
+	open = 0;
 	while (i < str.length())
 	{
 		if (str[i] == '(')
 			open++;
-		if (str[i] == ')')
-			close++;
 		i++;
 	}
-	if (open != close)
+	if (close != open)
 	{
 		this->_err_msg = "invalid syntax: brackets";
 		throw (this->_err_msg);
 	}
-	//bracket order
 	return (1);
 }
 
