@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/12 22:40:21 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/13 19:51:16 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,14 @@ public:
 private:
 	Parse();
 	int			check_str(std::string str);
+
 	int			is_equation_form(std::string str);
 	int			check_variable(std::string str);
+
+	int			check_invalid_character(std::string str);
+	int			check_brackets(std::string str);
+	int			check_sign(std::string str);
+	int			check_number(std::string str);
 	int			check_syntax(std::string str);
 
 	int			_degree;
@@ -37,6 +43,7 @@ private:
 	std::vector<int>	_left_term;
 	std::vector<int>	_right_term;
 	std::vector<int>	_reduced_form;
+	std::string		_err_msg;
 
 };
 

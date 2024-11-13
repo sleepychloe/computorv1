@@ -1,80 +1,70 @@
+parse--------------------------------------------------------
+
+-----wrong
 ./computor "adfasdfasf"
-
 ./computor "adfasdf="
-
 ./computor "adfasdf=     "
-
 ./computor "adfasdf=asdfasdf"
-
 ./computor "aaaaa = aaaaa"
-
 ./computor "a == a"
-
 ./computor "a = a = a"
-
 ./computor "a = a"
-
 ./computor "a=a"
 
+-----right
 ./computor "1 * x^0 + 2 * x^1 + 3 * x^2 = 0"
-
 ./computor "0 = 1 * x^0 + 2 * x^1 + 3 * x^2"
-
 ./computor "1 * x^0 + 2 * x^1 + 3 * x^2 = 4 * x^0 + 5 * x^1 + 6 * x^2"
-
 ./computor "1*x^0+2*x^1+3*x^2=4*x^0+5*x^1+6*x^2"
-
 ./computor "x+2x+3x^2=0"
-
 ./computor "x+2x+3*x*x=0"
-
 ./computor "0=x+2x+3x*x"
-
 ./computor "1 + x / 2 + x^2 / 3 = 0"
-
 ./computor "1 + x / 2 + x * x / 3 = 0"
-
 ./computor "0 = 1 + x / 2 + x^2 / 3"
-
 ./computor "0=1+x/2+x^2/3"
-
 ./computor "0=1+x/2+x*x/3"
-
 ./computor "1 + 2 / x + 3 / x^2 = 0"
-
 ./computor "1 + 2 / x + 3 / x * 1 / x = 0"
-
 ./computor "0=1+2/x+3/x*1/x"
-
 ./computor "(x + 1)^2 = 0"
-
 ./computor "0 = (x + 1)^2"
-
 ./computor "1 + 2 / (x + 1) + 3 / (x - 1)^2 = 0"
-
 ./computor "0 = 3 / (x - 1)^2 + 2 / (x + 1) + 1"
 
+syntax-------------------------------------------------------
+
+-----wrong
+./computor "((x + 1)^2=0"
+./computor "(x + 1))^2=0"
+./computor "x^2+  +1=0"
+./computor "x^2+  -1=0"
+./computor "x^2-  -1=0"
+./computor "1 ** x^0 + 2 * x^1 + 3 * x^2 = 0"
+./computor "1 + x // 2 + x^2 / 3 = 0"
+./computor "1 1= (x + 1)^2"
+--------------------------passed
+
+./computor ")x + 1(^2=0"
+./computor "0 = x + 1^2"
+./computor "(x + 1) ^2=0"
+./computor "(x + 1)^ 2=0"
+./computor "x ^2 = 0"
+./computor "x^ 2 = 0"
+./computor "x^^2=0"
 
 
-//syntax wrong
-	 "0 0 = (x + 1)^2"
-	"0 = x + 1^2"
-	"((x + 1)^2=0"
-	"(x + 1))^2=0"
-	"(x + 1) ^2=0"
-	"(x + 1)^ 2=0"
-	"x ^2 = 0"
-	"x^ 2 = 0"
-	"x^^2=0"
-	"x^2++1=0"
-	"x^2--1=0"
-	"1 ** x^0 + 2 * x^1 + 3 * x^2 = 0"
-	"1 + x // 2 + x^2 / 3 = 0"
-
-//right
-	"x^2+(1)=0"
-	"(x)^2=0"
-	"((x + 1))^2=0"
-	"((x + 1)^2)=0"
-	"x^2-(-1)=0"
-	"x^2+(+1)=0"
+-----right
+./computor "x^2+(1)=0"
+./computor "(x)^2=0"
+./computor "((x + 1))^2=0"
+./computor "((x + 1)^2)=0"
+./computor "x^2-(-1)=0"
+./computor "x^2-(+1)=0"
+./computor "x^2+(+1)=0"
+./computor "x^2+(-1)=0"
+./computor "x^2+(+(-1))=0"
+./computor "x^2+(+(-1))*(+2)=0"
+./computor "x^2+(+(-1))*(-2)=0"
+./computor "x^2+(+(-1))/(+2)=0"
+./computor "x^2+(+(-1))/(-2)=0"
