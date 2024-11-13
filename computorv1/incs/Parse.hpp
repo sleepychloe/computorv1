@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/13 19:51:16 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/13 20:47:47 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ private:
 	int			check_brackets(std::string str);
 	int			check_sign(std::string str);
 	int			check_number(std::string str);
+	int			check_caret(std::string str);
 	int			check_syntax(std::string str);
 
 	int			_degree;

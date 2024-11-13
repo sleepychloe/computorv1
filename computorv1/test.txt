@@ -46,15 +46,12 @@ syntax-------------------------------------------------------
 ./computor ")x + 1(^2=0"
 ./computor "(x)) + 1(()^2=0"
 ./computor "())x + 1(()^2=0"
---------------------------passed
-
 ./computor "0 = x + 1^2"
 ./computor "(x + 1) ^2=0"
 ./computor "(x + 1)^ 2=0"
 ./computor "x ^2 = 0"
 ./computor "x^ 2 = 0"
 ./computor "x^^2=0"
-
 
 -----right
 ./computor "x^2+(1)=0"

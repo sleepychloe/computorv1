@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/13 20:43:25 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/13 22:47:31 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,10 +231,30 @@ int	Parse::check_number(std::string str)
 	return (1);
 }
 
+int	Parse::check_caret(std::string str)
+{
+	size_t	i = 0;
+
+	while (i < str.length())
+	{
+		if (str[i] == '^')
+		{
+			if (!((str[i - 1] && (str[i - 1] == this->_variable || str[i - 1] == ')'))
+				&& (str[i + 1] && ('0' <= str[i + 1] && str[i + 1] <= '9'))))
+			{
+				this->_err_msg = "invalid syntax: cardet(^)";
+				throw (this->_err_msg);
+			}
+		}
+		i++;
+	}
+	return (1);
+}
+
 int	Parse::check_syntax(std::string str)
 {
 	if (!(check_invalid_character(str) && check_brackets(str)
-		&& check_sign(str) && check_number(str)))
+		&& check_sign(str) && check_number(str) && check_caret(str)))
 		return (0);
 	return (1);
 }
