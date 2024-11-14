@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/13 22:47:31 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/14 11:03:28 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,11 @@ int	Parse::check_str(std::string str)
 	if (!(is_equation_form(str) && check_variable(str) && check_syntax(str)))
 		return (0);
 	
+	std::string	left_term = str.substr(0, str.find("="));
+	std::string	right_term = str.substr(str.find("=") + 1, std::string::npos);
+
+	if (!get_term(left_term))
+		return (0);
 	return (1);
 }
 
@@ -100,7 +105,6 @@ int	Parse::check_variable(std::string str)
 		|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' )
 		i++;
 	this->_variable = str[i];
-	std::cout << "variable: " << this->_variable << std::endl;//
 	i++;
 	while (1)
 	{
@@ -255,6 +259,234 @@ int	Parse::check_syntax(std::string str)
 {
 	if (!(check_invalid_character(str) && check_brackets(str)
 		&& check_sign(str) && check_number(str) && check_caret(str)))
+		return (0);
+	return (1);
+}
+
+std::vector<std::string>	Parse::split_term(std::string str)
+{
+	std::vector<std::string>	term;
+	size_t				i = 0;
+
+	while (1)
+	{
+		i = str.find(this->_variable);
+		while (!(str[i] == '+' || str[i] == '-'))
+		{
+			if (str[i] == '(')
+			{
+				while (str[i] != ')')
+					i++;
+			}
+			i++;
+		}
+		term.push_back(str.substr(0, i));
+		str = str.substr(i, std::string::npos);
+		if (str.find(this->_variable) != std::string::npos)
+			continue ;
+		term.push_back(str);
+		break ;
+	}
+	return (term);
+}
+
+std::vector<int>	Parse::find_degree(std::vector<std::string> term)
+{
+	std::vector<int>	degree;
+	size_t			i;
+	int			tmp_degree;
+	int			tmp_i;
+	int			sign;
+	
+	for (std::vector<std::string>::iterator it = term.begin(); it != term.end(); it++)
+	{
+		i = (*it).find(this->_variable);
+		tmp_degree = 0;
+		tmp_i = 0;
+		sign = 1;
+
+		while (i < (*it).length())
+		{
+			if ((*it)[i] == this->_variable && (*it)[i + 1] && (*it)[i + 1] == '^')
+			{
+				i = i + 2;
+				tmp_i = i;
+				while ('0' <= (*it)[i] && (*it)[i] <= '9')
+					i++;
+				tmp_degree += sign * atoi((*it).substr(tmp_i, i - tmp_i + 1).c_str());
+			}
+			else if ((*it)[i] == this->_variable)
+			{
+				tmp_degree += sign * 1;
+			}
+			if ((*it)[i] == '(')
+			{
+				while ((*it)[i] != ')')
+					i++;
+			}
+			if ((*it)[i] == '*')
+				sign = 1;
+			if ((*it)[i] == '/')
+				sign = -1;
+			i++;
+		}
+		degree.push_back(tmp_degree);
+	}
+	return (degree);
+}
+
+std::string	Parse::calculate(std::string str)
+{
+	std::string	res;
+	size_t		cnt = 0;
+	size_t		i = 0;
+
+	while (str[i] == ' ')
+		i++;
+	str = str.substr(i, std::string::npos);
+
+	i = 0;
+	while (i < str.length())
+	{
+		if (i == 0 && (str[i] == '+' || str[i] == '-'))
+			i++;
+		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+			cnt++;
+		i++;
+	}
+	if (!cnt)
+		return (str);
+
+	std::vector<std::string>	nb_str;
+	std::vector<float>		nb;
+	std::vector<std::string>	op;
+
+	i = 0;
+	size_t		j = 0;
+	std::string	tmp = "";
+	while (i < str.length())
+	{
+		if (i == 0 && (str[i] == '+' || str[i] == '-'))
+			tmp += str[i];
+		if ('0' <= str[i] && str[i] <= '9')
+			tmp += str[i];
+		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+		{
+			nb_str.push_back(tmp);
+			tmp = "";
+			op.push_back(std::string(1, str[i]));
+			j++;
+		}
+		i++;
+	}
+	nb_str.push_back(tmp);
+
+	i = 0;
+	while (i < nb_str.size())
+	{
+		nb.push_back(atof(nb_str[i].c_str()));
+		i++;
+	}
+
+	float		nb1;
+	float		nb2;
+	std::string	o;
+
+	i = 0;
+	while (i < op.size())
+	{
+		if (op[i] == "*" || op[i] == "/")
+		{
+			o = op[i];
+			op.erase(op.begin() + i);
+
+			nb1 = nb[i];
+			nb2 = nb[i + 1];
+			std::cout << "nb1: " << nb1 << ", nb2: " << nb2 << std::endl;
+			nb.erase(nb.begin() + i + 1);
+			if (o == "*")
+				nb[i] = nb1 * nb2;
+			else
+			{
+				if (nb2 == 0)
+				{
+					this->_err_msg = "cannot divided by 0";
+					throw (this->_err_msg);
+				}
+				nb[i] = nb1 / nb2;
+			}
+			i--;
+		}
+		i++;
+	}
+
+	i = 0;
+	while (i < op.size())
+	{
+		if (op[i] == "+" || op[i] == "-")
+		{
+			o = op[i];
+			op.erase(op.begin() + i);
+
+			nb1 = nb[i];
+			nb2 = nb[i + 1];
+			nb.erase(nb.begin() + i + 1);
+			if (o == "+")
+				nb[i] = nb1 + nb2;
+			else
+				nb[i] = nb1 - nb2;
+			i--;
+		}
+		i++;
+	}
+	res = std::to_string(nb[0]);
+	std::cout << "res: " << res << std::endl;
+	return (res);
+}
+
+int	Parse::remove_bracket(std::vector<std::string> term)
+{
+	size_t		i;
+	size_t		open;
+	size_t		close;
+	std::string	substr;
+
+	for (std::vector<std::string>::iterator it = term.begin(); it != term.end(); it++)
+	{
+		while ((*it).find(")") != std::string::npos)
+		{
+			i = (*it).find(")");
+			while ((*it)[i] != ')')
+				i++;
+			close = i;
+			while ((*it)[i] != '(')
+				i--;
+			open = i;
+			substr = (*it).substr(open + 1, close - open - 1);
+			substr = calculate(substr);
+			term.at(std::distance(term.begin(), it))
+				= (*it).substr(0, open) + substr + (*it).substr(close + 1, std::string::npos);
+		}
+		std::cout << "--------------" << std::endl;//
+	}
+	return (1);
+}
+
+int	Parse::get_term(std::string str)
+{
+	//split term
+	std::vector<std::string>	term = split_term(str);
+	//find degree
+	std::vector<int>		degree = find_degree(term);
+
+	for (size_t i = 0; i < term.size(); i++)//
+		std::cout << "term[" << i << "]: " << term[i] << std::endl;//
+
+	for (size_t i = 0; i < degree.size(); i++)//
+		std::cout << "degree[" << i << "]: " << degree[i] << std::endl;//
+
+	//handle bracket
+	if (!remove_bracket(term))
 		return (0);
 	return (1);
 }
