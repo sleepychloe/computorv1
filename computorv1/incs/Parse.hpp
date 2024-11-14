@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/14 10:18:07 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/14 22:22:20 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,9 @@ private:
 
 	std::vector<std::string>	split_term(std::string str);
 	std::vector<int>		find_degree(std::vector<std::string> term);
+	std::vector<std::string>	remove_variable(std::vector<std::string> term);
 	std::string			calculate(std::string str);
-	int				remove_bracket(std::vector<std::string> term);
+	std::vector<std::string>	remove_bracket(std::vector<std::string> term);
 	int				get_term(std::string str);
 
 	int				_degree;

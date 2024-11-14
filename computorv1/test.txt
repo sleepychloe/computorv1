@@ -74,7 +74,5 @@ syntax-------------------------------------------------------
 
 
 --------------------------
-//3. handle bracket: not done yet
-//4. simplify term
-+ edit parsing function: float point 
++ edit parsing function: float point
 --------------------------
