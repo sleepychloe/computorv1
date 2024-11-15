@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/15 03:00:33 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/15 05:41:26 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,11 @@ private:
 	std::vector<std::string>	split_term(std::string str);
 	int				find_degree(std::string str);
 	int				remove_variable(std::string &str);
+
+	int				check_operation(std::string str);
+	void				split_expression(std::string str,
+						std::vector<float> &nb, std::vector<char> &op);
+	float				calc(float nb1, float n2, char op);
 	std::string			calculate(std::string str);
 	int				remove_bracket(std::string &str);
 	int				get_term(std::string str);

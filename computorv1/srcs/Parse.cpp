@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/15 03:01:15 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/15 05:52:30 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	Parse::is_equation_form(std::string str)
 		while (str[i] != '=')
 			i++;
 		i++;
-		while (str[i] == ' ')
+		while (str[i] == ' ' || str[i] == '\t')
 			i++;
 		if (str[i] != '\0')
 			break ;
@@ -100,17 +100,18 @@ int	Parse::check_variable(std::string str)
 {
 	size_t	i = 0;
 
-	while (('0' <= str[i] && str[i] <= '9') || str[i] == ' '
-		|| str[i] == '=' || str[i] == '(' || str[i] == ')'
+	while (('0' <= str[i] && str[i] <= '9') || str[i] == '.'
+		|| str[i] == ' ' || str[i] == '\t'
+		|| str[i] == '=' || str[i] == '(' || str[i] == ')' 
 		|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' )
 		i++;
 	this->_variable = str[i];
 	i++;
 	while (1)
 	{
-		if (str[i] == ' ' || str[i] == '^' || str[i] == '='
+		if (str[i] == ' ' || str[i] == '\t' || str[i] == '^' || str[i] == '.'
 			|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
-			|| str[i] == '(' || str[i] == ')' || str[i] == '\0')
+			|| str[i] == '=' || str[i] == '(' || str[i] == ')' || str[i] == '\0')
 			break ;
 		else
 		{
@@ -127,9 +128,10 @@ int	Parse::check_invalid_character(std::string str)
 
 	while (i < str.length())
 	{
-		if (!(('0' <= str[i] && str[i] <= '9') || str[i] == this->_variable
+		if (!(('0' <= str[i] && str[i] <= '9')
+			|| str[i] == this->_variable || str[i] == '.'
 			|| str[i] == '^' || str[i] == '(' || str[i] == ')'
-			|| str[i] == ' ' || str[i] == '='
+			|| str[i] == ' ' || str[i] == '\t' || str[i] == '='
 			|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'))
 		{
 			this->_err_msg = "invalid character exists";
@@ -379,33 +381,34 @@ int	Parse::remove_variable(std::string &str)
 	return (1);
 }
 
-std::string	Parse::calculate(std::string str)
+int	Parse::check_operation(std::string str)
 {
-	std::string	res;
-	size_t		cnt = 0;
-	size_t		i = 0;
+	size_t	i = 0;
+	size_t	cnt = 0;
 
-	i = 0;
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+
 	while (i < str.length())
 	{
-		if ((i == 0 && (str[i] == '+' || str[i] == '-'))
-			|| (i != 0 && ((str[i - 1] == '*' || str[i - 1] == '/'))
-					&& (str[i] == '+' || str[i] == '-')))
+		if (str[i - 1] && (str[i - 1] == '*' || str[i - 1] == '/')
+			&& (str[i] == '+' || str[i] == '-'))
 			i++;
 		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
 			cnt++;
 		i++;
 	}
 	if (!cnt)
-		return (str);
+		return (0);
+	return (1);
+}
 
-	std::vector<std::string>	nb_str;
-	std::vector<float>		nb;
-	std::vector<std::string>	op;
-	
-	i = 0;
-	size_t		j = 0;
+void	Parse::split_expression(std::string str,
+				std::vector<float> &nb, std::vector<char> &op)
+{
+	size_t		i = 0;
 	std::string	tmp = "";
+
 	while (i < str.length())
 	{
 		if ((str[i] == '+' || str[i] == '-'))
@@ -415,78 +418,78 @@ std::string	Parse::calculate(std::string str)
 			tmp += str[i];
 			i++;
 		}
-		if ((i != 0 && str[i - 1] && str[i - 1] != '*' && str[i - 1] != '/'
-				&& (str[i] == '+' || str[i] == '-') )
+		if (((str[i] == '+' || str[i] == '-') &&
+				str[i - 1] && str[i - 1] != '*' && str[i - 1] != '/')
 			|| str[i] == '*' || str[i] == '/')
 		{
-			nb_str.push_back(tmp);
+			nb.push_back(atof(tmp.c_str()));
+			op.push_back(str[i]);
 			tmp = "";
-			op.push_back(std::string(1, str[i]));
-			j++;
 		}
 		i++;
 	}
-	nb_str.push_back(tmp);
+	nb.push_back(atof(tmp.c_str()));
+}
 
-	i = 0;
-	while (i < nb_str.size())
+float	Parse::calc(float nb1, float nb2, char op)
+{
+	float	res;
+
+	if (op == '+')
+		res = nb1 + nb2;
+	else if (op == '-')
+		res = nb1 - nb2;
+	else if (op == '*')
+		res = nb1 * nb2;
+	else
 	{
-		nb.push_back(atof(nb_str[i].c_str()));
-		i++;
-	}
-
-	float		nb1;
-	float		nb2;
-	std::string	o;
-
-	i = 0;
-	while (i < op.size())
-	{
-		if (op[i] == "*" || op[i] == "/")
+		if (nb2 == 0)
 		{
-			o = op[i];
-			op.erase(op.begin() + i);
-
-			nb1 = nb[i];
-			nb2 = nb[i + 1];
-			nb.erase(nb.begin() + i + 1);
-			if (o == "*")
-				nb[i] = nb1 * nb2;
-			else
-			{
-				if (nb2 == 0)
-				{
-					this->_err_msg = "cannot divided by 0";
-					throw (this->_err_msg);
-				}
-				nb[i] = nb1 / nb2;
-			}
-			i--;
+			this->_err_msg = "cannot divided by 0";
+			throw (this->_err_msg);
 		}
-		i++;
+		res = nb1 / nb2;
 	}
-
-	i = 0;
-	while (i < op.size())
-	{
-		if (op[i] == "+" || op[i] == "-")
-		{
-			o = op[i];
-			op.erase(op.begin() + i);
-
-			nb1 = nb[i];
-			nb2 = nb[i + 1];
-			nb.erase(nb.begin() + i + 1);
-			if (o == "+")
-				nb[i] = nb1 + nb2;
-			else
-				nb[i] = nb1 - nb2;
-			i--;
-		}
-		i++;
-	}
-	res = std::to_string(nb[0]);
 	return (res);
+}
+
+std::string	Parse::calculate(std::string str)
+{
+	if (!check_operation(str))
+		return (str);
+
+	std::vector<float>	nb;
+	std::vector<char>	op;
+
+	split_expression(str, nb, op);
+
+	size_t		i = 0;
+
+	while (i < op.size())
+	{
+		if (op[i] == '*' || op[i] == '/')
+		{
+			nb[i] = calc(nb[i], nb[i + 1], op[i]);
+			op.erase(op.begin() + i);
+			nb.erase(nb.begin() + i + 1);
+			i--;
+		}
+		i++;
+	}
+
+	i = 0;
+	while (i < op.size())
+	{
+		if (op[i] == '+' || op[i] == '-')
+		{
+			nb[i] = calc(nb[i], nb[i + 1], op[i]);
+			op.erase(op.begin() + i);
+			nb.erase(nb.begin() + i + 1);
+			i--;
+		}
+		i++;
+	}
+	return (std::to_string(nb[0]));
 }
 
 int	Parse::remove_bracket(std::string &str)
@@ -530,7 +533,6 @@ int	Parse::get_term(std::string str)
 			return (0);
 	}
 
-	//simplify
 	for (size_t i = 0; i < term.size(); i++)
 		term[i] = calculate(term[i]);
 

@@ -74,5 +74,6 @@ syntax-------------------------------------------------------
 
 
 --------------------------
-+ edit parsing function: allow float point, tab
++ todo: float point, zero error check -> check_number function
+		: .0, 0., 0.0.0, 0...01, 00000.000000, 0.10000, 00000123
 --------------------------
