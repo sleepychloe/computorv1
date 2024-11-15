@@ -74,5 +74,5 @@ syntax-------------------------------------------------------
 
 
 --------------------------
-+ edit parsing function: float point
++ edit parsing function: allow float point, tab
 --------------------------

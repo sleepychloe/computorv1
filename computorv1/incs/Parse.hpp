@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/14 22:22:20 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/15 03:00:33 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,12 @@ private:
 	int				check_caret(std::string str);
 	int				check_syntax(std::string str);
 
+	void				remove_space(std::string &str);
 	std::vector<std::string>	split_term(std::string str);
-	std::vector<int>		find_degree(std::vector<std::string> term);
-	std::vector<std::string>	remove_variable(std::vector<std::string> term);
+	int				find_degree(std::string str);
+	int				remove_variable(std::string &str);
 	std::string			calculate(std::string str);
-	std::vector<std::string>	remove_bracket(std::vector<std::string> term);
+	int				remove_bracket(std::string &str);
 	int				get_term(std::string str);
 
 	int				_degree;
