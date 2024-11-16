@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/15 05:52:30 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/16 02:22:54 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ int	Parse::check_sign(std::string str)
 		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
 		{
 			i++;
-			while (str[i] == ' ')
+			while (str[i] == ' ' || str[i] == '\t')
 				i++;
 			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
 			{
@@ -221,7 +221,7 @@ int	Parse::check_number(std::string str)
 		if ('0' <= str[i] && str[i] <= '9')
 		{
 			i++;
-			while (str[i] == ' ')
+			while (str[i] == ' ' || str[i] == '\t')
 			{
 				space++;
 				i++;
@@ -230,6 +230,46 @@ int	Parse::check_number(std::string str)
 			{
 				this->_err_msg = "invalid syntax: no operator between numbers";
 				throw (this->_err_msg);
+			}
+		}
+		i++;
+	}
+	return (1);
+}
+
+int	Parse::check_point(std::string str)
+{
+	size_t	i = 0;
+	int	point;
+
+	while (i < str.length())
+	{
+		point = 0;
+		if (str[i] == '.')
+		{
+			point++;
+			if (!((str[i - 1] && ('0' <= str[i - 1] && str[i - 1] <= '9'))
+				&& (str[i + 1] && ('0' <= str[i + 1] && str[i + 1] <= '9'))))
+			{
+				this->_err_msg = "invalid syntax: float point";
+				throw (this->_err_msg);
+			}
+			i++;
+			while (str[i] == ' ' || str[i] == '\t')
+				i++;
+			if (('0' <= str[i] && str[i] <= '9') || str[i] == '.')
+			{
+				while (('0' <= str[i] && str[i] <= '9') || str[i] == '.')
+				{
+					if (str[i] == '.')
+						point++;
+					i++;
+				}
+				if (str[i - 1] == '.' || point >= 2)
+				{
+					this->_err_msg = "invalid syntax: float point";
+					throw (this->_err_msg);
+				}
 			}
 		}
 		i++;
@@ -259,8 +299,8 @@ int	Parse::check_caret(std::string str)
 
 int	Parse::check_syntax(std::string str)
 {
-	if (!(check_invalid_character(str) && check_brackets(str)
-		&& check_sign(str) && check_number(str) && check_caret(str)))
+	if (!(check_invalid_character(str) && check_brackets(str) && check_sign(str)
+		&& check_number(str) && check_point(str) && check_caret(str)))
 		return (0);
 	return (1);
 }
@@ -312,9 +352,9 @@ std::vector<std::string>	Parse::split_term(std::string str)
 	return (term);
 }
 
-int	Parse::find_degree(std::string str)
+float	Parse::find_degree(std::string str)
 {
-	int	degree = 0;
+	float	degree = 0;
 	int	sign = 1;
 	size_t	i;
 	size_t	tmp;
@@ -327,9 +367,9 @@ int	Parse::find_degree(std::string str)
 		{
 			i = i + 2;
 			tmp = i;
-			while ('0' <= str[i] && str[i] <= '9')
+			while (('0' <= str[i] && str[i] <= '9') || str[i] == '.')
 				i++;
-			degree += sign * atoi(str.substr(tmp, i - tmp + 1).c_str());
+			degree += sign * atof(str.substr(tmp, i - tmp + 1).c_str());
 		}
 		else if (str[i] == this->_variable)
 			degree += sign * 1;
@@ -517,7 +557,7 @@ int	Parse::remove_bracket(std::string &str)
 int	Parse::get_term(std::string str)
 {
 	std::vector<std::string>	term = split_term(str);
-	std::vector<int>		degree;
+	std::vector<float>		degree;
 	
 	for (size_t i = 0; i < term.size(); i++)
 		degree.push_back(find_degree(term[i]));
