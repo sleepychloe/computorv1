@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/16 02:22:54 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/16 15:17:14 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,24 @@ int	Parse::check_sign(std::string str)
 		}
 		i++;
 	}
+
+	i = str.find("=") - 1;
+	while (str[i] == ' ' || str[i] == '\t')
+		i--;
+	if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+	{
+		this->_err_msg = "invalid syntax: operator";
+		throw (this->_err_msg);
+	}
+
+	i = str.length() - 1;
+	while (str[i] == ' ' || str[i] == '\t')
+		i--;
+	if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+	{
+		this->_err_msg = "invalid syntax: operator";
+		throw (this->_err_msg);
+	}
 	return (1);
 }
 
@@ -327,28 +345,44 @@ std::vector<std::string>	Parse::split_term(std::string str)
 {
 	std::vector<std::string>	term;
 	size_t				i = 0;
+	size_t				open = 0;
+	std::string tmp;
+	remove_space(str);
 
 	while (1)
 	{
-		i = str.find(this->_variable);
-		while (!(str[i] == '+' || str[i] == '-'))
+		i = 0;
+		if (str[0] == '+' || str[0] == '-')
+			i++;
+		while (str[i] != '+' && str[i] != '-' && str[i] != '\0')
 		{
 			if (str[i] == '(')
 			{
-				while (str[i] != ')')
-					i++;
+				tmp = str;
+				while (tmp.find("(") < tmp.find(")"))
+				{
+					open++;
+					i += tmp.find("(");
+					tmp = tmp.substr(i + 1, std::string::npos);
+				}
+				while (open)
+				{
+					i += tmp.find(")");
+					tmp = tmp.substr(i + 1, std::string::npos);
+					open--;
+				}
 			}
+			tmp = "";
 			i++;
 		}
 		term.push_back(str.substr(0, i));
+		if (i == str.length())
+			break ;
 		str = str.substr(i, std::string::npos);
-		if (str.find(this->_variable) != std::string::npos)
-			continue ;
-		term.push_back(str);
-		break ;
+		if (str.find("+", i) != std::string::npos
+			&& str.find("-", i) != std::string::npos)
+			break ;
 	}
-	for (std::vector<std::string>::iterator it = term.begin(); it != term.end(); it++)
-		remove_space(*it);
 	return (term);
 }
 
@@ -398,14 +432,14 @@ int	Parse::remove_variable(std::string &str)
 	while (i < str.length())
 	{
 		tmp = "";
-		if ((str[i] == this->_variable && str[i + 1] && str[i + 1] == '^')
-			|| str[i] == this->_variable)
+		if ((str[i] == this->_variable)
+			|| (str[i] == this->_variable && str[i + 1] && str[i + 1] == '^'))
 		{
 			start = i;
 			i++;
 			if (str[i] == '^')
 				i++;
-			while ('0' <= str[i] && str[i] <= '9')
+			while (('0' <= str[i] && str[i] <= '9') || str[i] == '.')
 				i++;
 			end = i - 1;
 			if (!(str[start - 1] == '*' || str[start - 1] == '/'))
@@ -418,6 +452,7 @@ int	Parse::remove_variable(std::string &str)
 		}
 		i++;
 	}
+	std::cout << "str variable removed: " << str << std::endl;
 	return (1);
 }
 
@@ -431,7 +466,7 @@ int	Parse::check_operation(std::string str)
 
 	while (i < str.length())
 	{
-		if (str[i - 1] && (str[i - 1] == '*' || str[i - 1] == '/')
+		if (i != 0 && (str[i - 1] == '*' || str[i - 1] == '/')
 			&& (str[i] == '+' || str[i] == '-'))
 			i++;
 		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
