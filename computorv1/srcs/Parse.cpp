@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/17 01:16:18 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/17 02:22:35 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ Parse::Parse()
 {
 }
 
-Parse::Parse(char *argv): _variable(0), _err_msg("")
+Parse::Parse(char *argv): _variable(0), _equation_type(0), _err_msg("")
 {
 	std::string	str(argv);
 
@@ -39,6 +39,7 @@ Parse& Parse::operator=(const Parse& parse)
 	this->_r_degree = parse._r_degree;
 	this->_reduced_form = parse._reduced_form;
 	this->_degree = parse._degree;
+	this->_equation_type = parse._equation_type;
 	this->_err_msg = parse._err_msg;
 	return (*this);
 }
@@ -55,8 +56,9 @@ int	Parse::check_str(std::string str)
 	if (!(get_term(str.substr(0, str.find("=")),
 			this->_l_term, this->_l_degree)
 		&& get_term(str.substr(str.find("=") + 1, std::string::npos),
-			this->_r_term, this->_r_degree)
-		&& make_reduced_form()))
+			this->_r_term, this->_r_degree)))
+		return (0);
+	if (!(make_reduced_form() && check_calculable()))
 		return (0);
 	return (1);
 }
@@ -640,6 +642,10 @@ int	Parse::get_term(std::string str,
 			}
 		}
 	}
+	for (size_t i = 0; i < this->_reduced_form.size(); i++)//
+		std::cout << "term[" << i << "]: " << this->_reduced_form[i] << std::endl;//
+	for (size_t i = 0; i < this->_degree.size(); i++)//
+		std::cout << "degree[" << i << "]: " << this->_degree[i] << std::endl;//
 	return (1);
 }
 
@@ -672,10 +678,60 @@ int	Parse::make_reduced_form(void)
 				j--;
 			}
 		}
+		if (atof(this->_reduced_form[i].c_str()) == 0)
+		{
+			this->_reduced_form.erase(this->_reduced_form.begin() + i);
+			this->_degree.erase(this->_degree.begin() + i);
+			i--;
+		}
 	}
 	for (size_t i = 0; i < this->_reduced_form.size(); i++)//
 		std::cout << "term[" << i << "]: " << this->_reduced_form[i] << std::endl;//
 	for (size_t i = 0; i < this->_degree.size(); i++)//
 		std::cout << "degree[" << i << "]: " << this->_degree[i] << std::endl;//
+	std::cout << "-----------------------" << std::endl;//
+	return (1);
+}
+
+int	Parse::check_calculable(void)
+{
+	for (size_t i = 0; i < this->_degree.size(); i++)
+	{
+		if (this->_degree[i] != (int)(this->_degree[i]))
+		{
+			this->_equation_type = TYPE_RATIONAL;
+			std::cout << "rational: no calculation" << std::endl;//
+			return (0);
+		}
+	}
+
+	int	max = this->_degree[0];
+
+	for (size_t i = 1; i < this->_degree.size(); i++)
+	{
+		if (max < (this->_degree[i]))
+			max = this->_degree[i];
+	}
+	if (max < 0)
+	{
+		this->_equation_type = TYPE_RATIONAL;
+		std::cout << "rational: no calculation" << std::endl;//
+		return (0);
+	}
+	else if (max > 2)
+	{
+		this->_equation_type = TYPE_HIGH_DEGREE;
+		std::cout << "high degree: no calculation" << std::endl;//
+		return (0);
+	}
+
+	std::vector<float>		form = {0, 0};
+	if (max == 2)
+		form.push_back(0);
+	for (size_t i = 0; i < form.size(); i++)
+	{
+		form[this->_degree[i]] = atof((this->_reduced_form[i]).c_str());
+		std::cout << "degree: " << i << ", coefficient: " << form[i] << std::endl;//
+	}
 	return (1);
 }

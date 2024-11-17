@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/17 00:56:20 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/17 01:52:40 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,13 @@
 #include <string>
 #include <vector>
 #include <cstdlib>
+
+# define TYPE_RATIONAL			-1
+# define TYPE_HIGH_DEGREE		-1
+# define TYPE_INDETERMINATE		-1
+# define TYPE_NO_SOLUTION		-1
+# define TYPE_LINEAR			1
+# define TYPE_QUADRATIC			2
 
 class Parse
 {
@@ -54,15 +61,19 @@ private:
 	int				get_term(std::string str,
 						std::vector<std::string> &term,
 						std::vector<float> &degree);
+
 	int				make_reduced_form(void);
+	int				check_calculable(void);
 
 	char				_variable;
+
 	std::vector<std::string>	_l_term;
 	std::vector<std::string>	_r_term;
 	std::vector<float>		_l_degree;
 	std::vector<float>		_r_degree;
 	std::vector<std::string>	_reduced_form;
 	std::vector<float>		_degree;
+	int				_equation_type;
 	std::string			_err_msg;
 
 };
