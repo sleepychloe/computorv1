@@ -1,0 +1,120 @@
+parse--------------------------------------------------------
+
+-----wrong
+./computor "adfasdfasf"
+./computor "adfasdf="
+./computor "adfasdf=     "
+./computor "adfasdf=asdfasdf"
+./computor "aaaaa = aaaaa"
+./computor "a == a"
+./computor "a = a = a"
+./computor "a = a"
+./computor "a=a"
+
+-----right
+./computor "1 * x^0 + 2 * x^1 + 3 * x^2 = 0"
+./computor "0 = 1 * x^0 + 2 * x^1 + 3 * x^2"
+./computor "1 * x^0 + 2 * x^1 + 3 * x^2 = 4 * x^0 + 5 * x^1 + 6 * x^2"
+./computor "1*x^0+2*x^1+3*x^2=4*x^0+5*x^1+6*x^2"
+./computor "x+2x+3x^2=0"
+./computor "x+2x+3*x*x=0"
+./computor "0=x+2x+3x*x"
+./computor "1 + x / 2 + x^2 / 3 = 0"
+./computor "1 + x / 2 + x * x / 3 = 0"
+./computor "0 = 1 + x / 2 + x^2 / 3"
+./computor "0=1+x/2+x^2/3"
+./computor "0=1+x/2+x*x/3"
+./computor "1 + 2 / x + 3 / x^2 = 0"
+./computor "1 + 2 / x + 3 / x * 1 / x = 0"
+./computor "0=1+2/x+3/x*1/x"
+./computor "(x + 1)^2 = 0"
+./computor "0 = (x + 1)^2"
+./computor "1 + 2 / (x + 1) + 3 / (x - 1)^2 = 0"
+./computor "0 = 3 / (x - 1)^2 + 2 / (x + 1) + 1"
+
+syntax-------------------------------------------------------
+
+-----wrong
+./computor "((x + 1)^2=0"
+./computor "(x + 1))^2=0"
+./computor "x^2+  +1=0"
+./computor "x^2+  -1=0"
+./computor "x^2-  -1=0"
+./computor "1 ** x^0 + 2 * x^1 + 3 * x^2 = 0"
+./computor "1 + x // 2 + x^2 / 3 = 0"
+./computor "1 1= (x + 1)^2"
+./computor ")x + 1(^2=0"
+./computor "(x)) + 1(()^2=0"
+./computor "())x + 1(()^2=0"
+./computor "0 = x + 1^2"
+./computor "(x + 1) ^2=0"
+./computor "(x + 1)^ 2=0"
+./computor "x ^2 = 0"
+./computor "x^ 2 = 0"
+./computor "x^^2=0"
+
+-----right
+./computor "x^2+(1)=0"
+./computor "(x)^2=0"
+./computor "((x + 1))^2=0"
+./computor "((x + 1)^2)=0"
+./computor "x^2-(-1)=0"
+./computor "x^2-(+1)=0"
+./computor "x^2+(+1)=0"
+./computor "x^2+(-1)=0"
+./computor "x^2+(+(-1))=0"
+./computor "x^2+(+(-1))*(+2)=0"
+./computor "x^2+(+(-1))*(-2)=0"
+./computor "x^2+(+(-1))/(+2)=0"
+./computor "x^2+(+(-1))/(-2)=0"
+./computor "(5*3/2+1)x^2+(+(-1))/(-2)*x^1+3*1/2=0"
+./computor "(5*3/2+1)x*x^1+(+(-1))/(-2)*x^1+3*1/2=0"
+./computor "(5+3/(2)+1)x^1*(1+3)x/0.1x^2.1/x^7+(+(-1))/(-2)*x^1+3*1/2=0+3"
+
+
+--------------------------------------------------------------------------------
+
+//yes
+./computor "x^1*(5+3/(2)+1)*(1+3)x/0.1x^2/x^7+(+(-1))/(-2)*x^1+3*1/2=0+3"
+
+//no
+./computor "x^1*(5+3/(2)+1)*(1+3)x/0.1x^2.1/x^7+(+(-1))/(-2)*x^1+3*1/2*x+x=0+3"
+
+--------------------------------------------------------------------------------
+
+flow
+
+1. check if it's equation form
+	-if equal sign used multiple time
+	-if equal sign exists
+2. determine variable
+3. syntax check
+	- if invalid character exists
+	- if brackets used properly
+	- if operator(+, -, *, /) used properly
+		(position of operator, if it exists between numbers)
+	- if operator exists between numbers
+		(do not allow space or tab between numbers)
+	- if float point used properly
+		(position, if it used multiple time)
+	- if caret used properly
+		(position)
+4. check each term
+	- split term
+		(remove every space and tab, and then split each term: seperator: + or -)
+	- find degree of each term
+	- remove variable since each term's degree already saved
+	- calculate expression inside bracket to remove brackets
+		(calculate:
+			1. check if it needs to be calculate by checking if + or - exists
+				and return if it doesn't need
+			2. if it needs calculate, save numbers and operation seperately
+			3. calculate *, /
+			4. calculate +, -)
+	- calculate terms of same degree if it exists
+5. make reduced form
+6. check degree if it's calculable
+	- fraction equation -> don't calculate
+	- maximum degree is more than 2 -> don't calculate
+7. move right term to left term, make ax^2 + bx + c = 0
+8. solve the equation
