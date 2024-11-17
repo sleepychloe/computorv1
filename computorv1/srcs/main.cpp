@@ -6,11 +6,10 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 21:07:38 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/14 10:18:15 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/17 12:50:44 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../incs/Color.hpp"
 #include "../incs/Parse.hpp"
 
 #include <cstring>
@@ -46,6 +45,10 @@ int	main(int argc, char **argv)
 		std::cout << RED << "error: invalid number of argument" << BLACK << std::endl;
 		return (1);
 	}
+	int	flag_bonus = 0;
+	if (strlen(argv[0]) == strlen("./computor_bonus")
+		&& !strncmp(argv[0], "./computor_bonus", strlen("computor_bonus")))
+		flag_bonus = 1;
 	if ((strlen(argv[1]) == strlen("-h") && !strncmp(argv[1], "-h", strlen("-h")))
 		|| (strlen(argv[1]) == strlen("--help") && !strncmp(argv[1], "--help", strlen("--help"))))
 	{
@@ -55,13 +58,13 @@ int	main(int argc, char **argv)
 	try
 	{
 		Parse	p(argv[1]);
+
+		p.print_info(flag_bonus);
 	}
 	catch(std::string err_msg)
 	{
 		std::cerr << RED << "error: invalid input: " << err_msg << BLACK << std::endl;
 		return (1);
 	}
-	// std::cerr << RED << "error: invalid input" << BLACK << std::endl;
-	// return (1);
 	return (0);
 }

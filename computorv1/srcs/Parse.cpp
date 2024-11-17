@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/17 02:22:35 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/17 14:57:10 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,6 @@ Parse& Parse::operator=(const Parse& parse)
 	if (this == &parse)
 		return (*this);
 	this->_variable = parse._variable;
-	this->_l_term = parse._l_term;
-	this->_r_term = parse._r_term;
-	this->_l_degree = parse._l_degree;
-	this->_r_degree = parse._r_degree;
 	this->_reduced_form = parse._reduced_form;
 	this->_degree = parse._degree;
 	this->_equation_type = parse._equation_type;
@@ -48,19 +44,72 @@ Parse::~Parse()
 {
 }
 
-int	Parse::check_str(std::string str)
+char	Parse::get_variable(void)
 {
-	if (!(is_equation_form(str) && check_variable(str) && check_syntax(str)))
-		return (0);
+	return (this->_variable);
+}
 
-	if (!(get_term(str.substr(0, str.find("=")),
-			this->_l_term, this->_l_degree)
-		&& get_term(str.substr(str.find("=") + 1, std::string::npos),
-			this->_r_term, this->_r_degree)))
-		return (0);
-	if (!(make_reduced_form() && check_calculable()))
-		return (0);
-	return (1);
+std::vector<float>	Parse::get_reduced_form(void)
+{
+	return (this->_reduced_form);
+}
+
+std::vector<float>	Parse::get_degree(void)
+{
+	return (this->_degree);
+}
+
+int	Parse::get_equation_type(void)
+{
+	return (this->_equation_type);
+}
+
+std::string	Parse::get_reduced_term_str(int flag_bonus)
+{
+	std::string	str;
+
+	if (!flag_bonus)
+	{
+		// for (size_t i = 0; i < this->_reduced_form.size(); i++)
+		// {
+		// 	if (i != 0)
+		// 	{
+		// 		if (this->_reduced_form[i] > 0)
+		// 			str += "+ ";
+		// 		else
+		// 			str += "- ";
+		// 	}
+		// 	if (this->_reduced_form[i] != 0)
+		// 		str += std::to_string(std::abs(this->_reduced_form[i]));
+		// 	else
+		// 		str += "0";
+		// 	str += " * ";
+		// 	str += std::string(1, this->_variable);
+		// 	str += "^";
+		// 	str += std::to_string(i);
+		// 	str += " ";
+		// }
+		// str += "= 0";
+	}
+	else
+	{
+		//for bonus
+	}
+	return (str);
+}
+
+void	Parse::print_info(int flag_bonus)
+{
+	std::string	str_reduced_term = get_reduced_term_str(flag_bonus);
+
+	std::cout << CYAN << "Reduced form: " << BLACK << str_reduced_term << std::endl;
+	std::cout << CYAN << "Polynomial degree: " << BLACK;
+	if (this->_equation_type == TYPE_RATIONAL)
+		std::cout << "The equation is rational equation." << std::endl;
+	else if (this->_equation_type == TYPE_HIGH_DEGREE)
+		std::cout << this->_reduced_form.size() - 1 << std::endl;
+	else if (this->_equation_type >= 0)
+		std::cout << this->_equation_type << std::endl;
 }
 
 int	Parse::is_equation_form(std::string str)
@@ -309,7 +358,8 @@ int	Parse::check_caret(std::string str)
 		if (str[i] == '^')
 		{
 			if (!((str[i - 1] && (str[i - 1] == this->_variable || str[i - 1] == ')'))
-				&& (str[i + 1] && ('0' <= str[i + 1] && str[i + 1] <= '9'))))
+				&& (str[i + 1] && (('0' <= str[i + 1] && str[i + 1] <= '9')
+							|| str[i + 1] == '+' || str[i + 1] == '-'))))
 			{
 				this->_err_msg = "invalid syntax: caret(^)";
 				throw (this->_err_msg);
@@ -325,6 +375,28 @@ int	Parse::check_syntax(std::string str)
 	if (!(check_invalid_character(str) && check_brackets(str) && check_sign(str)
 		&& check_number(str) && check_point(str) && check_caret(str)))
 		return (0);
+	return (1);
+}
+
+int	Parse::check_str(std::string str)
+{
+	if (!(is_equation_form(str) && check_variable(str) && check_syntax(str)))
+		return (0);
+
+	std::vector<std::string>	l_term;
+	std::vector<std::string>	r_term;
+	std::vector<float>		l_degree;
+	std::vector<float>		r_degree;
+
+	if (!(get_term(str.substr(0, str.find("=")), l_term, l_degree)
+		&& get_term(str.substr(str.find("=") + 1, std::string::npos), r_term, r_degree)))
+		return (0);
+	if (!(make_reduced_form(l_term, r_term, l_degree, r_degree)
+		&& check_calculable()))
+	{
+		std::cout << "cannot calculate" << std::endl;//
+		return (0);
+	}
 	return (1);
 }
 
@@ -377,6 +449,13 @@ std::vector<std::string>	Parse::split_term(std::string str)
 					open--;
 				}
 			}
+			if (str[i] == '^')
+			{
+				if (str[i + 1] && (str[i + 1] == '+' || str[i + 1] == '-'))
+				{
+					i = i + 2;
+				}
+			}
 			tmp = "";
 			i++;
 		}
@@ -403,9 +482,11 @@ float	Parse::find_degree(std::string str)
 		{
 			i = i + 2;
 			tmp = i;
+			if (str[i] == '+' || str[i] == '-')
+				i++;
 			while (('0' <= str[i] && str[i] <= '9') || str[i] == '.')
 				i++;
-			degree += sign * atof(str.substr(tmp, i - tmp + 1).c_str());
+			degree += sign * atof(str.substr(tmp, i - tmp).c_str());
 		}
 		else if (str[i] == this->_variable)
 			degree += sign * 1;
@@ -461,7 +542,8 @@ int	Parse::remove_variable(std::string &str)
 			i++;
 			if (str[i] == '^')
 				i++;
-			while (('0' <= str[i] && str[i] <= '9') || str[i] == '.')
+			while (str[i] == '+' || str[i] == '-'
+				|| ('0' <= str[i] && str[i] <= '9') || str[i] == '.')
 				i++;
 			end = i - 1;
 			if (!(str[start - 1] == '*' || str[start - 1] == '/'))
@@ -619,7 +701,9 @@ int	Parse::get_term(std::string str,
 {
 	term = split_term(str);
 	for (size_t i = 0; i < term.size(); i++)
+	{
 		degree.push_back(find_degree(term[i]));
+	}
 	for (std::vector<std::string>::iterator it = term.begin(); it != term.end(); it++)
 	{
 		if (!(remove_variable(*it) && remove_bracket(*it)))
@@ -642,27 +726,22 @@ int	Parse::get_term(std::string str,
 			}
 		}
 	}
-	for (size_t i = 0; i < this->_reduced_form.size(); i++)//
-		std::cout << "term[" << i << "]: " << this->_reduced_form[i] << std::endl;//
-	for (size_t i = 0; i < this->_degree.size(); i++)//
-		std::cout << "degree[" << i << "]: " << this->_degree[i] << std::endl;//
 	return (1);
 }
 
-int	Parse::make_reduced_form(void)
+int	Parse::make_reduced_form(std::vector<std::string> l_term,
+			std::vector<std::string> r_term,
+			std::vector<float> l_degree, std::vector<float> r_degree)
 {
-	for (size_t i = 0; i < this->_l_term.size(); i++)
+	for (size_t i = 0; i < l_term.size(); i++)
 	{
-		this->_reduced_form.push_back(this->_l_term[i]);
-		this->_degree.push_back(this->_l_degree[i]);
+		this->_reduced_form.push_back(atof(l_term[i].c_str()));
+		this->_degree.push_back(l_degree[i]);
 	}
-	for (size_t i = 0; i < this->_r_term.size(); i++)
+	for (size_t i = 0; i < r_term.size(); i++)
 	{
-		if (this->_r_term[i][0] == '-')
-			this->_reduced_form.push_back("+" + this->_r_term[i].substr(1, std::string::npos));
-		else
-			this->_reduced_form.push_back("-" + this->_r_term[i]);
-		this->_degree.push_back(this->_r_degree[i]);
+		this->_reduced_form.push_back(-1 * atof(r_term[i].c_str()));
+		this->_degree.push_back(r_degree[i]);
 	}
 	for (size_t i = 0; i < this->_reduced_form.size(); i++)
 	{
@@ -671,25 +750,19 @@ int	Parse::make_reduced_form(void)
 			if (this->_degree[i] == this->_degree[j])
 			{
 				this->_reduced_form[i]
-					= std::to_string(atof(this->_reduced_form[i].c_str())
-						+ atof(this->_reduced_form[j].c_str()));
+					= this->_reduced_form[i] + this->_reduced_form[j];
 				this->_reduced_form.erase(this->_reduced_form.begin() + j);
 				this->_degree.erase(this->_degree.begin() + j);
 				j--;
 			}
 		}
-		if (atof(this->_reduced_form[i].c_str()) == 0)
+		if (this->_reduced_form[i] == 0)
 		{
 			this->_reduced_form.erase(this->_reduced_form.begin() + i);
 			this->_degree.erase(this->_degree.begin() + i);
 			i--;
 		}
 	}
-	for (size_t i = 0; i < this->_reduced_form.size(); i++)//
-		std::cout << "term[" << i << "]: " << this->_reduced_form[i] << std::endl;//
-	for (size_t i = 0; i < this->_degree.size(); i++)//
-		std::cout << "degree[" << i << "]: " << this->_degree[i] << std::endl;//
-	std::cout << "-----------------------" << std::endl;//
 	return (1);
 }
 
@@ -697,12 +770,8 @@ int	Parse::check_calculable(void)
 {
 	for (size_t i = 0; i < this->_degree.size(); i++)
 	{
-		if (this->_degree[i] != (int)(this->_degree[i]))
-		{
+		if (this->_degree[i] < 0 || this->_degree[i] != (int)(this->_degree[i]))
 			this->_equation_type = TYPE_RATIONAL;
-			std::cout << "rational: no calculation" << std::endl;//
-			return (0);
-		}
 	}
 
 	int	max = this->_degree[0];
@@ -713,25 +782,29 @@ int	Parse::check_calculable(void)
 			max = this->_degree[i];
 	}
 	if (max < 0)
-	{
 		this->_equation_type = TYPE_RATIONAL;
-		std::cout << "rational: no calculation" << std::endl;//
-		return (0);
-	}
 	else if (max > 2)
-	{
 		this->_equation_type = TYPE_HIGH_DEGREE;
-		std::cout << "high degree: no calculation" << std::endl;//
-		return (0);
-	}
 
-	std::vector<float>		form = {0, 0};
-	if (max == 2)
-		form.push_back(0);
-	for (size_t i = 0; i < form.size(); i++)
+	if (this->_equation_type != TYPE_RATIONAL)
 	{
-		form[this->_degree[i]] = atof((this->_reduced_form[i]).c_str());
-		std::cout << "degree: " << i << ", coefficient: " << form[i] << std::endl;//
+		for (size_t i = 0; i < this->_reduced_form.size(); i++)
+		{
+			std::cout << "degree: " << this->_degree[i] << ", "
+				<< this->_reduced_form[i] << std::endl;
+		}
+		// std::vector<float>	form(max + 1, 0);
+
+		// for (size_t i = 0; i < form.size(); i++)
+		// 	form[this->_degree[i]] = this->_reduced_form[i];
+		// this->_reduced_form = form;
+		// for (size_t i = 0; i < this->_reduced_form.size(); i++)//
+		// std::cout << "degree: " << i << ", "//
+		// 	<< this->_reduced_form[i] << std::endl;//
+	}
+	else //0 1 2 -9
+	{
+		//here
 	}
 	return (1);
 }

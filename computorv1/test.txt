@@ -118,3 +118,22 @@ flow
 	- maximum degree is more than 2 -> don't calculate
 7. move right term to left term, make ax^2 + bx + c = 0
 8. solve the equation
+
+================================================================
+todo: fix check_calculable function: fix this->reduced form when it's rational equation
+
+./computor "8 * X^0 - 6 * X^1 + 0 * X^2 - 5.6 * X^9 = 3 * X^0"
+degree: 0, 0
+degree: 1, -6
+degree: 2, 0
+degree: 3, 0
+degree: 4, 0
+degree: 5, 0
+degree: 6, 0
+degree: 7, 0
+degree: 8, 0
+degree: 9, -5.6
+Reduced form: 0 * X^0 - 6.000000 * X^1 - 0 * X^2 - 0 * X^3 - 0 * X^4 - 0 * X^5 - 0 * X^6 - 0 * X^7 - 0 * X^8 - 5.600000 * X^9 = 0
+Polynomial degree: 9
+----------------------
+./computor "8 * X^0 - 6 * X^1 + 0 * X^2 - 5.6 * X^-9 = 3 * X^0"

@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/17 01:52:40 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/17 13:35:18 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,14 @@
 #include <string>
 #include <vector>
 #include <cstdlib>
+#include <cmath>
+#include "../incs/Color.hpp"
 
 # define TYPE_RATIONAL			-1
-# define TYPE_HIGH_DEGREE		-1
-# define TYPE_INDETERMINATE		-1
-# define TYPE_NO_SOLUTION		-1
+# define TYPE_HIGH_DEGREE		-2
+# define TYPE_INDETERMINATE		-3
+# define TYPE_NO_SOLUTION		-4
+# define TYPE_CONSTANT			0
 # define TYPE_LINEAR			1
 # define TYPE_QUADRATIC			2
 
@@ -33,9 +36,15 @@ public:
 	Parse& operator=(const Parse& parse);
 	~Parse();
 
+	char				get_variable(void);
+	std::vector<float>		get_reduced_form(void);
+	std::vector<float>		get_degree(void);
+	int				get_equation_type(void);
+	std::string			get_reduced_term_str(int flag_bonus);
+	void				print_info(int flag_bonus);
+
 private:
 	Parse();
-	int				check_str(std::string str);
 
 	int				is_equation_form(std::string str);
 	int				check_variable(std::string str);
@@ -46,12 +55,12 @@ private:
 	int				check_point(std::string str);
 	int				check_caret(std::string str);
 	int				check_syntax(std::string str);
+	int				check_str(std::string str);
 
 	void				remove_space(std::string &str);
 	std::vector<std::string>	split_term(std::string str);
 	float				find_degree(std::string str);
 	int				remove_variable(std::string &str);
-
 	int				check_operation(std::string str);
 	void				split_expression(std::string str,
 						std::vector<float> &nb, std::vector<char> &op);
@@ -62,16 +71,14 @@ private:
 						std::vector<std::string> &term,
 						std::vector<float> &degree);
 
-	int				make_reduced_form(void);
+	int				make_reduced_form(std::vector<std::string> l_term,
+						std::vector<std::string> r_term,
+						std::vector<float> l_degree,
+						std::vector<float> r_degree);
 	int				check_calculable(void);
 
 	char				_variable;
-
-	std::vector<std::string>	_l_term;
-	std::vector<std::string>	_r_term;
-	std::vector<float>		_l_degree;
-	std::vector<float>		_r_degree;
-	std::vector<std::string>	_reduced_form;
+	std::vector<float>		_reduced_form;
 	std::vector<float>		_degree;
 	int				_equation_type;
 	std::string			_err_msg;
