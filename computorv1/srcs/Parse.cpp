@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/16 15:17:14 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/17 01:16:18 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ Parse::Parse()
 {
 }
 
-Parse::Parse(char *argv): _degree(0), _variable(0), _err_msg("")
+Parse::Parse(char *argv): _variable(0), _err_msg("")
 {
 	std::string	str(argv);
 
@@ -32,11 +32,13 @@ Parse& Parse::operator=(const Parse& parse)
 {
 	if (this == &parse)
 		return (*this);
-	this->_degree = parse._degree;
 	this->_variable = parse._variable;
-	this->_left_term = parse._left_term;
-	this->_right_term = parse._right_term;
+	this->_l_term = parse._l_term;
+	this->_r_term = parse._r_term;
+	this->_l_degree = parse._l_degree;
+	this->_r_degree = parse._r_degree;
 	this->_reduced_form = parse._reduced_form;
+	this->_degree = parse._degree;
 	this->_err_msg = parse._err_msg;
 	return (*this);
 }
@@ -49,11 +51,12 @@ int	Parse::check_str(std::string str)
 {
 	if (!(is_equation_form(str) && check_variable(str) && check_syntax(str)))
 		return (0);
-	
-	std::string	left_term = str.substr(0, str.find("="));
-	std::string	right_term = str.substr(str.find("=") + 1, std::string::npos);
 
-	if (!get_term(left_term))
+	if (!(get_term(str.substr(0, str.find("=")),
+			this->_l_term, this->_l_degree)
+		&& get_term(str.substr(str.find("=") + 1, std::string::npos),
+			this->_r_term, this->_r_degree)
+		&& make_reduced_form()))
 		return (0);
 	return (1);
 }
@@ -379,9 +382,6 @@ std::vector<std::string>	Parse::split_term(std::string str)
 		if (i == str.length())
 			break ;
 		str = str.substr(i, std::string::npos);
-		if (str.find("+", i) != std::string::npos
-			&& str.find("-", i) != std::string::npos)
-			break ;
 	}
 	return (term);
 }
@@ -550,7 +550,11 @@ float	Parse::calc(float nb1, float nb2, char op)
 std::string	Parse::calculate(std::string str)
 {
 	if (!check_operation(str))
+	{
+		if (str[0] == '+')
+			str = str.substr(1, std::string::npos);
 		return (str);
+	}
 
 	std::vector<float>	nb;
 	std::vector<char>	op;
@@ -608,29 +612,70 @@ int	Parse::remove_bracket(std::string &str)
 	return (1);
 }
 
-int	Parse::get_term(std::string str)
+int	Parse::get_term(std::string str,
+			std::vector<std::string> &term, std::vector<float> &degree)
 {
-	std::vector<std::string>	term = split_term(str);
-	std::vector<float>		degree;
-	
+	term = split_term(str);
 	for (size_t i = 0; i < term.size(); i++)
 		degree.push_back(find_degree(term[i]));
-
-	for (size_t i = 0; i < term.size(); i++)//
-		std::cout << "term[" << i << "]: " << term[i] << std::endl;//
-	for (size_t i = 0; i < degree.size(); i++)//
-		std::cout << "degree[" << i << "]: " << degree[i] << std::endl;//
-
 	for (std::vector<std::string>::iterator it = term.begin(); it != term.end(); it++)
 	{
 		if (!(remove_variable(*it) && remove_bracket(*it)))
 			return (0);
 	}
-
 	for (size_t i = 0; i < term.size(); i++)
 		term[i] = calculate(term[i]);
 
-	for (size_t i = 0; i < term.size(); i++)//
-		std::cout << "term[" << i << "]: " << term[i] << std::endl;//
+	for (size_t i = 0; i < term.size(); i++)
+	{
+		for (size_t j = i + 1; j < term.size(); j++)
+		{
+			if (degree[i] == degree[j])
+			{
+				term[i] = std::to_string(atof(term[i].c_str())
+						+ atof(term[j].c_str()));
+				term.erase(term.begin() + j);
+				degree.erase(degree.begin() + j);
+				j--;
+			}
+		}
+	}
+	return (1);
+}
+
+int	Parse::make_reduced_form(void)
+{
+	for (size_t i = 0; i < this->_l_term.size(); i++)
+	{
+		this->_reduced_form.push_back(this->_l_term[i]);
+		this->_degree.push_back(this->_l_degree[i]);
+	}
+	for (size_t i = 0; i < this->_r_term.size(); i++)
+	{
+		if (this->_r_term[i][0] == '-')
+			this->_reduced_form.push_back("+" + this->_r_term[i].substr(1, std::string::npos));
+		else
+			this->_reduced_form.push_back("-" + this->_r_term[i]);
+		this->_degree.push_back(this->_r_degree[i]);
+	}
+	for (size_t i = 0; i < this->_reduced_form.size(); i++)
+	{
+		for (size_t j = i + 1; j < this->_reduced_form.size(); j++)
+		{
+			if (this->_degree[i] == this->_degree[j])
+			{
+				this->_reduced_form[i]
+					= std::to_string(atof(this->_reduced_form[i].c_str())
+						+ atof(this->_reduced_form[j].c_str()));
+				this->_reduced_form.erase(this->_reduced_form.begin() + j);
+				this->_degree.erase(this->_degree.begin() + j);
+				j--;
+			}
+		}
+	}
+	for (size_t i = 0; i < this->_reduced_form.size(); i++)//
+		std::cout << "term[" << i << "]: " << this->_reduced_form[i] << std::endl;//
+	for (size_t i = 0; i < this->_degree.size(); i++)//
+		std::cout << "degree[" << i << "]: " << this->_degree[i] << std::endl;//
 	return (1);
 }

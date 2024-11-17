@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/16 02:18:04 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/17 00:56:20 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,18 @@ private:
 	float				calc(float nb1, float n2, char op);
 	std::string			calculate(std::string str);
 	int				remove_bracket(std::string &str);
-	int				get_term(std::string str);
+	int				get_term(std::string str,
+						std::vector<std::string> &term,
+						std::vector<float> &degree);
+	int				make_reduced_form(void);
 
-	int				_degree;
 	char				_variable;
-	std::vector<float>		_left_term;
-	std::vector<float>		_right_term;
-	std::vector<float>		_reduced_form;
+	std::vector<std::string>	_l_term;
+	std::vector<std::string>	_r_term;
+	std::vector<float>		_l_degree;
+	std::vector<float>		_r_degree;
+	std::vector<std::string>	_reduced_form;
+	std::vector<float>		_degree;
 	std::string			_err_msg;
 
 };
