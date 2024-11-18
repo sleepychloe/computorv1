@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 05:14:44 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 05:30:54 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,6 @@
 
 # define TYPE_RATIONAL			-1
 # define TYPE_HIGH_DEGREE		-2
-// # define TYPE_INDETERMINATE		-3
-// # define TYPE_NO_SOLUTION		-4
-// # define TYPE_CONSTANT			0
-// # define TYPE_LINEAR			1
-// # define TYPE_QUADRATIC			2
 
 class Parse
 {

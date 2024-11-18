@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:37 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 05:14:50 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 05:31:11 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 # define COMPUTOR_HPP
 
 #include "./Parse.hpp"
+
+# define TYPE_CONSTANT			0
+# define TYPE_LINEAR			1
+# define TYPE_QUADRATIC			2
+# define TYPE_INDETERMINATE		-10
+# define TYPE_NO_SOLUTION		-11
 
 class Computor: public Parse
 {
