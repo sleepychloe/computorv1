@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:37 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 07:12:17 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 12:49:12 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,11 @@
 # define TYPE_CONSTANT			0
 # define TYPE_LINEAR			1
 # define TYPE_QUADRATIC			2
-# define TYPE_INDETERMINATE		-10
-# define TYPE_NO_SOLUTION		-11
+
+# define SOLUTION_INDETERMINATE		"INDETERMINATE"
+# define SOLUTION_ZERO			"NO SOLUTION"
+# define SOLUTION_ONE			"1"
+# define SOLUTION_TWO			"2"
 
 class Computor: public Parse
 {
@@ -29,11 +32,17 @@ public:
 	Computor& operator=(const Computor& computor);
 	~Computor();
 
-	void			print_info(void);
+	void				print_info(void);
+
+	void				solve_quadratic(void);
+	void				solve_equation(void);
 
 private:
 	Computor();
 
+	std::string			_type_solution;
+	float				_discriminant;
+	std::vector<float>		_solution;
 };
 
 # endif
