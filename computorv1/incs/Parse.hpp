@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 08:34:02 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 09:37:26 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <sstream>
+#include <iomanip>
 #include "../incs/Color.hpp"
 
 # define TYPE_RATIONAL			-1
@@ -64,13 +65,13 @@ protected:
 	float				calc(float nb1, float n2, char op);
 	std::string			calculate(std::string str);
 	int				remove_bracket(std::string &str);
+	std::string			float_to_string(float num);
 	int				get_term(std::string str,
 						std::vector<std::string> &term,
 						std::vector<float> &degree);
 
 	void				set_equation_type(void);
 	void				make_form_ascending_order(void);
-	std::string			float_to_string(float num);
 	void				set_equation_str(void);
 	void				make_reduced_form(void);
 

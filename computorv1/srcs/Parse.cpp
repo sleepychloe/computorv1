@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 08:32:05 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 09:38:57 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,11 +308,11 @@ int	Parse::check_point(std::string str)
 						digit++;
 					i++;
 				}
-				if (str[i - 1] == '.' || point >= 2 || digit > 3)
+				if (str[i - 1] == '.' || point >= 2 || digit > 5)
 				{
 					this->_err_msg = "invalid syntax: float point";
 					if (digit > 2)
-						this->_err_msg += ": supports up to the third decimal place";
+						this->_err_msg += ": supports up to the fifth decimal place";
 					throw (this->_err_msg);
 				}
 			}
@@ -649,7 +649,7 @@ std::string	Parse::calculate(std::string str)
 		}
 		i++;
 	}
-	return (std::to_string(nb[0]));
+	return (float_to_string(nb[0]));
 }
 
 int	Parse::remove_bracket(std::string &str)
@@ -674,6 +674,14 @@ int	Parse::remove_bracket(std::string &str)
 	return (1);
 }
 
+std::string	Parse::float_to_string(float num)
+{
+	std::stringstream	ss;
+
+	ss << num;
+	return (ss.str());
+}
+
 int	Parse::get_term(std::string str,
 			std::vector<std::string> &term, std::vector<float> &degree)
 {
@@ -694,8 +702,8 @@ int	Parse::get_term(std::string str,
 		{
 			if (degree[i] == degree[j])
 			{
-				term[i] = std::to_string(atof(term[i].c_str())
-						+ atof(term[j].c_str()));
+				term[i] = float_to_string(atof(term[i].c_str())
+								+ atof(term[j].c_str()));
 				term.erase(term.begin() + j);
 				degree.erase(degree.begin() + j);
 				j--;
@@ -766,14 +774,6 @@ void	Parse::make_form_ascending_order(void)
 			}
 		}
 	}
-}
-
-std::string	Parse::float_to_string(float num)
-{
-	std::stringstream	ss;
-
-	ss << num;
-	return (ss.str());
 }
 
 void	Parse::set_equation_str(void)

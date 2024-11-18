@@ -15,7 +15,7 @@ flow
 		* do not allow space or tab between numbers
 	- if float point used properly
 		* position, if it used multiple time
-		* supports up to the third decimal place
+		* supports up to the fifth decimal place
 	- if caret used properly
 		* position, do not allow to use brackets
 		* ok: x^1, x^+1, x^-1, x^1.1
@@ -39,3 +39,5 @@ flow
 	- set equation string for printing reudced form
 7. solve the equation
 	- equation type < 0: don't calculate
+
+* program has 6 significant digits as same as default precision value in C++
