@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/17 13:35:18 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 01:51:39 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <cstdlib>
 #include <cmath>
@@ -22,30 +23,38 @@
 
 # define TYPE_RATIONAL			-1
 # define TYPE_HIGH_DEGREE		-2
-# define TYPE_INDETERMINATE		-3
-# define TYPE_NO_SOLUTION		-4
-# define TYPE_CONSTANT			0
-# define TYPE_LINEAR			1
-# define TYPE_QUADRATIC			2
+// # define TYPE_INDETERMINATE		-3
+// # define TYPE_NO_SOLUTION		-4
+// # define TYPE_CONSTANT			0
+// # define TYPE_LINEAR			1
+// # define TYPE_QUADRATIC			2
 
 class Parse
 {
 public:
-	Parse(char *argv);
+	Parse();
 	Parse(const Parse& parse);
 	Parse& operator=(const Parse& parse);
-	~Parse();
+	virtual ~Parse();
 
 	char				get_variable(void);
 	std::vector<float>		get_reduced_form(void);
 	std::vector<float>		get_degree(void);
 	int				get_equation_type(void);
 	std::string			get_reduced_term_str(int flag_bonus);
+
 	void				print_info(int flag_bonus);
 
-private:
-	Parse();
+	void				parse_start(char *argv);
 
+protected:
+	char				_variable;
+	std::vector<float>		_reduced_form;
+	std::vector<float>		_degree;
+	int				_max_degree;
+	int				_equation_type;
+
+private:
 	int				is_equation_form(std::string str);
 	int				check_variable(std::string str);
 	int				check_invalid_character(std::string str);
@@ -75,16 +84,10 @@ private:
 						std::vector<std::string> r_term,
 						std::vector<float> l_degree,
 						std::vector<float> r_degree);
-	int				check_calculable(void);
+	void				set_type(void);
 	void				make_form_ascending_order(void);
 
-	char				_variable;
-	std::vector<float>		_reduced_form;
-	std::vector<float>		_degree;
-	int				_max_degree;
-	int				_equation_type;
 	std::string			_err_msg;
-
 };
 
 #endif

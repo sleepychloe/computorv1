@@ -6,21 +6,14 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/17 14:57:10 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 01:54:08 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/Parse.hpp"
 
-Parse::Parse()
+Parse::Parse(): _variable(0), _max_degree(0), _equation_type(0), _err_msg("")
 {
-}
-
-Parse::Parse(char *argv): _variable(0), _max_degree(0), _equation_type(0), _err_msg("")
-{
-	std::string	str(argv);
-
-	check_str(str);
 }
 
 Parse::Parse(const Parse& parse)
@@ -84,7 +77,7 @@ std::string	Parse::get_reduced_term_str(int flag_bonus)
 				str += "0";
 
 			str += " * " + std::string(1, this->_variable);
-			str += "^"  + std::to_string(i) + " ";
+			str += "^"  + std::to_string(this->_degree[i]) + " ";
 		}
 		str += "= 0";
 	}
@@ -130,6 +123,13 @@ void	Parse::print_info(int flag_bonus)
 		std::cout << "The equation is rational equation." << std::endl;
 	else
 		std::cout << this->_max_degree << std::endl;
+}
+
+void	Parse::parse_start(char *argv)
+{
+	std::string	str(argv);
+
+	check_str(str);
 }
 
 int	Parse::is_equation_form(std::string str)
@@ -409,14 +409,10 @@ int	Parse::check_str(std::string str)
 	std::vector<float>		r_degree;
 
 	if (!(get_term(str.substr(0, str.find("=")), l_term, l_degree)
-		&& get_term(str.substr(str.find("=") + 1, std::string::npos), r_term, r_degree)))
+		&& get_term(str.substr(str.find("=") + 1, std::string::npos), r_term, r_degree)
+		&& make_reduced_form(l_term, r_term, l_degree, r_degree)))
 		return (0);
-	if (!(make_reduced_form(l_term, r_term, l_degree, r_degree)
-		&& check_calculable()))
-	{
-		std::cout << "cannot calculate" << std::endl;//
-		return (0);
-	}
+	set_type();
 	make_form_ascending_order();
 	return (1);
 }
@@ -787,7 +783,7 @@ int	Parse::make_reduced_form(std::vector<std::string> l_term,
 	return (1);
 }
 
-int	Parse::check_calculable(void)
+void	Parse::set_type(void)
 {
 	for (size_t i = 0; i < this->_degree.size(); i++)
 	{
@@ -795,7 +791,7 @@ int	Parse::check_calculable(void)
 			|| this->_degree[i] - (int)(this->_degree[i]) != 0)
 		{
 			this->_equation_type = TYPE_RATIONAL;
-			return (TYPE_RATIONAL);
+			return ;
 		}
 	}
 
@@ -808,16 +804,11 @@ int	Parse::check_calculable(void)
 	}
 	this->_max_degree = max;
 	if (max < 0)
-	{
 		this->_equation_type = TYPE_RATIONAL;
-		return (TYPE_RATIONAL);
-	}
 	else if (max > 2)
-	{
 		this->_equation_type = TYPE_HIGH_DEGREE;
-		return (TYPE_HIGH_DEGREE);
-	}
-	return (max);
+	else
+		this->_equation_type = max;
 }
 
 void	Parse::make_form_ascending_order(void)

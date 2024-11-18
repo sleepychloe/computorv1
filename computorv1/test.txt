@@ -74,11 +74,12 @@ syntax-------------------------------------------------------
 
 --------------------------------------------------------------------------------
 
-//yes
+//rational
 ./computor "x^1*(5+3/(2)+1)*(1+3)x/0.1x^2/x^7+(+(-1))/(-2)*x^1+3*1/2=0+3"
-
-//no
 ./computor "x^1*(5+3/(2)+1)*(1+3)x/0.1x^2.1/x^7+(+(-1))/(-2)*x^1+3*1/2*x+x=0+3"
+
+//high degree
+./computor "x^1*(5+3/(2)+1)*(1+3)x/0.1x^2/x^-7+(+(-1))/(-2)*x^1+3*1/2=0+3"
 
 --------------------------------------------------------------------------------
 
@@ -116,5 +117,5 @@ flow
 6. check degree if it's calculable
 	- fraction equation -> don't calculate
 	- maximum degree is more than 2 -> don't calculate
-7. move right term to left term, make ax^2 + bx + c = 0
+7. make ascending order: form of a + bx + cx^2 = 0
 8. solve the equation

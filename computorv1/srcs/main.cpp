@@ -6,13 +6,12 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 21:07:38 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/17 12:50:44 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 01:41:38 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/Parse.hpp"
-
-#include <cstring>
+#include "../incs/Computor.hpp"
 
 void	print_help(void)
 {
@@ -55,16 +54,19 @@ int	main(int argc, char **argv)
 		print_help();
 		return (0);
 	}
+
+	Parse		*p = new Computor();
 	try
 	{
-		Parse	p(argv[1]);
-
-		p.print_info(flag_bonus);
+		p->parse_start(argv[1]);
+		p->print_info(flag_bonus);
 	}
 	catch(std::string err_msg)
 	{
 		std::cerr << RED << "error: invalid input: " << err_msg << BLACK << std::endl;
+		delete p;
 		return (1);
 	}
+	delete p;
 	return (0);
 }
