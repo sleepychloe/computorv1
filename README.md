@@ -34,7 +34,7 @@ flow
 	- calculate terms of same degree if it exists
 5. make reduced form
 6. check degree if it's calculable
-	- set equation type: rational(-1), high degree(-2), or max degree(> 0)
+	- set equation type: fractional(-1), high degree(-2), or max degree(> 0)
 	- make ascending order: form of a + bx + cx^2 = 0
 	- set equation string for printing reudced form
 7. solve the equation

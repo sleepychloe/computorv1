@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 09:37:26 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 09:50:25 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #include <iomanip>
 #include "../incs/Color.hpp"
 
-# define TYPE_RATIONAL			-1
+# define TYPE_FRACTIONAL		-1
 # define TYPE_HIGH_DEGREE		-2
 
 class Parse

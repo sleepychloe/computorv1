@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 07:12:09 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 09:53:08 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ void	Computor::print_info(void)
 	std::cout << this->_equation_str << std::endl;
 
 	std::cout << CYAN << "Polynomial degree: " << BLACK;
-	if (this->_equation_type == TYPE_RATIONAL)
+	if (this->_equation_type == TYPE_FRACTIONAL)
 	{
-		std::cout << "The equation is rational equation." << std::endl;
-		std::cout << YELLOW << "This program cannot solve rational equation"
+		std::cout << "The equation is fractional equation." << std::endl;
+		std::cout << YELLOW << "The equation is not a polynomial equation, I can't solve."
 			<< BLACK << std::endl;
 		return ;
 	}
@@ -55,7 +55,7 @@ void	Computor::print_info(void)
 	if (this->_equation_type == TYPE_HIGH_DEGREE)
 	{
 		std::cout << YELLOW <<
-			"This program cannot solve polynomial equation of degree 3 or higher"
+			"The polynomial degree is strictly greater than 2, I can't solve."
 			<< BLACK << std::endl;
 		return ;
 	}

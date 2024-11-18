@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 09:38:57 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 09:52:45 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -720,7 +720,7 @@ void	Parse::set_equation_type(void)
 		if (this->_degree[i] < 0
 			|| this->_degree[i] - (int)(this->_degree[i]) != 0)
 		{
-			this->_equation_type = TYPE_RATIONAL;
+			this->_equation_type = TYPE_FRACTIONAL;
 			return ;
 		}
 	}
@@ -734,7 +734,7 @@ void	Parse::set_equation_type(void)
 	}
 	this->_max_degree = max;
 	if (max < 0)
-		this->_equation_type = TYPE_RATIONAL;
+		this->_equation_type = TYPE_FRACTIONAL;
 	else if (max > 2)
 		this->_equation_type = TYPE_HIGH_DEGREE;
 	else
@@ -743,7 +743,7 @@ void	Parse::set_equation_type(void)
 
 void	Parse::make_form_ascending_order(void)
 {
-	if (this->_equation_type != TYPE_RATIONAL)
+	if (this->_equation_type != TYPE_FRACTIONAL)
 	{
 		std::vector<float>	form(this->_max_degree + 1, 0);
 		std::vector<float>	degree(this->_max_degree + 1, 0);
