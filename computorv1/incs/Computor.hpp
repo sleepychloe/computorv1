@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:37 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 01:22:25 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 05:14:50 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,15 @@
 class Computor: public Parse
 {
 public:
-	Computor();
+	Computor(char *argv, int flag_bonus);
 	Computor(const Computor& computor);
 	Computor& operator=(const Computor& computor);
 	~Computor();
 
+	void			print_info(void);
+
 private:
+	Computor();
 
 };
 

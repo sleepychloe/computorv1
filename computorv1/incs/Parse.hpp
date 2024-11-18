@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 01:51:39 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 05:14:44 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,10 @@ public:
 	std::vector<float>		get_reduced_form(void);
 	std::vector<float>		get_degree(void);
 	int				get_equation_type(void);
-	std::string			get_reduced_term_str(int flag_bonus);
+	int				get_flag_bonus(void);
+	std::string			get_equation_str(void);
 
-	void				print_info(int flag_bonus);
-
-	void				parse_start(char *argv);
+	void				parse_start(char *argv, int flag_bonus);
 
 protected:
 	char				_variable;
@@ -53,6 +52,8 @@ protected:
 	std::vector<float>		_degree;
 	int				_max_degree;
 	int				_equation_type;
+	int				_flag_bonus;
+	std::string			_equation_str;
 
 private:
 	int				is_equation_form(std::string str);
@@ -80,12 +81,10 @@ private:
 						std::vector<std::string> &term,
 						std::vector<float> &degree);
 
-	int				make_reduced_form(std::vector<std::string> l_term,
-						std::vector<std::string> r_term,
-						std::vector<float> l_degree,
-						std::vector<float> r_degree);
-	void				set_type(void);
+	void				set_equation_type(void);
 	void				make_form_ascending_order(void);
+	void				set_equation_str(void);
+	void				make_reduced_form(void);
 
 	std::string			_err_msg;
 };
