@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 05:14:02 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 08:32:05 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,6 +257,7 @@ int	Parse::check_number(std::string str)
 
 	while (i < str.length())
 	{
+		space = 0;
 		if ('0' <= str[i] && str[i] <= '9')
 		{
 			i++;
@@ -280,10 +281,12 @@ int	Parse::check_point(std::string str)
 {
 	size_t	i = 0;
 	int	point;
+	int	digit;
 
 	while (i < str.length())
 	{
 		point = 0;
+		digit = 0;
 		if (str[i] == '.')
 		{
 			point++;
@@ -294,19 +297,22 @@ int	Parse::check_point(std::string str)
 				throw (this->_err_msg);
 			}
 			i++;
-			while (str[i] == ' ' || str[i] == '\t')
-				i++;
+
 			if (('0' <= str[i] && str[i] <= '9') || str[i] == '.')
 			{
 				while (('0' <= str[i] && str[i] <= '9') || str[i] == '.')
 				{
 					if (str[i] == '.')
 						point++;
+					else
+						digit++;
 					i++;
 				}
-				if (str[i - 1] == '.' || point >= 2)
+				if (str[i - 1] == '.' || point >= 2 || digit > 3)
 				{
 					this->_err_msg = "invalid syntax: float point";
+					if (digit > 2)
+						this->_err_msg += ": supports up to the third decimal place";
 					throw (this->_err_msg);
 				}
 			}
@@ -673,9 +679,7 @@ int	Parse::get_term(std::string str,
 {
 	term = split_term(str);
 	for (size_t i = 0; i < term.size(); i++)
-	{
 		degree.push_back(find_degree(term[i]));
-	}
 	for (std::vector<std::string>::iterator it = term.begin(); it != term.end(); it++)
 	{
 		if (!(remove_variable(*it) && remove_bracket(*it)))
@@ -764,6 +768,14 @@ void	Parse::make_form_ascending_order(void)
 	}
 }
 
+std::string	Parse::float_to_string(float num)
+{
+	std::stringstream	ss;
+
+	ss << num;
+	return (ss.str());
+}
+
 void	Parse::set_equation_str(void)
 {
 	std::string	str  = "";
@@ -778,12 +790,13 @@ void	Parse::set_equation_str(void)
 				str += "+ ";
 
 			if (this->_reduced_form[i] != 0)
-				str += std::to_string(std::abs(this->_reduced_form[i]));
-			else 
+				str += float_to_string(std::abs(this->_reduced_form[i]));
+			else
 				str += "0";
-
 			str += " * " + std::string(1, this->_variable);
-			str += "^"  + std::to_string(this->_degree[i]) + " ";
+			str += "^";
+			str += float_to_string(this->_degree[i]);
+			str += " ";
 		}
 		str += "= 0";
 	}
@@ -798,12 +811,16 @@ void	Parse::set_equation_str(void)
 				else
 					str += "+ ";
 
-				str += std::to_string(std::abs(this->_reduced_form[i])) + " ";
+				str += float_to_string(std::abs(this->_reduced_form[i]));
+				str += " ";
 				if (this->_degree[i] != 0)
 				{
 					str += "* " + std::string(1, this->_variable);
 					if  (this->_degree[i] != 1)
-						str += "^"  + std::to_string(this->_degree[i]);
+					{
+						str += "^";
+						str += float_to_string(this->_degree[i]);
+					}
 					str += " ";
 				}
 			}
@@ -815,8 +832,7 @@ void	Parse::set_equation_str(void)
 
 	while (!(('0' <= str[i] && str[i] <= '9') || str[i] == '-'))
 		i++;
-	if (i)
-		str = str.substr(i, std::string::npos);
+	str = str.substr(i, std::string::npos);
 	this->_equation_str = str;
 }
 

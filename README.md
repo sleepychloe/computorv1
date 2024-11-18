@@ -15,6 +15,7 @@ flow
 		* do not allow space or tab between numbers
 	- if float point used properly
 		* position, if it used multiple time
+		* supports up to the third decimal place
 	- if caret used properly
 		* position, do not allow to use brackets
 		* ok: x^1, x^+1, x^-1, x^1.1

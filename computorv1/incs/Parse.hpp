@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 05:30:54 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 08:34:02 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <vector>
 #include <cstdlib>
 #include <cmath>
+#include <sstream>
 #include "../incs/Color.hpp"
 
 # define TYPE_RATIONAL			-1
@@ -42,15 +43,6 @@ public:
 	void				parse_start(char *argv, int flag_bonus);
 
 protected:
-	char				_variable;
-	std::vector<float>		_reduced_form;
-	std::vector<float>		_degree;
-	int				_max_degree;
-	int				_equation_type;
-	int				_flag_bonus;
-	std::string			_equation_str;
-
-private:
 	int				is_equation_form(std::string str);
 	int				check_variable(std::string str);
 	int				check_invalid_character(std::string str);
@@ -78,9 +70,17 @@ private:
 
 	void				set_equation_type(void);
 	void				make_form_ascending_order(void);
+	std::string			float_to_string(float num);
 	void				set_equation_str(void);
 	void				make_reduced_form(void);
 
+	char				_variable;
+	std::vector<float>		_reduced_form;
+	std::vector<float>		_degree;
+	int				_max_degree;
+	int				_equation_type;
+	int				_flag_bonus;
+	std::string			_equation_str;
 	std::string			_err_msg;
 };
 
