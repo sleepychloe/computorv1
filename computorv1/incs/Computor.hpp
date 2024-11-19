@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:37 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 16:09:14 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/19 21:05:23 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,13 @@
 # define SOLUTION_ONE			"1"
 # define SOLUTION_TWO			"2"
 
+# define A				0
+# define B				1
+# define C				2
+# define B_PRIME			3
+# define C_PRIME			4
+# define SQUARE_CONSTANT		5
+
 class Computor: public Parse
 {
 public:
@@ -34,18 +41,35 @@ public:
 
 	void				print_info(void);
 
-	void				solve_constant(void);
-	void				solve_linear(void);
-	void				solve_quadratic(void);
-	void				solve_equation(void);
-
 private:
 	Computor();
+
+	void				solve_constant(void);
+
+	void				solve_linear(void);
+
+	void				print_descending_order(std::vector<float> num);
+	int				is_int(float num);
+	void				divide_by_quad_coefficient(std::vector<float> &num,
+						std::vector<std::string> &str);
+	void				find_perfect_square_coefficient(std::vector<float> &num,
+						std::vector<std::string> &str);
+	void				make_perfect_square_form(std::vector<float> &num,
+						std::vector<std::string> &str);
+	void				remove_square(std::vector<float> &num,
+						std::vector<std::string> &str);
+	void				find_x(std::vector<float> &num,
+						std::vector<std::string> &str);
+	void				calc_x(std::vector<float> &num,
+						std::vector<std::string> &str);
+	void				print_process(void);
+	void				solve_quadratic(void);
+
+	void				solve_equation(void);
 
 	std::string			_type_solution;
 	float				_discriminant;
 	std::vector<float>		_solution;
-
 	std::vector<float>		_term_descending_order;
 };
 
