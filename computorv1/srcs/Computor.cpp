@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/19 21:18:12 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/19 23:42:36 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,57 @@ void	Computor::solve_constant(void)
 	}
 }
 
+void	Computor::print_process_linear(void)
+{
+	float		a = this->_term_descending_order[0];
+	float		b = this->_term_descending_order[1];
+	float		tmp_a = a;
+	float		tmp_b = b;
+	std::string	tmp;
+	
+	std::cout << MAGENTA
+		<< "Intermediate steps:" << BLACK << std::endl;
+
+	tmp = float_to_string(a) + " * " + std::string(1, this->_variable);
+	if (b > 0)
+		tmp += " + ";
+	else if (b < 0)
+		tmp += " - ";
+	if (b != 0)
+		tmp += float_to_string(std::abs(b));
+	tmp += " = 0";
+	std::cout << "\t" << tmp << std::endl;
+
+	if (b != 0)
+	{
+		tmp = " → " + float_to_string(a) + " * "
+			+ std::string(1, this->_variable) + " = ";
+		if (-b < 0)
+			tmp += "-";
+		tmp += float_to_string(std::abs(-b));
+		std::cout << "\t" << tmp << std::endl;
+	}
+
+	tmp = "∴ " + std::string(1, this->_variable) + " = ";
+	if (b == 0)
+		tmp += "0";
+	else
+	{
+		if (-b < 0)
+			tmp += "-";
+		tmp += float_to_string(std::abs(-b)) + "/" + float_to_string(a) + " = ";
+		fraction_reduction(tmp_a, tmp_b);
+		if (a != tmp_a)
+		{
+			if (-b < 0)
+				tmp += "-";
+			tmp += float_to_string(std::abs(tmp_b)) + "/" + float_to_string(tmp_a) + " = ";
+		}
+		tmp += float_to_string(this->_solution[0]);
+	}
+	std::cout << "\t" << tmp << std::endl;
+}
+
 void	Computor::solve_linear(void)
 {
 	float	a = this->_term_descending_order[0];
@@ -115,43 +166,7 @@ void	Computor::solve_linear(void)
 	std::cout << this->_variable << " = " << this->_solution[0] << std::endl;
 
 	if (this->_flag_bonus)
-	{
-		std::string	tmp;
-		std::cout << MAGENTA
-			<< "Intermediate steps:" << BLACK << std::endl;
-
-		tmp = float_to_string(a) + " * " + std::string(1, this->_variable);
-		if (b > 0)
-			tmp += " + ";
-		else if (b < 0)
-			tmp += " - ";
-		if (b != 0)
-			tmp += float_to_string(std::abs(b));
-		tmp += " = 0";
-		std::cout << "\t" << tmp << std::endl;
-
-		if (b != 0)
-		{
-			tmp = " → " + float_to_string(a) + " * "
-				+ std::string(1, this->_variable) + " = ";
-			if (-b < 0)
-				tmp += "-";
-			tmp += float_to_string(std::abs(-b));
-			std::cout << "\t" << tmp << std::endl;
-		}
-
-		tmp = "∴ " + std::string(1, this->_variable) + " = ";
-		if (b == 0)
-			tmp += "0";
-		else
-		{
-			if (-b < 0)
-				tmp += "-";
-			tmp += float_to_string(std::abs(-b)) + "/" + float_to_string(a)
-				+ " = " + float_to_string(this->_solution[0]);
-		}
-		std::cout << "\t" << tmp << std::endl;
-	}
+		print_process_linear();
 }
 
 void	Computor::print_descending_order(std::vector<float> num)
@@ -181,12 +196,12 @@ void	Computor::print_descending_order(std::vector<float> num)
 		tmp += float_to_string(std::abs(num[C]));
 	}
 	tmp += " = 0";
-	std::cout << "1\t" << tmp << std::endl;
+	std::cout << "\t" << tmp << std::endl;
 }
 
 int	Computor::is_int(float num)
 {
-	if (num == (int)num)
+	if (std::abs(num - (int)num) <= 1e-6)
 		return (1);
 	return (0);
 }
@@ -245,7 +260,7 @@ void	Computor::divide_by_quad_coefficient(std::vector<float> &num,
 			tmp += str[C_PRIME];
 		}
 		tmp += " = 0";
-		std::cout << "2\t" << tmp << std::endl;
+		std::cout << "\t" << tmp << std::endl;
 	}
 }
 
@@ -279,7 +294,7 @@ void	Computor::find_perfect_square_coefficient(std::vector<float> &num,
 			tmp += str[C_PRIME];
 		}
 		tmp += " = 0";
-		std::cout << "3\t" << tmp << std::endl;
+		std::cout << "\t" << tmp << std::endl;
 	}
 }
 
@@ -296,7 +311,7 @@ void	Computor::make_perfect_square_form(std::vector<float> &num,
 		str[B_PRIME] = float_to_string(std::abs(num[B_PRIME]));
 	
 	if (!is_int(num[SQUARE_CONSTANT]))
-		str[SQUARE_CONSTANT] = float_to_string(std::abs(num[B_PRIME] * num[B_PRIME]))
+		str[SQUARE_CONSTANT] = float_to_string(std::abs(num[B] * num[B]))
 					+ "/" + float_to_string(4 * num[A]);
 	else
 		str[SQUARE_CONSTANT] = float_to_string(num[SQUARE_CONSTANT]);
@@ -356,7 +371,7 @@ void	Computor::make_perfect_square_form(std::vector<float> &num,
 			tmp += "-";
 		tmp += str[C_PRIME];
 	}
-	std::cout << "4\t" << tmp << std::endl;
+	std::cout << "\t" << tmp << std::endl;
 
 }
 
@@ -379,7 +394,7 @@ void	Computor::remove_square(std::vector<float> &num,
 		tmp += "± √(" + str[C_PRIME] + ")";
 	else
 		tmp += "0";
-	std::cout << "5\t" << tmp << std::endl;
+	std::cout << "\t" << tmp << std::endl;
 }
 
 void	Computor::find_x(std::vector<float> &num,
@@ -402,95 +417,144 @@ void	Computor::find_x(std::vector<float> &num,
 			tmp += "√(" + str[C_PRIME] + ")";
 		else
 			tmp += float_to_string(sqrt(num[C_PRIME]));
-		std::cout << "6\t" << tmp << std::endl;
+		std::cout << "\t" << tmp << std::endl;
 	}
 }
 
-// void	Computor::calc_x(std::vector<float> num,
-// 						std::vector<std::string> str)
-// {
-// 	float x1 = -1 * b;
-// 	float x2_real = b * b - (4 * a * c);
-// 	float x3 = 2 * a;
-// 	std::vector<int>	nums;
+void	Computor::split_square_num(float &num_int, float &num_real)
+{
+	float			copy_real = num_real;
+	std::vector<int>	tmp;
 
-// 	for (size_t i = 2; i < x2_real; i++)
-// 	{
-// 		if (x1 / i - (int)(x2_real / i) == 0)
-// 			nums.push_back(i);
-// 	}
-// 	int	x2_int = 1;
-// 	for (size_t i = 1; i < nums.size(); i++)
-// 	{
-// 		if (nums[i - 1] == nums[i])
-// 		{
-// 			x2_int *= nums[i];
-// 			x2_real /= nums[i] * nums[i];
-// 			nums.erase(nums.begin() + i - 1);
-// 			nums.erase(nums.begin() + i);
-// 			i--;
-// 		}
-// 	}
-// 	x2_real = sqrt(x2_real);
+	for (int i = 2; i <= copy_real; i++)
+	{
+		if (is_int(copy_real / i))
+		{
+			tmp.push_back(i);
+			copy_real /= i;
+			i = 1;
+		}
+	}
 
-// 	for (int i = 2; i <= x1 || i <= x2_int || i <= x3; i++)
-// 	{
-// 		if (x1 / i == (int)(x1 == i)
-// 			&& x2_int / i == (int)(x2_int / i)
-// 			&& x3 / i == (int)(x3 / i))
-// 		{
-// 			x1 /= i;
-// 			x2_int /= i;
-// 			x3 /= i;
-// 			i = 2;
-// 		}
-// 	}
+	for (size_t i = 0; i < tmp.size(); i++)
+	{
+		if (tmp[i - 1] == tmp[i])
+		{
+			num_int *= tmp[i];
+			i = i + 2;
+		}
+	}
+	num_real /= num_int * num_int;
+}
 
-// 	std::string answer_1;
-// 	if (x2_real - (int)(x2_real) == 0)
-// 	{
-// 		//reduce one more
-// 		answer_1 = float_to_string(x1 - x2_int * x2_real);
-// 		if (x3 != 1)
-// 			answer_1 += "/" + float_to_string(x3);
-// 	}
-// 	else
-// 	{
-// 		answer_1 = float_to_string(x1) + " - ";
-// 		if (x2_int != 1)
-// 			answer_1 += float_to_string(x2_int);
-// 		answer_1 += "√(" + float_to_string(x2_real) + ")";
-// 		if (x3 != 1)
-// 			answer_1 += "/" + float_to_string(x3);
-// 	}
+void	Computor::fraction_reduction(float &n1, float &n2)
+{
+	std::vector<int>	tmp;
+	float			common = 1;
 
-// 	std::string answer_2;
-// 	if (x2_real - (int)(x2_real) == 0)
-// 	{
-// 		//reduce one more
-// 		answer_2 = float_to_string(x1 + x2_int * x2_real);
-// 		if (x3 != 1)
-// 			answer_2 += "/" + float_to_string(x3);
-// 	}
-// 	else
-// 	{
-// 		answer_2 = float_to_string(x1) + " + ";
-// 		if (x2_int != 1)
-// 			answer_2 += float_to_string(x2_int);
-// 		answer_2 += "√(" + float_to_string(x2_real) + ")";
-// 		if (x3 != 1)
-// 			answer_2 += "/" + float_to_string(x3);
-// 	}
+	for (size_t i = 2; i <= n1; i++)
+	{
+		if (is_int(n1 / i))
+			tmp.push_back(i);
+	}
+	for (size_t i = 0; i < tmp.size(); i++)
+	{
+		if (is_int(n2 / tmp[i]))
+			common = tmp[i];
+	}
+	n1 /= common;
+	n2 /= common;
+}
 
-// 	tmp = " ∴ " + std::string(1, this->_variable);
-// 	tmp += " = " + answer_1 + ",";
-// 	tmp += "\n\t   " + std::string(1, this->_variable);
-// 	tmp += " = " + answer_2;
+void	Computor::fraction_reduction(float &n1, float &n2, float &n3)
+{
+	std::vector<int>	tmp;
+	float			common = 1;
 
-// 	std::cout << "7\t" << tmp << std::endl;
-// }
+	for (size_t i = 2; i <= n1; i++)
+	{
+		if (is_int(n1 / i))
+			tmp.push_back(i);
+	}
+	for (size_t i = 0; i < tmp.size(); i++)
+	{
+		if (is_int(n2 / tmp[i]) && is_int(n3 / tmp[i]))
+			common = tmp[i];
+	}
+	n1 /= common;
+	n2 /= common;
+}
 
-void	Computor::print_process(void)
+void	Computor::calc_x(std::vector<float> &num)
+{
+	float	x1 = -1 * num[B];
+	float	x2_int = 1;
+	float	x2_real = num[B] * num[B] - (4 * num[A] * num[C]);
+	float	x3 = 2 * num[A];
+
+	split_square_num(x2_int, x2_real);
+
+	std::string	solution_1 = "";
+	std::string	solution_2 = "";
+
+	if (is_int(sqrt(x2_real)))
+	{
+		x2_int *= sqrt(x2_real);
+		fraction_reduction(x2_int, x3);
+
+		solution_1 += float_to_string(x1 - x2_int);
+		if (x3 != 1)
+			solution_1 += "/" + float_to_string(x3);
+
+		solution_2 += float_to_string(x1 + x2_int);
+		if (x3 != 1)
+			solution_2 += "/" + float_to_string(x3);
+	}
+	else
+	{
+		fraction_reduction(x1, x2_int, x3);
+
+		// solution_1
+		if (x1 && x2_int && x3 != 1)
+			solution_1 += "(";
+		if (x1 != 0)
+			solution_1 += float_to_string(x1);
+		solution_1 += " - ";
+		if (x2_int != 1)
+			solution_1 += float_to_string(x2_int);
+		solution_1 += "√(" + float_to_string(x2_real) + ")";
+		if (x1 && x2_int && x3 != 1)
+			solution_1 += ")";
+		if (x3 != 1)
+			solution_1 += "/" + float_to_string(x3);
+
+		// solution_2
+		if (x1 && x2_int && x3 != 1)
+			solution_2 += "(";
+		if (x1 != 0)
+			solution_2 += float_to_string(x1);
+		solution_2 += " + ";
+		if (x2_int != 1)
+			solution_2 += float_to_string(x2_int);
+		solution_2 += "√(" + float_to_string(x2_real) + ")";
+		if (x1 && x2_int && x3 != 1)
+			solution_2 += ")";
+		if (x3 != 1)
+			solution_2 += "/" + float_to_string(x3);
+	}
+
+	//print
+	std::string	tmp = "";
+
+	tmp += " ∴ " + std::string(1, this->_variable);
+	tmp += " = " + solution_1 + ",";
+	tmp += "\n\t   " + std::string(1, this->_variable);
+	tmp += " = " + solution_2;
+
+	std::cout << "\t" << tmp << std::endl;
+}
+
+void	Computor::print_process_quadratic(void)
 {
 
 	std::vector<float>		num(6, 0);
@@ -535,11 +599,11 @@ void	Computor::print_process(void)
 	{
 		if (num[B_PRIME] == 0)
 			return ;
-		std::cout << "7\t ∴ " + std::string(1, this->_variable)
+		std::cout << "\t ∴ " + std::string(1, this->_variable)
 			+ " = " + str[B_PRIME] << std::endl;
 	}
-	// else
-		// calc_x(num, str);
+	else
+		calc_x(num);
 }
 
 void	Computor::solve_quadratic(void)
@@ -580,7 +644,7 @@ void	Computor::solve_quadratic(void)
 	}
 
 	if (this->_flag_bonus)
-		print_process();
+		print_process_quadratic();
 }
 
 void	Computor::solve_equation(void)

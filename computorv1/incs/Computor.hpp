@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:37 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/19 21:05:23 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/19 23:33:28 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ private:
 
 	void				solve_constant(void);
 
+	void				print_process_linear(void);
 	void				solve_linear(void);
 
 	void				print_descending_order(std::vector<float> num);
@@ -60,9 +61,11 @@ private:
 						std::vector<std::string> &str);
 	void				find_x(std::vector<float> &num,
 						std::vector<std::string> &str);
-	void				calc_x(std::vector<float> &num,
-						std::vector<std::string> &str);
-	void				print_process(void);
+	void				split_square_num(float &num_int, float &num_real);
+	void				fraction_reduction(float &n1, float &n2);
+	void				fraction_reduction(float &n1, float &n2, float &n3);
+	void				calc_x(std::vector<float> &num);
+	void				print_process_quadratic(void);
 	void				solve_quadratic(void);
 
 	void				solve_equation(void);
