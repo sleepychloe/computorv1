@@ -84,3 +84,26 @@ syntax-------------------------------------------------------
 --------------------------------------------------------------------------------
 
 
+-------------------------------
+linear
+./computor_bonus "2x=3"
+./computor_bonus "-2x=-3"
+./computor_bonus "-2x=3"
+./computor_bonus "2x=-3"
+
+./computor_bonus "2x=0"
+./computor_bonus "-2x=-0"
+./computor_bonus "-2x=0"
+./computor_bonus "2x=-0"
+
+./computor_bonus "x=3"
+./computor_bonus "-x=-3"
+./computor_bonus "-x=3"
+./computor_bonus "x=-3"
+
+./computor_bonus "x=0"
+./computor_bonus "-x=-0"
+./computor_bonus "-x=0"
+./computor_bonus "x=-0"
+
+-------------------------------

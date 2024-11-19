@@ -38,6 +38,19 @@ flow
 	- make ascending order: form of a + bx + cx^2 = 0
 	- set equation string for printing reudced form
 7. solve the equation
-	- equation type < 0: don't calculate
+
+----------------------------------------------------------------------------------------
+
+1. check if equation type > 0
+	- save term as descending order: form of ax^2 + bx + c = 0
+	- if a < 0: each term *= -1
+2. constant equation
+3. linear equation
+	- showing intermediate:
+		* print ax + bx = 0
+		* print ax = -b
+		* print x = -a/b
+4. quadratic equation
+
 
 * program has 6 significant digits as same as default precision value in C++

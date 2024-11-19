@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 09:52:45 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 17:08:53 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -502,6 +502,8 @@ int	Parse::remove_variable(std::string &str)
 			if (i != 0 && (str[i - 1] == '+' || str[i - 1] == '-'))
 			{
 				tmp = "1*" + std::string(1, this->_variable);
+				if (str[i - 1] == '-')
+					tmp = "-1*" + std::string(1, this->_variable);
 				str = str.substr(0, i - 1) + tmp + str.substr(i + 1, std::string::npos);
 				i = str.substr(0, i).length() + tmp.length();
 			}

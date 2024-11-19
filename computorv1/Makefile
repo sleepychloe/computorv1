@@ -6,11 +6,12 @@
 #    By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/11 21:06:43 by yhwang            #+#    #+#              #
-#    Updated: 2024/11/18 00:59:58 by yhwang           ###   ########.fr        #
+#    Updated: 2024/11/18 14:19:05 by yhwang           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = computor
+NAME_BONUS = computor_bonus
 CPP = c++
 
 SRC_DIR = ./srcs/
@@ -33,6 +34,11 @@ OBJS = $(addsuffix .o, $(FILES))
 all: $(NAME)
 
 $(NAME): $(OBJS)
+	$(CPP) $(CPPFLAGS) $^ -o $@ $(LDFLAGS)
+
+bonus: $(NAME_BONUS)
+
+$(NAME_BONUS): $(OBJS)
 	$(CPP) $(CPPFLAGS) $^ -o $@ $(LDFLAGS)
 
 clean:

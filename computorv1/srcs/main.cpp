@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 21:07:38 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 05:12:43 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 14:09:11 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,6 @@ int	main(int argc, char **argv)
 	try
 	{
 		Computor	c(argv[1], flag_bonus);
-
-		c.print_info();
 	}
 	catch(std::string err_msg)
 	{

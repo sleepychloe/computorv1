@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:37 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 12:49:12 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/18 16:09:14 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ public:
 
 	void				print_info(void);
 
+	void				solve_constant(void);
+	void				solve_linear(void);
 	void				solve_quadratic(void);
 	void				solve_equation(void);
 
@@ -43,6 +45,8 @@ private:
 	std::string			_type_solution;
 	float				_discriminant;
 	std::vector<float>		_solution;
+
+	std::vector<float>		_term_descending_order;
 };
 
 # endif
