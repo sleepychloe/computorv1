@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 20:42:14 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/19 14:09:14 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,8 +157,7 @@ void	Computor::solve_quadratic(void)
 	float	b = this->_term_descending_order[1];
 	float	c = this->_term_descending_order[2];
 
-	this->_discriminant = (b * b - 4 * a * c) / (2 * a);
-	std::cout << "here: " << this->_discriminant << std::endl;
+	this->_discriminant = b * b - 4 * a * c;
 	if (this->_discriminant > 0)
 	{
 		this->_type_solution = SOLUTION_TWO;
@@ -196,108 +195,249 @@ void	Computor::solve_quadratic(void)
 			<< "Intermediate steps:" << BLACK << std::endl;
 
 		// ax² + bx + c = 0
-		tmp = float_to_string(a) + " * " + std::string(1, this->_variable) + "²";
+		tmp = "";
+		if (a != 1)
+			tmp += float_to_string(a) + " * ";
+		tmp += std::string(1, this->_variable) + "²";
 		if (b != 0)
 		{
-			if (b > 0)
-				tmp += " + ";
-			else if (b < 0)
+			if (b < 0)
 				tmp += " - ";
-			tmp += float_to_string(std::abs(b)) + " * " + std::string(1, this->_variable);
+			else
+				tmp += " + ";
+
+			if (b != 1)
+				tmp += float_to_string(std::abs(b)) + " * ";
+			tmp += std::string(1, this->_variable);
 		}
 		if (c != 0)
 		{
-			if (c > 0)
-				tmp += " + ";
-			else if (c < 0)
+			if (c < 0)
 				tmp += " - ";
+			else
+				tmp += " + ";
 			tmp += float_to_string(std::abs(c));
 		}
 		tmp += " = 0";
 		std::cout << "1\t" << tmp << std::endl;
 
-		// x² + b/ax + c = 0
+		// x² + b/ax + c/a = 0
+		float	new_b = b / a;
+		float	new_c = c / a;
+
+		std::string	new_b_str;
+		std::string	new_c_str;
+		if (new_b == 1)
+			new_b_str = std::string(1, this->_variable);
+		else
+		{
+			if (new_b - (int)(new_b) != 0)
+				new_b_str = float_to_string(std::abs(b)) + "/" + float_to_string(a)
+							+ std::string(1, this->_variable);
+			else
+			{
+				if (new_b != 1)
+				{
+					new_b_str = float_to_string(std::abs(new_b))
+						+ " * " + std::string(1, this->_variable);
+				}
+				else
+					new_b_str = std::string(1, this->_variable);
+			}
+				
+		}
+		if (new_c - (int)(new_c) != 0)
+			new_c_str = float_to_string(std::abs(c)) + "/" + float_to_string(a);
+		else
+			new_c_str = float_to_string(std::abs(new_c));
+
 		if (a != 1)
 		{
 			tmp = " → " + std::string(1, this->_variable) + "²";
-			if (b != 0)
+			if (new_b != 0)
 			{
-				if (b > 0)
-					tmp += " + ";
-				else if (b < 0)
+				if (new_b < 0)
 					tmp += " - ";
-				tmp += float_to_string(std::abs(b)) + "/" + float_to_string(a)
-					+ " * " + std::string(1, this->_variable);
+				else
+					tmp += " + ";
+				tmp += new_b_str;
 			}
-			if (c != 0)
+			if (new_c != 0)
 			{
-				if (c > 0)
-					tmp += " + ";
-				else if (c < 0)
+				if (new_c < 0)
 					tmp += " - ";
-				tmp += float_to_string(std::abs(c)) + "/" + float_to_string(a);
+				else
+					tmp += " + ";
+				tmp += new_c_str;
 			}
 			tmp += " = 0";
 			std::cout << "2\t" << tmp << std::endl;
 		}
 
 		// (x² + b/ax + b²/(2²*a²)) - b²/(2²*a²) + c/a = 0
-		if (b != 0)
+		float		square_constant = b * b / (4 * a * a);
+		std::string	square_constant_str = float_to_string(std::abs(b)) + "²/"
+						+ "(2²*" + float_to_string(a) + "²)";
+		if (new_b != 0)
 		{
 			tmp = " → (" + std::string(1, this->_variable) + "²";
-			if (b > 0)
-				tmp += " + ";
-			else if (b < 0)
+			if (new_b < 0)
 				tmp += " - ";
-			tmp += float_to_string(std::abs(b)) + "/" + float_to_string(a)
-				+ " * " + std::string(1, this->_variable);
-			tmp += " + " + float_to_string(std::abs(b))  + "²" + "/(2²*" + float_to_string(a) + "²))";
-			tmp += " - " + float_to_string(std::abs(b))  + "²" + "/(2²*" + float_to_string(a) + "²)";
-			if (c != 0)
+			else
+				tmp += " + ";
+			tmp += new_b_str;
+
+			tmp += " + " + square_constant_str + ") - " + square_constant_str;
+
+			if (new_c != 0)
 			{
-				if (c > 0)
-					tmp += " + ";
-				else if (c < 0)
+				if (new_c < 0)
 					tmp += " - ";
-				tmp += float_to_string(std::abs(c)) + "/" + float_to_string(a);
+				else
+					tmp += " + ";
+				tmp += new_c_str;
 			}
 			tmp += " = 0";
 			std::cout << "3\t" << tmp << std::endl;
 		}
 		
-		// (x + b/(2a))² = b²/(2²*a²) - c/a = discriminant value
+		// (x + b/(2a))² = b²/(2²*a²) - c/a = num
+		new_b /= 2;
+		new_c *= -1;
+
+
+		if (new_b - (int)new_b != 0)
+			new_b_str = float_to_string(std::abs(b)) + "/" + float_to_string(2 * a);
+		else
+			new_b_str = float_to_string(std::abs(new_b));
+
 		if (b != 0)
 		{
 			tmp = " → (" + std::string(1, this->_variable);
-			if (b > 0)
+			if (new_b < 0)
 				tmp += " + ";
-			else if (b < 0)
+			else
 				tmp += " - ";
-			tmp += float_to_string(std::abs(b)) + "/(2*" + float_to_string(a) + "))² = ";
-			tmp += float_to_string(std::abs(b))  + "²" + "/(2²*" + float_to_string(a) + "²)";
-			if (c != 0)
+			tmp += new_b_str + ")²";
+			tmp += " = " + square_constant_str;
+			if (new_c)
 			{
-				if (-c < 0)
+				if (new_c < 0)
 					tmp += " - ";
-				else if (-c > 0)
+				else
 					tmp += " + ";
-				tmp += float_to_string(std::abs(c)) + "/" + float_to_string(a);
+				tmp += new_c_str;
 			}
-			tmp += " = " + float_to_string(this->_discriminant * this->_discriminant);
-			std::cout << "4\t" << tmp << std::endl;
 		}
+		else
+		{
+			tmp = " → " + std::string(1, this->_variable) + "²";
+			tmp += " = ";
+			if (new_c < 0)
+				tmp += "-";
+			tmp += new_c_str;
+		}
+
+		if (square_constant - (int)(square_constant) != 0)
+			square_constant_str = float_to_string(std::abs(b * b)) + "/" + float_to_string(4 * a);
+		else
+			square_constant_str = float_to_string(square_constant);
+		if (square_constant && new_c)
+		{
+			tmp += " = " + square_constant_str;
+			if (new_c < 0)
+				tmp += " - ";
+			else
+				tmp += " + ";
+			tmp += new_c_str;
+		}
+
+		// new_c = square_constant + new_c;
+		// if (new_c - (int)(new_c) != 0)
+		// 	new_c_str = float_to_string(std::abs(b * b - 4 * a * c)) + "/" + float_to_string(4 * a);
+		// else
+		// 	new_c_str = float_to_string(new_c);
+		// if (square_constant && new_c)
+		// {
+		// 	tmp += " = " + new_c_str;
+		// }
+		std::cout << "4\t" << tmp << std::endl;
+		
+		
+
+		// if (b != 0)
+		// {
+		// 	tmp = " → (" + std::string(1, this->_variable);
+		// 	if (b > 0)
+		// 		tmp += " + ";
+		// 	else if (b < 0)
+		// 		tmp += " - ";
+		// 	tmp += float_to_string(std::abs(b)) + "/(2*" + float_to_string(a) + "))² = ";
+		// 	tmp += float_to_string(std::abs(b))  + "²" + "/(2²*" + float_to_string(a) + "²) ";
+		// 	if (-c > 0)
+		// 		tmp += " + ";
+		// }
+		// else
+		// 	tmp = " → " + std::string(1, this->_variable) + "² = ";
+		// if (c != 0)
+		// {
+		// 	if (-c < 0)
+		// 	{
+		// 		if (b != 0)
+		// 			tmp += "- ";
+		// 		else
+		// 			tmp += "-";
+		// 	}
+		// 	tmp += float_to_string(std::abs(c)) + "/" + float_to_string(a);
+		// }
+
+		// tmp += " = ";
+		// if (b != 0)
+		// {
+		// 	tmp += float_to_string(b * b) += "/" + float_to_string(4 * a * a) + " ";
+		// 	if (-c > 0)
+		// 		tmp += "+ ";
+		// }
+		// if (c != 0)
+		// {
+		// 	if (-c < 0)
+		// 		tmp += "-";
+		// 	if (b != 0)
+		// 		tmp += " ";
+		// 	if (a == 1)
+		// 		tmp += float_to_string(std::abs(c));
+		// 	else
+		// 		tmp += float_to_string(std::abs(c)) + "/" + float_to_string(a);
+		// }
+		// else 
+		// 	tmp += "0";
+
+		// if (b != 0 && c != 0)
+		// {
+		// 	tmp += " = ";
+		// 	if ((b * b / (4 * a) - c / a) - (int)(b * b / (4 * a) - c / a) != 0)
+		// 	{
+		// 		if (b * b / (4 * a) - c / a < 0)
+		// 			tmp += "-";
+		// 		tmp += float_to_string(std::abs(b * b - 4 * c));
+		// 		tmp += "/" + float_to_string(4*a);
+		// 		std::string fraction = tmp;
+		// 	}
+		// 	else
+		// 		tmp += float_to_string(b * b / (4 * a) - c / a);
+		// }
+		// std::cout << "4\t" << tmp << std::endl;
 
 		// discriminant value >= 0
 		if (this->_discriminant < 0)
 		{
 			std::cout << YELLOW
-				<< "\tWithin the real number range, the square of any number cannot be less than 0, "
-				<< std::endl
-				<< "\tthe discriminant(=" << this->_discriminant << ") < 0 is a contradiction"
+				<< "\tWithin the real number range, the square of any number cannot be less than 0"
 				<< std::endl
 				<< "\t∴ it has no solution" << BLACK << std::endl;
 			return ;
 		}
+std::cout << "-------------------------------------" << std::endl;
 
 		// ↔ x + b/(2*a) = ± √((b²-4*a*c)/(2*a))
 		tmp =  "↔ " + std::string(1, this->_variable);
