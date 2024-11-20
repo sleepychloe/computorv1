@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/20 12:42:34 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/20 21:01:49 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -585,6 +585,39 @@ void	Computor::print_process_quadratic(void)
 	num[A] = this->_term_descending_order[0];
 	num[B] = this->_term_descending_order[1];
 	num[C] = this->_term_descending_order[2];
+
+	int	tmp = 1;
+	while (!(is_int(num[A]) && is_int(num[B]) && is_int(num[C])))
+	{
+		if (!is_int(num[A]))
+		{
+			while (!is_int(num[A] * tmp))
+				tmp *= 10;
+			num[A] *= 10;
+			num[B] *= 10;
+			num[C] *= 10;
+			fraction_reduction(num[A], num[B], num[C]);
+		}
+		else if (!is_int(num[B]))
+		{
+			while (!is_int(num[B] * tmp))
+				tmp *= 10;
+			num[A] *= 10;
+			num[B] *= 10;
+			num[C] *= 10;
+			fraction_reduction(num[A], num[B], num[C]);
+		}
+		else
+		{
+			while (!is_int(num[C] * tmp))
+				tmp *= 10;
+			num[A] *= 10;
+			num[B] *= 10;
+			num[C] *= 10;
+			fraction_reduction(num[A], num[B], num[C]);
+		}
+	}
+
 	std::cout << MAGENTA
 		<< "Intermediate steps:" << BLACK << std::endl;
 

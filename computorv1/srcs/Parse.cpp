@@ -1,3 +1,4 @@
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -121,24 +122,19 @@ int	Parse::check_variable(std::string str)
 {
 	size_t	i = 0;
 
-	while (('0' <= str[i] && str[i] <= '9') || str[i] == '.'
-		|| str[i] == ' ' || str[i] == '\t'
-		|| str[i] == '=' || str[i] == '(' || str[i] == ')' 
-		|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' )
-		i++;
-	this->_variable = str[i];
-	i++;
-	while (1)
+	while (i < str.length())
 	{
-		if (str[i] == ' ' || str[i] == '\t' || str[i] == '^' || str[i] == '.'
-			|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
-			|| str[i] == '=' || str[i] == '(' || str[i] == ')' || str[i] == '\0')
-			break ;
-		else
+		if (('a' <= str[i] && str[i] <= 'z') || ('A' <= str[i] && str[i] <= 'Z'))
 		{
-			this->_err_msg = "cannot determine the variable";
-			throw (this->_err_msg);
+			this->_variable = str[i];
+			break ;
 		}
+		i++;
+	}
+	if (this->_variable == 0)
+	{
+		this->_err_msg = "cannot determine the variable";
+		throw (this->_err_msg);
 	}
 	return (1);
 }
@@ -149,103 +145,15 @@ int	Parse::check_invalid_character(std::string str)
 
 	while (i < str.length())
 	{
-		if (!(('0' <= str[i] && str[i] <= '9')
-			|| str[i] == this->_variable || str[i] == '.'
-			|| str[i] == '^' || str[i] == '(' || str[i] == ')'
-			|| str[i] == ' ' || str[i] == '\t' || str[i] == '='
-			|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'))
+		if (!(str[i] == this->_variable || ('0' <= str[i] && str[i] <= '9')
+			|| str[i] == '.' || str[i] == '^' || str[i] == '(' || str[i] == ')'
+			|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
+			|| str[i] == '=' || str[i] == ' ' || str[i] == '\t'))
 		{
-			this->_err_msg = "invalid syntax: invalid character";
+			this->_err_msg = "cannot determine the variable";
 			throw (this->_err_msg);
 		}
 		i++;
-	}
-	return (1);
-}
-
-int	Parse::check_brackets(std::string str)
-{
-	int	open = 0;
-	int	close = 0;
-	size_t	i = 0;
-	size_t	j = 0;
-
-	while (i < str.length())
-	{
-		if (str[i] == ')')
-		{
-			close++;
-			while (j < i)
-			{
-				if (str[j] == '(')
-				{
-					open++;
-					j++;
-					break ;
-				}
-				j++;
-			}
-			if (close != open)
-			{
-				this->_err_msg = "invalid syntax: brackets";
-				throw (this->_err_msg);
-			}
-		}
-		i++;
-	}
-
-	i = 0;
-	open = 0;
-	while (i < str.length())
-	{
-		if (str[i] == '(')
-			open++;
-		i++;
-	}
-	if (close != open)
-	{
-		this->_err_msg = "invalid syntax: brackets";
-		throw (this->_err_msg);
-	}
-	return (1);
-}
-
-int	Parse::check_sign(std::string str)
-{
-	size_t	i = 0;
-
-	while (i < str.length())
-	{
-		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
-		{
-			i++;
-			while (str[i] == ' ' || str[i] == '\t')
-				i++;
-			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
-			{
-				this->_err_msg = "invalid syntax: operator";
-				throw (this->_err_msg);
-			}
-		}
-		i++;
-	}
-
-	i = str.find("=") - 1;
-	while (str[i] == ' ' || str[i] == '\t')
-		i--;
-	if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
-	{
-		this->_err_msg = "invalid syntax: operator";
-		throw (this->_err_msg);
-	}
-
-	i = str.length() - 1;
-	while (str[i] == ' ' || str[i] == '\t')
-		i--;
-	if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
-	{
-		this->_err_msg = "invalid syntax: operator";
-		throw (this->_err_msg);
 	}
 	return (1);
 }
@@ -273,6 +181,91 @@ int	Parse::check_number(std::string str)
 			}
 		}
 		i++;
+	}
+	return (1);
+}
+
+void	Parse::remove_space(std::string	&str)
+{
+	size_t		i = 0;
+	std::string	new_str = "";
+
+	while (str[i] == ' ' || str[i] == '\t')
+		i++;
+	if (str[i] == '+')
+		i++;
+	while (i < str.size())
+	{
+		if (str[i] != ' ' && str[i] != '\t')
+			new_str += str[i];
+		i++;
+	}
+	str = new_str;
+}
+
+int	Parse::check_brackets(std::string str)
+{
+	int	open = 0;
+	int	close = 0;
+	size_t	i = 0;
+	size_t	j = 0;
+
+	while (i < str.length())
+	{
+		if (str[i] == ')')
+		{
+			close++;
+			while (j < i)
+			{
+				if (str[j] == '(')
+				{
+					open++;
+					j++;
+					break ;
+				}
+				j++;
+			}
+		}
+		i++;
+	}
+	if (close != open)
+	{
+		this->_err_msg = "invalid syntax: brackets";
+		throw (this->_err_msg);
+	}
+	return (1);
+}
+
+int	Parse::check_sign(std::string str)
+{
+	size_t	i = 0;
+
+	while (i < str.length())
+	{
+		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+		{
+			i++;
+			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+			{
+				this->_err_msg = "invalid syntax: operator";
+				throw (this->_err_msg);
+			}
+		}
+		i++;
+	}
+
+	i = 0;
+	while (('0' <= str[i] && str[i] <= '9') || str[i] == '.'
+		|| str[i] == '+' || str[i] == '-' || str[i] == '(')
+		i++;
+	if (!(str[i] == '*' || str[i] == '/'
+		|| str[str.find("=") - 1] == '+' || str[str.find("=") - 1] == '-'
+		|| str[str.find("=") - 1] == '*' || str[str.find("=") - 1] == '/'
+		|| str[str.length() - 1] == '+' || str[str.length() - 1] == '-'
+		|| str[str.length() - 1] == '*' || str[str.length() - 1] == '/'))
+	{
+		this->_err_msg = "invalid syntax: operator";
+		throw (this->_err_msg);
 	}
 	return (1);
 }
@@ -330,21 +323,22 @@ int	Parse::check_caret(std::string str)
 	{
 		if (str[i] == '^')
 		{
-			if (!((str[i - 1] && (str[i - 1] == this->_variable || str[i - 1] == ')'))
-				&& (str[i + 1] && (('0' <= str[i + 1] && str[i + 1] <= '9')
-							|| str[i + 1] == '+' || str[i + 1] == '-'))))
+			if (!((str[i - 1] && (str[i - 1] == this->_variable))
+				&& (str[i + 1] && (str[i + 1] == '+' || str[i + 1] == '-'
+						|| ('0' <= str[i + 1] && str[i + 1] <= '9')))))
 			{
-				this->_err_msg = "invalid syntax: caret(^)";
+				this->_err_msg = "invalid syntax: caret(^)1";
 				throw (this->_err_msg);
 			}
-			if ('0' <= str[i + 1] && str[i + 1] <= '9')
+			i++;
+			if (str[i] == '+' || str[i] == '-'
+				|| ('0' <= str[i + 1] && str[i + 1] <= '9'))
 			{
-				i++;
-				while (('0' <= str[i] && str[i] <= '9')
-					|| str[i] == '.' || str[i] == ' ' || str[i] == '\t')
+				while (str[i] == '+' || str[i] == '-'
+					|| ('0' <= str[i] && str[i] <= '9') || str[i] == '.')
 					i++;
 				if (!(str[i] == '+' || str[i] == '-'
-					|| str[i] == '*' || str[i] == '/' || str[i] == '=' || str[i] == '\0'))
+					|| str[i] == '*' || str[i] == '/' || str[i] == '='))
 				{
 					this->_err_msg = "invalid syntax: caret(^)";
 					throw (this->_err_msg);
@@ -358,17 +352,23 @@ int	Parse::check_caret(std::string str)
 
 int	Parse::check_syntax(std::string str)
 {
-	if (!(check_invalid_character(str) && check_brackets(str) && check_sign(str)
-		&& check_number(str) && check_point(str) && check_caret(str)))
+	if (!(check_brackets(str) && check_point(str) && check_sign(str) && check_caret(str)))
 		return (0);
 	return (1);
 }
 
 int	Parse::check_str(std::string str)
 {
-	if (!(is_equation_form(str) && check_variable(str) && check_syntax(str)))
+	if (!(is_equation_form(str) && check_variable(str)
+		&& check_invalid_character(str) && check_number(str)))
 		return (0);
 
+	remove_space(str);
+
+	if (!check_syntax(str))
+		return (0);
+
+	//remove bracket using get_term
 	std::vector<std::string>	l_term;
 	std::vector<std::string>	r_term;
 	std::vector<float>		l_degree;
@@ -391,31 +391,12 @@ int	Parse::check_str(std::string str)
 	return (1);
 }
 
-void	Parse::remove_space(std::string	&str)
-{
-	size_t		i = 0;
-	std::string	new_str = "";
-
-	while (str[i] == ' ' || str[i] == '\t')
-		i++;
-	if (str[i] == '+')
-		i++;
-	while (i < str.size())
-	{
-		if (str[i] != ' ' && str[i] != '\t')
-			new_str += str[i];
-		i++;
-	}
-	str = new_str;
-}
-
 std::vector<std::string>	Parse::split_term(std::string str)
 {
 	std::vector<std::string>	term;
 	size_t				i = 0;
 	size_t				open = 0;
 	std::string tmp;
-	remove_space(str);
 
 	while (1)
 	{
