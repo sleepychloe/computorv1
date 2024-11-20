@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/20 21:37:09 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/20 11:34:58 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,15 @@ protected:
 	int				is_equation_form(std::string str);
 	int				check_variable(std::string str);
 	int				check_invalid_character(std::string str);
-	int				check_number(std::string str);
-	void				remove_space(std::string &str);
-
 	int				check_brackets(std::string str);
 	int				check_sign(std::string str);
+	int				check_number(std::string str);
 	int				check_point(std::string str);
 	int				check_caret(std::string str);
 	int				check_syntax(std::string str);
-
-	int				reduce_bracket(std::string &str);
 	int				check_str(std::string str);
 
+	void				remove_space(std::string &str);
 	std::vector<std::string>	split_term(std::string str);
 	float				find_degree(std::string str);
 	int				remove_variable(std::string &str);

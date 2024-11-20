@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/20 21:01:49 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/21 00:33:44 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -447,7 +447,7 @@ void	Computor::split_square_num(float &num_int, float &num_real)
 		}
 	}
 
-	for (size_t i = 0; i < tmp.size(); i++)
+	for (size_t i = 1; i < tmp.size(); i++)
 	{
 		if (tmp[i - 1] == tmp[i])
 		{

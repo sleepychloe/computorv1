@@ -122,19 +122,24 @@ int	Parse::check_variable(std::string str)
 {
 	size_t	i = 0;
 
-	while (i < str.length())
-	{
-		if (('a' <= str[i] && str[i] <= 'z') || ('A' <= str[i] && str[i] <= 'Z'))
-		{
-			this->_variable = str[i];
-			break ;
-		}
+	while (('0' <= str[i] && str[i] <= '9') || str[i] == '.'
+		|| str[i] == ' ' || str[i] == '\t'
+		|| str[i] == '=' || str[i] == '(' || str[i] == ')' 
+		|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' )
 		i++;
-	}
-	if (this->_variable == 0)
+	this->_variable = str[i];
+	i++;
+	while (1)
 	{
-		this->_err_msg = "cannot determine the variable";
-		throw (this->_err_msg);
+		if (str[i] == ' ' || str[i] == '\t' || str[i] == '^' || str[i] == '.'
+			|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
+			|| str[i] == '=' || str[i] == '(' || str[i] == ')' || str[i] == '\0')
+			break ;
+		else
+		{
+			this->_err_msg = "cannot determine the variable";
+			throw (this->_err_msg);
+		}
 	}
 	return (1);
 }
@@ -145,62 +150,18 @@ int	Parse::check_invalid_character(std::string str)
 
 	while (i < str.length())
 	{
-		if (!(str[i] == this->_variable || ('0' <= str[i] && str[i] <= '9')
-			|| str[i] == '.' || str[i] == '^' || str[i] == '(' || str[i] == ')'
-			|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
-			|| str[i] == '=' || str[i] == ' ' || str[i] == '\t'))
+		if (!(('0' <= str[i] && str[i] <= '9')
+			|| str[i] == this->_variable || str[i] == '.'
+			|| str[i] == '^' || str[i] == '(' || str[i] == ')'
+			|| str[i] == ' ' || str[i] == '\t' || str[i] == '='
+			|| str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'))
 		{
-			this->_err_msg = "cannot determine the variable";
+			this->_err_msg = "invalid syntax: invalid character";
 			throw (this->_err_msg);
 		}
 		i++;
 	}
 	return (1);
-}
-
-int	Parse::check_number(std::string str)
-{
-	size_t	i = 0;
-	int	space = 0;
-
-	while (i < str.length())
-	{
-		space = 0;
-		if ('0' <= str[i] && str[i] <= '9')
-		{
-			i++;
-			while (str[i] == ' ' || str[i] == '\t')
-			{
-				space++;
-				i++;
-			}
-			if (space && ('0' <= str[i] && str[i] <= '9'))
-			{
-				this->_err_msg = "invalid syntax: no operator between numbers";
-				throw (this->_err_msg);
-			}
-		}
-		i++;
-	}
-	return (1);
-}
-
-void	Parse::remove_space(std::string	&str)
-{
-	size_t		i = 0;
-	std::string	new_str = "";
-
-	while (str[i] == ' ' || str[i] == '\t')
-		i++;
-	if (str[i] == '+')
-		i++;
-	while (i < str.size())
-	{
-		if (str[i] != ' ' && str[i] != '\t')
-			new_str += str[i];
-		i++;
-	}
-	str = new_str;
 }
 
 int	Parse::check_brackets(std::string str)
@@ -225,7 +186,21 @@ int	Parse::check_brackets(std::string str)
 				}
 				j++;
 			}
+			if (close != open)
+			{
+				this->_err_msg = "invalid syntax: brackets";
+				throw (this->_err_msg);
+			}
 		}
+		i++;
+	}
+
+	i = 0;
+	open = 0;
+	while (i < str.length())
+	{
+		if (str[i] == '(')
+			open++;
 		i++;
 	}
 	if (close != open)
@@ -245,6 +220,8 @@ int	Parse::check_sign(std::string str)
 		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
 		{
 			i++;
+			while (str[i] == ' ' || str[i] == '\t')
+				i++;
 			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
 			{
 				this->_err_msg = "invalid syntax: operator";
@@ -254,23 +231,45 @@ int	Parse::check_sign(std::string str)
 		i++;
 	}
 
-	i = 0;
-	while (str[i] == '+' || str[i] == '-' || str[i] == '(')
-		i++;
+	i = str.find("=") - 1;
+	while (str[i] == ' ' || str[i] == '\t')
+		i--;
+	if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+	{
+		this->_err_msg = "invalid syntax: operator";
+		throw (this->_err_msg);
+	}
+
+	i = str.length() - 1;
+	while (str[i] == ' ' || str[i] == '\t')
+		i--;
+	if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+	{
+		this->_err_msg = "invalid syntax: operator";
+		throw (this->_err_msg);
+	}
+	return (1);
+}
+
+int	Parse::check_number(std::string str)
+{
+	size_t	i = 0;
+	int	space = 0;
+
 	while (i < str.length())
 	{
-		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+		space = 0;
+		if ('0' <= str[i] && str[i] <= '9')
 		{
 			i++;
-			while (str[i] == this->_variable || str[i] == '^'
-				|| ('0' <= str[i] && str[i] <= '9') || str[i] == '.'
-				|| str[i] == '+' || str[i] == '-'
-				|| str[i] == '(' || str[i] == ')')
-				i++;
-			if (!(str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
-				|| str[i] == '\0'))
+			while (str[i] == ' ' || str[i] == '\t')
 			{
-				this->_err_msg = "invalid syntax: operator";
+				space++;
+				i++;
+			}
+			if (space && ('0' <= str[i] && str[i] <= '9'))
+			{
+				this->_err_msg = "invalid syntax: no operator between numbers";
 				throw (this->_err_msg);
 			}
 		}
@@ -332,22 +331,21 @@ int	Parse::check_caret(std::string str)
 	{
 		if (str[i] == '^')
 		{
-			if (!((str[i - 1] && (str[i - 1] == this->_variable))
-				&& (str[i + 1] && (str[i + 1] == '+' || str[i + 1] == '-'
-						|| ('0' <= str[i + 1] && str[i + 1] <= '9')))))
+			if (!((str[i - 1] && (str[i - 1] == this->_variable || str[i - 1] == ')'))
+				&& (str[i + 1] && (('0' <= str[i + 1] && str[i + 1] <= '9')
+							|| str[i + 1] == '+' || str[i + 1] == '-'))))
 			{
-				this->_err_msg = "invalid syntax: caret(^)1";
+				this->_err_msg = "invalid syntax: caret(^)";
 				throw (this->_err_msg);
 			}
-			i++;
-			if (str[i] == '+' || str[i] == '-'
-				|| ('0' <= str[i + 1] && str[i + 1] <= '9'))
+			if ('0' <= str[i + 1] && str[i + 1] <= '9')
 			{
-				while (str[i] == '+' || str[i] == '-'
-					|| ('0' <= str[i] && str[i] <= '9') || str[i] == '.')
+				i++;
+				while (('0' <= str[i] && str[i] <= '9')
+					|| str[i] == '.' || str[i] == ' ' || str[i] == '\t')
 					i++;
 				if (!(str[i] == '+' || str[i] == '-'
-					|| str[i] == '*' || str[i] == '/' || str[i] == '='))
+					|| str[i] == '*' || str[i] == '/' || str[i] == '=' || str[i] == '\0'))
 				{
 					this->_err_msg = "invalid syntax: caret(^)";
 					throw (this->_err_msg);
@@ -361,171 +359,16 @@ int	Parse::check_caret(std::string str)
 
 int	Parse::check_syntax(std::string str)
 {
-	std::string	left_str = str.substr(0, str.find("="));
-	std::string	right_str = str.substr(str.find("=") + 1, std::string::npos);
-
-	if (!(check_brackets(left_str) && check_brackets(right_str)
-		&& check_sign(left_str) && check_brackets(right_str)
-		&& check_point(str) && check_caret(str)))
+	if (!(check_invalid_character(str) && check_brackets(str) && check_sign(str)
+		&& check_number(str) && check_point(str) && check_caret(str)))
 		return (0);
-	return (1);
-}
-
-int	Parse::reduce_bracket(std::string &str)
-{
-	size_t		i = 0;
-	size_t		j = 0;
-	size_t		end = 0;
-
-	std::string	tmp = "";
-	std::string	front = "";
-	std::string	back = "";
-	std::vector<float>		term;
-	std::vector<float>		degree;
-	std::vector<std::string>	tmp_term;
-	std::vector<float>		tmp_degree;
-	std::vector<float>		tmp_term_float;
-
-	std::vector<char>		op;
-	std::vector<float>		nb;
-	int				keep;
-
-	std::cout << "str: " << str << std::endl;
-	while (i < str.length())
-	{
-		if (str.find(")") == std::string::npos)
-			break;
-		else
-			i = str.find(")");
-		// while (str[i] != ')')
-		// 	i++;
-		end = i;
-		j = i;
-		while (str[j] != '(')
-			j--;
-		front = str.substr(0, j);
-		tmp = str.substr(j + 1, end - j - 1);
-		back = str.substr(end + 1, std::string::npos);
-		std::cout << "front: \t" << front << std::endl;
-		std::cout << "tmp: \t" << tmp << std::endl;
-		std::cout << "back:\t" << back << std::endl;
-
-		if (!get_term(tmp, tmp_term, tmp_degree))
-		{
-			std::cout << "error1" << std::endl;
-			return (0);
-		}
-		else
-		{
-			std::cout << "succeed, tmp: " << tmp << std::endl;
-			for (size_t i = 0; i < tmp_degree.size(); i++)
-				std::cout << "degree: " << tmp_degree[i] << ", term: " << tmp_term[i] << std::endl;
-			if (!(j == 0 || str[j - 1] == '(' || str[j - 1] != '+' || str[j - 1] != '-'))
-			{
-				std::cout << "error2" << std::endl;
-					return (0);
-			}
-			j--;
-			if (str[j] == '-' || str[j] == '+')
-			{
-				if (str[j] == '-')
-				{
-					op.push_back('*');
-					nb.push_back(-1);
-				}
-				front = front.substr(0, j);
-			}
-			if (str[j] == '*')
-			{
-				op.push_back('*');
-				j--;
-				keep = j;
-				while (('0' <= str[j] && str[j] <= '9') || str[j] == '.')
-					j--;
-				nb.push_back(atof(str.substr(j + 1, keep - j).c_str()));
-				front = front.substr(0, j + 1);
-			}
-			end++;
-			if (str[end] == '*' || str[end] == '/')
-			{
-				op.push_back(str[end]);
-				end++;
-				keep = end;
-				while (('0' <= str[end] && str[end] <= '9') || str[end] == '.')
-					end++;
-				nb.push_back(atof(str.substr(keep, end - keep).c_str()));
-				back = back.substr(end - keep + 1, std::string::npos);
-			}
-
-			for (size_t i = 0; i < tmp_term.size();i++)
-			{
-				tmp_term_float.push_back(atof(tmp_term[i].c_str()));
-				degree.push_back(tmp_degree[i]);
-			}
-			for (size_t i = 0; i < op.size(); i++)
-			{
-				for (size_t j = 0; j < tmp_term_float.size(); j++)
-					tmp_term_float[j] = calc(tmp_term_float[j], nb[i], op[i]);
-			}
-			tmp = "";
-			for (size_t i = 0; i < tmp_term_float.size(); i++)
-			{
-				term.push_back(tmp_term_float[i]);
-				if (tmp_term_float[i] >= 0)
-					tmp += "+";
-				tmp += float_to_string(tmp_term_float[i]);
-				tmp += "*" + std::string(1, this->_variable) + "^";
-				tmp += float_to_string(tmp_degree[i]);
-			}
-			tmp_term.clear();
-			op.clear();
-			nb.clear();
-			tmp_degree.clear();
-			tmp_term_float.clear();
-
-			std::cout << "-----------" << std::endl;
-			std::cout << "front: \t" << front << std::endl;
-			std::cout << "tmp: \t" << tmp << std::endl;
-			std::cout << "back:\t" << back << std::endl;
-
-			for (size_t i = 0; i < degree.size(); i++)
-				std::cout << "degree: " << degree[i] << ", term: " << term[i] << std::endl;
-			str = front + tmp + back;
-			std::cout << "str: " << str << std::endl;
-			std::cout << "*********************************************" << std::endl;
-			i = 0;
-		}
-		i++;
-	}
-	std::cout << "str: " << str << std::endl;
 	return (1);
 }
 
 int	Parse::check_str(std::string str)
 {
-	if (!(is_equation_form(str) && check_variable(str)
-		&& check_invalid_character(str) && check_number(str)))
+	if (!(is_equation_form(str) && check_variable(str) && check_syntax(str)))
 		return (0);
-
-	remove_space(str);
-
-	if (!check_syntax(str))
-		return (0);
-
-	//remove bracket using get_term
-	std::string	left_str = str.substr(0, str.find("="));
-	std::string	right_str = str.substr(str.find("=") + 1, std::string::npos);
-
-	if (!(reduce_bracket(left_str) && reduce_bracket(right_str)))
-		return (0);
-	str = left_str + "=" + right_str;
-	std::cout << "left + right: " << left_str + "=" + right_str << std::endl;
-
-
-
-
-
-
 
 	std::vector<std::string>	l_term;
 	std::vector<std::string>	r_term;
@@ -549,12 +392,31 @@ int	Parse::check_str(std::string str)
 	return (1);
 }
 
+void	Parse::remove_space(std::string	&str)
+{
+	size_t		i = 0;
+	std::string	new_str = "";
+
+	while (str[i] == ' ' || str[i] == '\t')
+		i++;
+	if (str[i] == '+')
+		i++;
+	while (i < str.size())
+	{
+		if (str[i] != ' ' && str[i] != '\t')
+			new_str += str[i];
+		i++;
+	}
+	str = new_str;
+}
+
 std::vector<std::string>	Parse::split_term(std::string str)
 {
 	std::vector<std::string>	term;
 	size_t				i = 0;
 	size_t				open = 0;
 	std::string tmp;
+	remove_space(str);
 
 	while (1)
 	{
@@ -582,7 +444,9 @@ std::vector<std::string>	Parse::split_term(std::string str)
 			if (str[i] == '^')
 			{
 				if (str[i + 1] && (str[i + 1] == '+' || str[i + 1] == '-'))
+				{
 					i = i + 2;
+				}
 			}
 			tmp = "";
 			i++;
