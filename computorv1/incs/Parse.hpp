@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 16:08:41 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/20 11:34:58 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 
 # define TYPE_FRACTIONAL		-1
 # define TYPE_HIGH_DEGREE		-2
+# define TYPE_ZERO			0
 
 class Parse
 {

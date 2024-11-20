@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:12:16 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 17:08:53 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/20 11:34:55 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,6 +336,19 @@ int	Parse::check_caret(std::string str)
 			{
 				this->_err_msg = "invalid syntax: caret(^)";
 				throw (this->_err_msg);
+			}
+			if ('0' <= str[i + 1] && str[i + 1] <= '9')
+			{
+				i++;
+				while (('0' <= str[i] && str[i] <= '9')
+					|| str[i] == '.' || str[i] == ' ' || str[i] == '\t')
+					i++;
+				if (!(str[i] == '+' || str[i] == '-'
+					|| str[i] == '*' || str[i] == '/' || str[i] == '=' || str[i] == '\0'))
+				{
+					this->_err_msg = "invalid syntax: caret(^)";
+					throw (this->_err_msg);
+				}
 			}
 		}
 		i++;
@@ -727,8 +740,14 @@ void	Parse::set_equation_type(void)
 		}
 	}
 
-	int	max = this->_degree[0];
+	int	max;
 
+	if (this->_degree.size() == 0 && this->_reduced_form.size() == 0)
+	{
+		this->_equation_type = TYPE_ZERO;
+		return ;
+	}
+	max = this->_degree[0];
 	for (size_t i = 1; i < this->_degree.size(); i++)
 	{
 		if (max < this->_degree[i])
@@ -745,7 +764,17 @@ void	Parse::set_equation_type(void)
 
 void	Parse::make_form_ascending_order(void)
 {
-	if (this->_equation_type != TYPE_FRACTIONAL)
+	if (this->_equation_type == TYPE_ZERO)
+	{
+		std::vector<float>	form(1, 0);
+		std::vector<float>	degree(1, 0);
+
+		if (this->_reduced_form.size() != 0)
+			form[0] = this->_reduced_form[0];
+		this->_reduced_form = form;
+		this->_degree = degree;
+	}
+	else if (this->_equation_type != TYPE_FRACTIONAL)
 	{
 		std::vector<float>	form(this->_max_degree + 1, 0);
 		std::vector<float>	degree(this->_max_degree + 1, 0);
@@ -781,7 +810,11 @@ void	Parse::make_form_ascending_order(void)
 void	Parse::set_equation_str(void)
 {
 	std::string	str  = "";
-
+	if (this->_equation_type == TYPE_ZERO)
+	{
+		this->_equation_str = float_to_string(this->_reduced_form[0]) + " = 0";
+		return ;
+	}
 	if (!this->_flag_bonus)
 	{
 		for (size_t i = 0; i < this->_reduced_form.size(); i++)
@@ -848,9 +881,7 @@ void	Parse::make_reduced_form(void)
 			{
 				this->_reduced_form[i]
 					= this->_reduced_form[i] + this->_reduced_form[j];
-				this->_reduced_form.erase(this->_reduced_form.begin() + j);
-				this->_degree.erase(this->_degree.begin() + j);
-				j--;
+				this->_reduced_form[j] = 0;
 			}
 		}
 		if (this->_reduced_form[i] == 0)

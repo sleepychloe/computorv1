@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/19 23:42:36 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/20 12:42:34 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,17 +304,15 @@ void	Computor::make_perfect_square_form(std::vector<float> &num,
 	//set variable
 	num[B_PRIME] /= 2;
 	num[C_PRIME] *= -1;
+
+	float	tmp1 = std::abs(num[B]);
+	float	tmp2 = 2 * num[A];
+	fraction_reduction(tmp1, tmp2);
 	if (!is_int(num[B_PRIME]))
-		str[B_PRIME] = float_to_string(std::abs(num[B]))
-				+ "/" + float_to_string(2 * num[A]);
+		str[B_PRIME] = float_to_string(tmp1)
+				+ "/" + float_to_string(tmp2);
 	else
 		str[B_PRIME] = float_to_string(std::abs(num[B_PRIME]));
-	
-	if (!is_int(num[SQUARE_CONSTANT]))
-		str[SQUARE_CONSTANT] = float_to_string(std::abs(num[B] * num[B]))
-					+ "/" + float_to_string(4 * num[A]);
-	else
-		str[SQUARE_CONSTANT] = float_to_string(num[SQUARE_CONSTANT]);
 
 	//print
 	std::string	tmp = "";
@@ -346,6 +344,15 @@ void	Computor::make_perfect_square_form(std::vector<float> &num,
 		tmp += str[C_PRIME];
 	}
 
+	tmp1 = num[B] * num[B];
+	tmp2 = 4 * num[A] * num[A];
+	fraction_reduction(tmp1, tmp2);
+	if (!is_int(num[SQUARE_CONSTANT]))
+		str[SQUARE_CONSTANT] = float_to_string(tmp1)
+					+ "/" + float_to_string(tmp2);
+	else
+		str[SQUARE_CONSTANT] = float_to_string(num[SQUARE_CONSTANT]);
+
 	if (num[SQUARE_CONSTANT] && num[C_PRIME])
 	{
 		tmp += " = " + str[SQUARE_CONSTANT];
@@ -358,17 +365,18 @@ void	Computor::make_perfect_square_form(std::vector<float> &num,
 
 	// calculate right term, update it to new_c
 	num[C_PRIME] = num[SQUARE_CONSTANT] + num[C_PRIME];
+	tmp1 = std::abs(num[B] * num[B] - 4 * num[A] * num[C]);
+	tmp2 = 4 * num[A] * num[A];
+	fraction_reduction(tmp1, tmp2);
 	if (!is_int(num[C_PRIME]))
-		str[C_PRIME] = float_to_string(std::abs(num[B] * num[B] - 4 * num[A] * num[C]))
-			+ "/" + float_to_string(4 * num[A]);
+		str[C_PRIME] = float_to_string(tmp1)
+			+ "/" + float_to_string(tmp2);
 	else
 		str[C_PRIME] = float_to_string(num[C_PRIME]);
 	//print
 	if (num[SQUARE_CONSTANT])
 	{
 		tmp += " = ";
-		if (num[C_PRIME] < 0)
-			tmp += "-";
 		tmp += str[C_PRIME];
 	}
 	std::cout << "\t" << tmp << std::endl;
@@ -402,7 +410,10 @@ void	Computor::find_x(std::vector<float> &num,
 {
 	// set variable
 	num[B_PRIME] *= -1;
-	str[B_PRIME] = "-" + str[B_PRIME];
+	if (str[B_PRIME][0] == '-')
+		str[B_PRIME] = str[B_PRIME].substr(1, std::string::npos);
+	if (num[B_PRIME] < 0)
+		str[B_PRIME] = "-" + str[B_PRIME];
 
 	// print
 	std::string tmp = "";
@@ -452,7 +463,7 @@ void	Computor::fraction_reduction(float &n1, float &n2)
 	std::vector<int>	tmp;
 	float			common = 1;
 
-	for (size_t i = 2; i <= n1; i++)
+	for (size_t i = 2; i <= std::abs(n1); i++)
 	{
 		if (is_int(n1 / i))
 			tmp.push_back(i);
@@ -471,7 +482,7 @@ void	Computor::fraction_reduction(float &n1, float &n2, float &n3)
 	std::vector<int>	tmp;
 	float			common = 1;
 
-	for (size_t i = 2; i <= n1; i++)
+	for (size_t i = 2; i <= std::abs(n1); i++)
 	{
 		if (is_int(n1 / i))
 			tmp.push_back(i);
@@ -483,6 +494,7 @@ void	Computor::fraction_reduction(float &n1, float &n2, float &n3)
 	}
 	n1 /= common;
 	n2 /= common;
+	n3 /= common;
 }
 
 void	Computor::calc_x(std::vector<float> &num)
@@ -500,26 +512,36 @@ void	Computor::calc_x(std::vector<float> &num)
 	if (is_int(sqrt(x2_real)))
 	{
 		x2_int *= sqrt(x2_real);
-		fraction_reduction(x2_int, x3);
 
-		solution_1 += float_to_string(x1 - x2_int);
-		if (x3 != 1)
-			solution_1 += "/" + float_to_string(x3);
+		float 	tmp1 = x1 - x2_int;
+		float	tmp2 = x3;
+		fraction_reduction(tmp1, tmp2);
 
-		solution_2 += float_to_string(x1 + x2_int);
-		if (x3 != 1)
-			solution_2 += "/" + float_to_string(x3);
+		float	tmp3 = x1 + x2_int;
+		float	tmp4 = x3;
+		fraction_reduction(tmp3, tmp4);
+
+
+		solution_1 += float_to_string(tmp1);
+		if (tmp2 != 1)
+			solution_1 += "/" + float_to_string(tmp2);
+		solution_2 += float_to_string(tmp3);
+		if (tmp4 != 1)
+			solution_2 += "/" + float_to_string(tmp4);
 	}
 	else
 	{
-		fraction_reduction(x1, x2_int, x3);
+		if (x1 != 0)
+			fraction_reduction(x1, x2_int, x3);
+		else
+			fraction_reduction(x2_int, x3);
 
 		// solution_1
 		if (x1 && x2_int && x3 != 1)
 			solution_1 += "(";
 		if (x1 != 0)
-			solution_1 += float_to_string(x1);
-		solution_1 += " - ";
+			solution_1 += float_to_string(x1) + " ";
+		solution_1 += "- ";
 		if (x2_int != 1)
 			solution_1 += float_to_string(x2_int);
 		solution_1 += "√(" + float_to_string(x2_real) + ")";
@@ -532,8 +554,8 @@ void	Computor::calc_x(std::vector<float> &num)
 		if (x1 && x2_int && x3 != 1)
 			solution_2 += "(";
 		if (x1 != 0)
-			solution_2 += float_to_string(x1);
-		solution_2 += " + ";
+			solution_2 += float_to_string(x1) + " ";
+		solution_2 += "+ ";
 		if (x2_int != 1)
 			solution_2 += float_to_string(x2_int);
 		solution_2 += "√(" + float_to_string(x2_real) + ")";
