@@ -85,25 +85,9 @@ syntax-------------------------------------------------------
 
 
 -------------------------------
-linear
-./computor_bonus "2x=3"
-./computor_bonus "-2x=-3"
-./computor_bonus "-2x=3"
-./computor_bonus "2x=-3"
 
-./computor_bonus "2x=0"
-./computor_bonus "-2x=-0"
-./computor_bonus "-2x=0"
-./computor_bonus "2x=-0"
 
-./computor_bonus "x=3"
-./computor_bonus "-x=-3"
-./computor_bonus "-x=3"
-./computor_bonus "x=-3"
-
-./computor_bonus "x=0"
-./computor_bonus "-x=-0"
-./computor_bonus "-x=0"
-./computor_bonus "x=-0"
-
--------------------------------
+parse bracket
+./computor "(2x+1=0)"
+./computor "((2x+1))=0"
+./computor "(2x+1)=(0)"
