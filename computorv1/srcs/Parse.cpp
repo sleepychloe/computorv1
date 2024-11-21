@@ -391,14 +391,105 @@ int	Parse::reduce_bracket(std::string &str)
 	int				keep;
 
 	std::cout << "str: " << str << std::endl;
-	while (i < str.length())
+	// while (i < str.length())
+	// {
+	// 	if (str.find(")") == std::string::npos)
+	// 		break;
+	// 	else
+	// 		i = str.find(")");
+	// 	end = i;
+	// 	j = i;
+	// 	while (str[j] != '(')
+	// 		j--;
+	// 	front = str.substr(0, j);
+	// 	tmp = str.substr(j + 1, end - j - 1);
+	// 	back = str.substr(end + 1, std::string::npos);
+
+	// 	if (!get_term(tmp, tmp_term, tmp_degree))
+	// 	{
+	// 		std::cout << "error1" << std::endl;
+	// 		return (0);
+	// 	}
+	// 	else
+	// 	{
+	// 		std::cout << "succeed, tmp: " << tmp << std::endl;
+	// 		if (!(j == 0 || str[j - 1] == '(' || str[j - 1] != '+' || str[j - 1] != '-'))
+	// 		{
+	// 			std::cout << "error2" << std::endl;
+	// 				return (0);
+	// 		}
+	// 		j--;
+	// 		if (str[j] == '-' || str[j] == '+')
+	// 		{
+	// 			str = front + "1*" + tmp + back;
+	// 			j = j + 2;
+	// 		}
+	// 		if (str[j] == '*')
+	// 		{
+	// 			op.push_back(str[j]);
+	// 			j--;
+	// 			keep = j;
+	// 			while (('0' <= str[j] && str[j] <= '9') || str[j] == '.' || str[i] == '+' || str[i] == '-')
+	// 				j--;
+	// 			nb.push_back(atof(str.substr(j, keep - j + 1).c_str()));
+	// 			front = front.substr(0, j);
+	// 			std::cout << "nb: " << str.substr(j, keep - j + 1) << std::endl;
+	// 		}
+	// 		end++;
+	// 		if (str[end] == '*' || str[end] == '/')
+	// 		{
+	// 			op.push_back(str[end]);
+	// 			end++;
+	// 			keep = end;
+	// 			while (('0' <= str[end] && str[end] <= '9') || str[end] == '.')
+	// 				end++;
+	// 			nb.push_back(atof(str.substr(keep, end - keep).c_str()));
+	// 			back = back.substr(end - keep + 1, std::string::npos);
+	// 		}
+
+	// 		for (size_t i = 0; i < tmp_term.size();i++)
+	// 		{
+	// 			tmp_term_float.push_back(atof(tmp_term[i].c_str()));
+	// 			degree.push_back(tmp_degree[i]);
+	// 		}
+	// 		for (size_t i = 0; i < op.size(); i++)
+	// 		{
+	// 			for (size_t j = 0; j < tmp_term_float.size(); j++)
+	// 			{
+	// 				tmp_term_float[j] = calc(tmp_term_float[j], nb[i], op[i]);
+	// 			}
+	// 		}
+	// 		tmp = "";
+	// 		for (size_t i = 0; i < tmp_term_float.size(); i++)
+	// 		{
+	// 			term.push_back(tmp_term_float[i]);
+	// 			if (tmp_term_float[i] >= 0 && op[i])
+	// 				tmp += "+";
+	// 			tmp += float_to_string(tmp_term_float[i]);
+	// 			tmp += "*" + std::string(1, this->_variable) + "^";
+	// 			tmp += float_to_string(tmp_degree[i]);
+	// 		}
+	// 		tmp_term.clear();
+	// 		op.clear();
+	// 		nb.clear();
+	// 		tmp_degree.clear();
+	// 		tmp_term_float.clear();
+
+	// 		for (size_t i = 0; i < degree.size(); i++)
+	// 			std::cout << "degree: " << degree[i] << ", term: " << term[i] << std::endl;
+	// 		str = front + tmp + back;
+	// 		std::cout << "str: " << str << std::endl;
+	// 		std::cout << "*********************************************" << std::endl;
+	// 		i = 0;
+	// 	}
+	// 	i++;
+	// }
+	while (1)
 	{
 		if (str.find(")") == std::string::npos)
 			break;
-		else
-			i = str.find(")");
-		// while (str[i] != ')')
-		// 	i++;
+
+		i = str.find(")");
 		end = i;
 		j = i;
 		while (str[j] != '(')
@@ -406,96 +497,81 @@ int	Parse::reduce_bracket(std::string &str)
 		front = str.substr(0, j);
 		tmp = str.substr(j + 1, end - j - 1);
 		back = str.substr(end + 1, std::string::npos);
-		std::cout << "front: \t" << front << std::endl;
-		std::cout << "tmp: \t" << tmp << std::endl;
-		std::cout << "back:\t" << back << std::endl;
 
 		if (!get_term(tmp, tmp_term, tmp_degree))
 		{
 			std::cout << "error1" << std::endl;
 			return (0);
 		}
-		else
+		std::cout << "succeed, tmp: " << tmp << std::endl;
+		if (!(j == 0 || str[j - 1] == '(' || str[j - 1] != '+' || str[j - 1] != '-'))
 		{
-			std::cout << "succeed, tmp: " << tmp << std::endl;
-			for (size_t i = 0; i < tmp_degree.size(); i++)
-				std::cout << "degree: " << tmp_degree[i] << ", term: " << tmp_term[i] << std::endl;
-			if (!(j == 0 || str[j - 1] == '(' || str[j - 1] != '+' || str[j - 1] != '-'))
-			{
-				std::cout << "error2" << std::endl;
-					return (0);
-			}
-			j--;
-			if (str[j] == '-' || str[j] == '+')
-			{
-				if (str[j] == '-')
-				{
-					op.push_back('*');
-					nb.push_back(-1);
-				}
-				front = front.substr(0, j);
-			}
-			if (str[j] == '*')
-			{
-				op.push_back('*');
-				j--;
-				keep = j;
-				while (('0' <= str[j] && str[j] <= '9') || str[j] == '.')
-					j--;
-				nb.push_back(atof(str.substr(j + 1, keep - j).c_str()));
-				front = front.substr(0, j + 1);
-			}
-			end++;
-			if (str[end] == '*' || str[end] == '/')
-			{
-				op.push_back(str[end]);
-				end++;
-				keep = end;
-				while (('0' <= str[end] && str[end] <= '9') || str[end] == '.')
-					end++;
-				nb.push_back(atof(str.substr(keep, end - keep).c_str()));
-				back = back.substr(end - keep + 1, std::string::npos);
-			}
-
-			for (size_t i = 0; i < tmp_term.size();i++)
-			{
-				tmp_term_float.push_back(atof(tmp_term[i].c_str()));
-				degree.push_back(tmp_degree[i]);
-			}
-			for (size_t i = 0; i < op.size(); i++)
-			{
-				for (size_t j = 0; j < tmp_term_float.size(); j++)
-					tmp_term_float[j] = calc(tmp_term_float[j], nb[i], op[i]);
-			}
-			tmp = "";
-			for (size_t i = 0; i < tmp_term_float.size(); i++)
-			{
-				term.push_back(tmp_term_float[i]);
-				if (tmp_term_float[i] >= 0)
-					tmp += "+";
-				tmp += float_to_string(tmp_term_float[i]);
-				tmp += "*" + std::string(1, this->_variable) + "^";
-				tmp += float_to_string(tmp_degree[i]);
-			}
-			tmp_term.clear();
-			op.clear();
-			nb.clear();
-			tmp_degree.clear();
-			tmp_term_float.clear();
-
-			std::cout << "-----------" << std::endl;
-			std::cout << "front: \t" << front << std::endl;
-			std::cout << "tmp: \t" << tmp << std::endl;
-			std::cout << "back:\t" << back << std::endl;
-
-			for (size_t i = 0; i < degree.size(); i++)
-				std::cout << "degree: " << degree[i] << ", term: " << term[i] << std::endl;
-			str = front + tmp + back;
-			std::cout << "str: " << str << std::endl;
-			std::cout << "*********************************************" << std::endl;
-			i = 0;
+			std::cout << "error2" << std::endl;
+				return (0);
 		}
-		i++;
+		if (j != 0)
+			j--;
+		if (str[j] == '-' || str[j] == '+')
+		{
+			str = front + "1*" + tmp + back;
+			j = j + 2;
+		}
+		if (str[j] == '*')
+		{
+			op.push_back(str[j]);
+			j--;
+			keep = j;
+			while (('0' <= str[j] && str[j] <= '9') || str[j] == '.' || str[i] == '+' || str[i] == '-')
+				j--;
+			nb.push_back(atof(str.substr(j, keep - j + 1).c_str()));
+			front = front.substr(0, j);
+			std::cout << "nb: " << str.substr(j, keep - j + 1) << std::endl;
+		}
+		end++;
+		if (str[end] == '*' || str[end] == '/')
+		{
+			op.push_back(str[end]);
+			end++;
+			keep = end;
+			while (('0' <= str[end] && str[end] <= '9') || str[end] == '.')
+				end++;
+			nb.push_back(atof(str.substr(keep, end - keep).c_str()));
+			back = back.substr(end - keep + 1, std::string::npos);
+		}
+
+		for (size_t i = 0; i < tmp_term.size();i++)
+		{
+			tmp_term_float.push_back(atof(tmp_term[i].c_str()));
+			degree.push_back(tmp_degree[i]);
+		}
+		for (size_t i = 0; i < op.size(); i++)
+		{
+			for (size_t j = 0; j < tmp_term_float.size(); j++)
+			{
+				tmp_term_float[j] = calc(tmp_term_float[j], nb[i], op[i]);
+			}
+		}
+		tmp = "";
+		for (size_t i = 0; i < tmp_term_float.size(); i++)
+		{
+			term.push_back(tmp_term_float[i]);
+			if (tmp_term_float[i] >= 0 && op[i])
+				tmp += "+";
+			tmp += float_to_string(tmp_term_float[i]);
+			tmp += "*" + std::string(1, this->_variable) + "^";
+			tmp += float_to_string(tmp_degree[i]);
+		}
+		tmp_term.clear();
+		op.clear();
+		nb.clear();
+		tmp_degree.clear();
+		tmp_term_float.clear();
+
+		str = front + tmp + back;
+		std::cout << "str: " << str << std::endl;
+		std::cout << "*********************************************" << std::endl;
+		i = 0;
+
 	}
 	std::cout << "str: " << str << std::endl;
 	return (1);
