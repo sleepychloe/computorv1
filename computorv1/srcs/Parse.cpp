@@ -469,7 +469,7 @@ int	Parse::reduce_bracket(std::string &str)
 		while (str[start] != '(')
 			start--;
 
-		front = str.substr(0, start);
+		front = str.substr(0, start + 1);
 		tmp = str.substr(start + 1, end - start - 1);
 		back = str.substr(end + 1, std::string::npos);
 std::cout << "front: " << front << std::endl;
@@ -491,65 +491,94 @@ std::cout << "back: " << back << std::endl;
 			return (0);
 		}
 
-		if (start != 0)
-			start--;
+		
 
-		//to handle front string
-		if (front[front.length() - 1] == '-' || front[front.length() - 1] == '+'
-			|| ('0' <= front[front.length() - 1] && front[front.length() - 1] <= '9')
-			|| front[front.length() - 1] == '*')
+
+		std::cout << "111111111HERE" << std::endl;
+		if ((front[front.length() - 1] == '('
+				&& (front[front.length() - 2] == '-' || front[front.length() - 2] == '+'))
+			|| (front[front.length() - 1] == '('
+				&& ('0' <= front[front.length() - 2] && front[front.length() - 2] <= '9')))
 		{
-			std::cout << "FRONT-----" << std::endl;
+			if (start != 0)
+				start--;
+			front = front.substr(0, front.length() - 1);
+
 			if (front[front.length() - 1] == '-' || front[front.length() - 1] == '+')
 			{
-				str = front + "1*" + tmp + back;
+				std::cout << "1111" << std::endl;
+				front = front + "1*";
 				start = start + 2;
 			}
-			else if ('0' <= front[front.length() - 1] && front[front.length() - 1] <= '9')
+			else
 			{
-				str = front + "*" + tmp + back;
+				std::cout << "2222" << std::endl;
+				front = front + "*";
 				start = start + 1;
 			}
-			std::cout << "str[start]: " << str[start] << std::endl;
+			
+		}
+		else
+		{
+			std::cout << "3333" << std::endl;
+			front = front.substr(0, front.length() - 1);
+		}
 
-			op.push_back(str[start]);
-			std::cout << "op: " << str[start] << std::endl;
+		
+
+		std::cout << "\tfront" << front << std::endl;
+		start = front.length() - 1;
+		std::cout << "\tcheck op: " << front[start] << std::endl;
+	
+		//to handle front string
+		while (front[start] == '*')
+		{
+			std::cout << "4444" << std::endl;
+			std::cout << "FRONT-----" << std::endl;
+			
+			std::cout << "str[start]: " << front[start] << std::endl;
+
+			op.push_back(front[start]);
+			std::cout << "op: " << front[start] << std::endl;
 			start--;
 			keep = start;
-			while (('0' <= str[start] && str[start] <= '9') || str[start] == '.')
+			while (('0' <= front[start] && front[start] <= '9') || front[start] == '.')
 				start--;
-			if (str[start] == '+' || str[start] == '-')
+			if (front[start] == '+' || front[start] == '-')
 				start--;
 
-			nb.push_back(atof(str.substr(start + 1, keep - start).c_str()));
-			std::cout << "nb: " << str.substr(start + 1, keep - start) << std::endl;
+			nb.push_back(atof(front.substr(start + 1, keep - start).c_str()));
+			std::cout << "nb: " << front.substr(start + 1, keep - start) << std::endl;
 			front = front.substr(0, start + 1);
 			std::cout << "front: " << front << std::endl;
 		}
 
-		end++;
+
+
+		end = 0;
+		std::cout << "222222222HERE" << std::endl;
+		std::cout << "back:" << back << std::endl;
+
 		//to handle back string ->fix here
-		std::cout << "str[end]: " << str[end] << std::endl;
-		if (str[end] == '*' || str[end] == '/')
+		while ((back[end] == '*' || back[end] == '/') && back[end] != '\0')
 		{
-			std::cout << "BACK------" << std::endl;
-			std::cout << "str[end]: " << str[end] << std::endl;
-			op.push_back(str[end]);
-			std::cout << "op: " << str[end] << std::endl;
+			std::cout << "BACK-----" << std::endl;
+			std::cout << "str[end]: " << back[end] << std::endl;
+			op.push_back(back[end]);
+			std::cout << "op: " << back[end] << std::endl;
 			end++;
 			keep = end;
-			while (('0' <= str[end] && str[end] <= '9') || str[end] == '.')
+			if (back[end] == '+' || back[end] == '-')
 				end++;
-			if (str[end] == '+' || str[end] == '-')
-				end--;
-			nb.push_back(atof(str.substr(keep, end - keep).c_str()));
-			std::cout << "nb: " << str.substr(keep, end - keep) << std::endl;
+			while (('0' <= back[end] && back[end] <= '9') || back[end] == '.')
+				end++;
+
+			nb.push_back(atof(back.substr(keep, end - keep).c_str()));
+			std::cout << "nb: " << back.substr(keep, end - keep) << std::endl;
 			back = back.substr(end - keep + 1, std::string::npos);
 			std::cout << "back: " << back << std::endl;
+			end = 0;
 		}
-
-
-
 
 
 
