@@ -453,7 +453,8 @@ int	Parse::reduce_bracket(std::string &str)
 		end++;
 	}
 
-	std::cout << std::endl << "all removed without operation" << std::endl << std::endl;
+	std::cout << std::endl << "all removed without operation" << std::endl
+		<< "str: " << str << std::endl << std::endl;
 	start = 0;
 	end = 0;
 	keep = 0;
@@ -498,6 +499,7 @@ std::cout << "back: " << back << std::endl;
 			|| ('0' <= front[front.length() - 1] && front[front.length() - 1] <= '9')
 			|| front[front.length() - 1] == '*')
 		{
+			std::cout << "FRONT-----" << std::endl;
 			if (front[front.length() - 1] == '-' || front[front.length() - 1] == '+')
 			{
 				str = front + "1*" + tmp + back;
@@ -507,10 +509,6 @@ std::cout << "back: " << back << std::endl;
 			{
 				str = front + "*" + tmp + back;
 				start = start + 1;
-			}
-			else
-			{
-
 			}
 			std::cout << "str[start]: " << str[start] << std::endl;
 
@@ -531,8 +529,10 @@ std::cout << "back: " << back << std::endl;
 
 		end++;
 		//to handle back string ->fix here
+		std::cout << "str[end]: " << str[end] << std::endl;
 		if (str[end] == '*' || str[end] == '/')
 		{
+			std::cout << "BACK------" << std::endl;
 			std::cout << "str[end]: " << str[end] << std::endl;
 			op.push_back(str[end]);
 			std::cout << "op: " << str[end] << std::endl;
@@ -547,6 +547,12 @@ std::cout << "back: " << back << std::endl;
 			back = back.substr(end - keep + 1, std::string::npos);
 			std::cout << "back: " << back << std::endl;
 		}
+
+
+
+
+
+
 
 		for (size_t i = 0; i < tmp_term.size();i++)
 		{
