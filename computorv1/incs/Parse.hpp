@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/22 23:00:56 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/22 23:07:16 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,7 @@ protected:
 	int				check_caret(std::string str);
 	int				check_syntax(std::string str);
 
-
-	int				reduce_bracket(std::string &str);
-	int				check_str(std::string str);
+	int				remove_bracket(std::string &str);
 
 	std::vector<std::string>	split_term(std::string str);
 	float				find_degree(std::string str);
@@ -78,6 +76,8 @@ protected:
 	void				make_form_ascending_order(void);
 	void				set_equation_str(void);
 	void				make_reduced_form(void);
+
+	int				check_str(std::string str);
 
 	char				_variable;
 	std::vector<float>		_reduced_form;
