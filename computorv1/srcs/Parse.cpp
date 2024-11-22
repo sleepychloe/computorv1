@@ -402,23 +402,30 @@ int	Parse::reduce_bracket(std::string &str)
 		front = str.substr(0, start);
 		tmp = str.substr(start + 1, end - start - 1);
 		back = str.substr(end + 1, std::string::npos);
-std::cout << "front: " << front << std::endl;
-std::cout << "tmp: " << tmp << std::endl;
-std::cout << "back: " << back << std::endl;
+// std::cout << "front: " << front << std::endl;
+// std::cout << "tmp: " << tmp << std::endl;
+// std::cout << "back: " << back << std::endl;
 		if (tmp == "")
 		{
 			this->_err_msg = "invalid syntax: brackets";
 			throw (this->_err_msg);
 		}
 
-		if (tmp.find(this->_variable) == std::string::npos)
+
+		split_expression(tmp, nb, op);
+		if (op.size() == 0)
 		{
-			check_operation(tmp);
 			str = front + tmp + back;
-			std::cout << "HERE str: " << str << std::endl;
+			nb.clear();
+			op.clear();
+			std::cout << "------no operator----------------------------" << std::endl;
+			std::cout << "str: " << str << std::endl;
+			std::cout << "---------------------------------------------" << std::endl;
 		}
 		else
 		{
+			nb.clear();
+			op.clear();
 			if (!(get_term(tmp, tmp_term, tmp_degree)))
 			{
 				std::cout << "error1" << std::endl;
@@ -428,7 +435,7 @@ std::cout << "back: " << back << std::endl;
 			if (start != 0)
 				start--;
 
-			while (str[start] == '*' || str[start] == '/' || str[start] == '-' || str[start] == '+')
+			while (str[start] == '*' || str[start] == '/')
 			{
 				if (str[start] == '-' || str[start] == '+')
 				{
@@ -444,6 +451,7 @@ std::cout << "back: " << back << std::endl;
 				nb.push_back(atof(str.substr(start + 1, keep - start).c_str()));
 				front = front.substr(0, start);
 			}
+
 			end++;
 			while (str[end] == '*' || str[end] == '/')
 			{
@@ -456,19 +464,45 @@ std::cout << "back: " << back << std::endl;
 				back = back.substr(end - keep + 1, std::string::npos);
 			}
 
+
+
+			//to handle -(tmp), +(tmp)
+			if (front[front.length() - 1] == '-' || front[front.length() - 1] == '+')
+			{
+				str = front + "1*" + tmp + back;
+				start = start + 2;
+
+				op.push_back(str[start]);
+				start--;
+				keep = start;
+				while (('0' <= str[start] && str[start] <= '9') || str[start] == '.')
+					start--;
+				if (str[start] == '+' || str[start] == '-')
+					start--;
+	
+				nb.push_back(atof(str.substr(start + 1, keep - start).c_str()));
+				front = front.substr(0, start + 1);
+			}
+
+
+
+
+
 			for (size_t i = 0; i < tmp_term.size();i++)
 			{
 				tmp_term_float.push_back(atof(tmp_term[i].c_str()));
 				degree.push_back(tmp_degree[i]);
 			}
 
-			for (size_t i = 0; i < tmp_term_float.size(); i++)
-				tmp_term_float[i] = calc(tmp_term_float[i], nb[i], op[i]);
+			for (size_t i = 0; i < op.size(); i++)
+			{
+				for (size_t j = 0; j < tmp_term_float.size(); j++)
+					tmp_term_float[j] = calc(tmp_term_float[j], nb[i], op[i]);
+			}
 
 			tmp = "";
 			for (size_t i = 0; i < tmp_term_float.size(); i++)
 			{
-				std::cout << "term: " << tmp_term_float[i] << ", degree: " << tmp_degree[i] << std::endl;
 				term.push_back(tmp_term_float[i]);
 				if (tmp_term_float[i] >= 0)
 					tmp += "+";
@@ -483,6 +517,7 @@ std::cout << "back: " << back << std::endl;
 			tmp_term_float.clear();
 
 			str = front + tmp + back;
+			std::cout << "******calculated*****************************" << std::endl;
 			std::cout << "str: " << str << std::endl;
 			std::cout << "*********************************************" << std::endl;
 		}
@@ -493,7 +528,7 @@ std::cout << "back: " << back << std::endl;
 		
 		
 	}
-	std::cout << "str: " << str << std::endl;
+	// std::cout << "str: " << str << std::endl;
 	return (1);
 }
 
@@ -559,6 +594,9 @@ std::vector<std::string>	Parse::split_term(std::string str)
 			i++;
 		while (str[i] != '+' && str[i] != '-' && str[i] != '\0')
 		{
+			if ((str[i] == '*' || str[i] == '/')
+				&& (str[i + 1]) && (str[i + 1] == '+' || str[i + 1] == '-'))
+				i = i + 2;
 			if (str[i] == '(')
 			{
 				tmp = str;
