@@ -389,6 +389,75 @@ int	Parse::reduce_bracket(std::string &str)
 	std::vector<float>		nb;
 	int				keep;
 
+	end = str.find(")");
+	//no need to calculate in the bracket
+	while (1)
+	{
+		if (str[end] == '\0' || str.find(")") == std::string::npos)
+			break ;
+		while (str[end] != ')' && str[end] != '\0')
+			end++;
+		if (str[end] == '\0')
+			break ;
+		start = end;
+		while (str[start] != '(')
+			start--;
+		front = str.substr(0, start);
+		tmp = str.substr(start + 1, end - start - 1);
+		back = str.substr(end + 1, std::string::npos);
+
+		if (tmp == "")
+		{
+			this->_err_msg = "invalid syntax: brackets";
+			throw (this->_err_msg);
+		}
+
+		tmp_term = split_term(tmp);
+		if (tmp_term.size() == 1)
+		{
+			if (front[front.length() - 1] == '+')
+			{
+				if (tmp[0] == '+')
+					tmp = tmp.substr(1, std::string::npos);
+				else
+					front = front.substr(0, front.length() - 1);
+			}
+			else if (front[front.length() - 1] == '-')
+			{
+				tmp = tmp.substr(1, std::string::npos);
+				if (tmp[0] == '-')
+				{
+					front = front.substr(0, front.length() - 1);
+					front = front + "+";
+				}
+			}
+			str = front + tmp + back;
+			tmp_term.clear();
+			std::cout << "------remove bracket-------------------------" << std::endl;
+			std::cout << "str: " << str << std::endl;
+			std::cout << "---------------------------------------------" << std::endl;
+		}
+		else
+		{
+			tmp_term.clear();
+			keep = 0;
+			if (back == "")
+				break ;
+			while (back[keep] != ')' && back[keep] != '\0')
+				keep++;
+			if (back[keep] == '\0')
+				break ;
+			end = front.length() + tmp.length() + 2 + back.find(")");
+			end--;
+		}
+		end++;
+	}
+
+	std::cout << std::endl << "all removed without operation" << std::endl << std::endl;
+	start = 0;
+	end = 0;
+	keep = 0;
+	//need to calculate in the bracket
 	while (1)
 	{
 		if (str.find(")") == std::string::npos)
@@ -402,9 +471,9 @@ int	Parse::reduce_bracket(std::string &str)
 		front = str.substr(0, start);
 		tmp = str.substr(start + 1, end - start - 1);
 		back = str.substr(end + 1, std::string::npos);
-// std::cout << "front: " << front << std::endl;
-// std::cout << "tmp: " << tmp << std::endl;
-// std::cout << "back: " << back << std::endl;
+std::cout << "front: " << front << std::endl;
+std::cout << "tmp: " << tmp << std::endl;
+std::cout << "back: " << back << std::endl;
 		if (tmp == "")
 		{
 			this->_err_msg = "invalid syntax: brackets";
@@ -413,122 +482,107 @@ int	Parse::reduce_bracket(std::string &str)
 
 
 		split_expression(tmp, nb, op);
-		if (op.size() == 0)
+		nb.clear();
+		op.clear();
+		if (!(get_term(tmp, tmp_term, tmp_degree)))
 		{
-			str = front + tmp + back;
-			nb.clear();
-			op.clear();
-			std::cout << "------no operator----------------------------" << std::endl;
-			std::cout << "str: " << str << std::endl;
-			std::cout << "---------------------------------------------" << std::endl;
+			std::cout << "error1" << std::endl;
+			return (0);
 		}
-		else
+
+		if (start != 0)
+			start--;
+
+		//to handle front string
+		if (front[front.length() - 1] == '-' || front[front.length() - 1] == '+'
+			|| ('0' <= front[front.length() - 1] && front[front.length() - 1] <= '9')
+			|| front[front.length() - 1] == '*')
 		{
-			nb.clear();
-			op.clear();
-			if (!(get_term(tmp, tmp_term, tmp_degree)))
-			{
-				std::cout << "error1" << std::endl;
-				return (0);
-			}
-
-			if (start != 0)
-				start--;
-
-			while (str[start] == '*' || str[start] == '/')
-			{
-				if (str[start] == '-' || str[start] == '+')
-				{
-					str = front + "1*" + tmp + back;
-					start = start + 2;
-				}
-				op.push_back(str[start]);
-				start--;
-				keep = start;
-				while (('0' <= str[start] && str[start] <= '9') || str[start] == '.'
-					|| str[start] == '+' || str[start] == '-')
-					start--;
-				nb.push_back(atof(str.substr(start + 1, keep - start).c_str()));
-				front = front.substr(0, start);
-			}
-
-			end++;
-			while (str[end] == '*' || str[end] == '/')
-			{
-				op.push_back(str[end]);
-				end++;
-				keep = end;
-				while (('0' <= str[end] && str[end] <= '9') || str[end] == '.')
-					end++;
-				nb.push_back(atof(str.substr(keep, end - keep).c_str()));
-				back = back.substr(end - keep + 1, std::string::npos);
-			}
-
-
-
-			//to handle -(tmp), +(tmp)
 			if (front[front.length() - 1] == '-' || front[front.length() - 1] == '+')
 			{
 				str = front + "1*" + tmp + back;
 				start = start + 2;
+			}
+			else if ('0' <= front[front.length() - 1] && front[front.length() - 1] <= '9')
+			{
+				str = front + "*" + tmp + back;
+				start = start + 1;
+			}
+			else
+			{
 
-				op.push_back(str[start]);
+			}
+			std::cout << "str[start]: " << str[start] << std::endl;
+
+			op.push_back(str[start]);
+			std::cout << "op: " << str[start] << std::endl;
+			start--;
+			keep = start;
+			while (('0' <= str[start] && str[start] <= '9') || str[start] == '.')
 				start--;
-				keep = start;
-				while (('0' <= str[start] && str[start] <= '9') || str[start] == '.')
-					start--;
-				if (str[start] == '+' || str[start] == '-')
-					start--;
-	
-				nb.push_back(atof(str.substr(start + 1, keep - start).c_str()));
-				front = front.substr(0, start + 1);
-			}
+			if (str[start] == '+' || str[start] == '-')
+				start--;
 
-
-
-
-
-			for (size_t i = 0; i < tmp_term.size();i++)
-			{
-				tmp_term_float.push_back(atof(tmp_term[i].c_str()));
-				degree.push_back(tmp_degree[i]);
-			}
-
-			for (size_t i = 0; i < op.size(); i++)
-			{
-				for (size_t j = 0; j < tmp_term_float.size(); j++)
-					tmp_term_float[j] = calc(tmp_term_float[j], nb[i], op[i]);
-			}
-
-			tmp = "";
-			for (size_t i = 0; i < tmp_term_float.size(); i++)
-			{
-				term.push_back(tmp_term_float[i]);
-				if (tmp_term_float[i] >= 0)
-					tmp += "+";
-				tmp += float_to_string(tmp_term_float[i]);
-				tmp += "*" + std::string(1, this->_variable) + "^";
-				tmp += float_to_string(tmp_degree[i]);
-			}
-			tmp_term.clear();
-			op.clear();
-			nb.clear();
-			tmp_degree.clear();
-			tmp_term_float.clear();
-
-			str = front + tmp + back;
-			std::cout << "******calculated*****************************" << std::endl;
-			std::cout << "str: " << str << std::endl;
-			std::cout << "*********************************************" << std::endl;
+			nb.push_back(atof(str.substr(start + 1, keep - start).c_str()));
+			std::cout << "nb: " << str.substr(start + 1, keep - start) << std::endl;
+			front = front.substr(0, start + 1);
+			std::cout << "front: " << front << std::endl;
 		}
 
+		end++;
+		//to handle back string ->fix here
+		if (str[end] == '*' || str[end] == '/')
+		{
+			std::cout << "str[end]: " << str[end] << std::endl;
+			op.push_back(str[end]);
+			std::cout << "op: " << str[end] << std::endl;
+			end++;
+			keep = end;
+			while (('0' <= str[end] && str[end] <= '9') || str[end] == '.')
+				end++;
+			if (str[end] == '+' || str[end] == '-')
+				end--;
+			nb.push_back(atof(str.substr(keep, end - keep).c_str()));
+			std::cout << "nb: " << str.substr(keep, end - keep) << std::endl;
+			back = back.substr(end - keep + 1, std::string::npos);
+			std::cout << "back: " << back << std::endl;
+		}
 
+		for (size_t i = 0; i < tmp_term.size();i++)
+		{
+			std::cout << "term: " << tmp_term[i] << ", degree: " << tmp_degree[i] << std::endl;
+			tmp_term_float.push_back(atof(tmp_term[i].c_str()));
+			degree.push_back(tmp_degree[i]);
+		}
 
+		for (size_t i = 0; i < op.size(); i++)
+		{
+			for (size_t j = 0; j < tmp_term_float.size(); j++)
+				tmp_term_float[j] = calc(tmp_term_float[j], nb[i], op[i]);
+		}
 
-		
-		
+		tmp = "";
+		for (size_t i = 0; i < tmp_term_float.size(); i++)
+		{
+			term.push_back(tmp_term_float[i]);
+			if (tmp_term_float[i] >= 0)
+				tmp += "+";
+			tmp += float_to_string(tmp_term_float[i]);
+			tmp += "*" + std::string(1, this->_variable) + "^";
+			tmp += float_to_string(tmp_degree[i]);
+		}
+		tmp_term.clear();
+		op.clear();
+		nb.clear();
+		tmp_degree.clear();
+		tmp_term_float.clear();
+
+		str = front + tmp + back;
+		std::cout << "******calculated*****************************" << std::endl;
+		std::cout << "str: " << str << std::endl;
+		std::cout << "*********************************************" << std::endl;
+
 	}
-	// std::cout << "str: " << str << std::endl;
 	return (1);
 }
 
