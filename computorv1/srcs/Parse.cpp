@@ -389,6 +389,7 @@ int	Parse::reduce_bracket(std::string &str)
 	std::vector<float>		nb;
 	int				keep;
 
+	
 	end = str.find(")");
 	//no need to calculate in the bracket
 	while (1)
@@ -433,9 +434,6 @@ int	Parse::reduce_bracket(std::string &str)
 			}
 			str = front + tmp + back;
 			tmp_term.clear();
-			std::cout << "------remove bracket-------------------------" << std::endl;
-			std::cout << "str: " << str << std::endl;
-			std::cout << "---------------------------------------------" << std::endl;
 		}
 		else
 		{
@@ -453,8 +451,6 @@ int	Parse::reduce_bracket(std::string &str)
 		end++;
 	}
 
-	std::cout << std::endl << "all removed without operation" << std::endl
-		<< "str: " << str << std::endl << std::endl;
 	start = 0;
 	end = 0;
 	keep = 0;
@@ -472,9 +468,6 @@ int	Parse::reduce_bracket(std::string &str)
 		front = str.substr(0, start + 1);
 		tmp = str.substr(start + 1, end - start - 1);
 		back = str.substr(end + 1, std::string::npos);
-std::cout << "front: " << front << std::endl;
-std::cout << "tmp: " << tmp << std::endl;
-std::cout << "back: " << back << std::endl;
 		if (tmp == "")
 		{
 			this->_err_msg = "invalid syntax: brackets";
@@ -493,8 +486,7 @@ std::cout << "back: " << back << std::endl;
 
 		
 
-
-		std::cout << "111111111HERE" << std::endl;
+		//to handle front string
 		if ((front[front.length() - 1] == '('
 				&& (front[front.length() - 2] == '-' || front[front.length() - 2] == '+'))
 			|| (front[front.length() - 1] == '('
@@ -506,64 +498,38 @@ std::cout << "back: " << back << std::endl;
 
 			if (front[front.length() - 1] == '-' || front[front.length() - 1] == '+')
 			{
-				std::cout << "1111" << std::endl;
 				front = front + "1*";
 				start = start + 2;
 			}
 			else
 			{
-				std::cout << "2222" << std::endl;
 				front = front + "*";
 				start = start + 1;
 			}
 			
 		}
 		else
-		{
-			std::cout << "3333" << std::endl;
 			front = front.substr(0, front.length() - 1);
-		}
-
-		
-
-		std::cout << "\tfront" << front << std::endl;
 		start = front.length() - 1;
-		std::cout << "\tcheck op: " << front[start] << std::endl;
-	
-		//to handle front string
 		while (front[start] == '*')
 		{
-			std::cout << "4444" << std::endl;
-			std::cout << "FRONT-----" << std::endl;
-			
-			std::cout << "str[start]: " << front[start] << std::endl;
-
 			op.push_back(front[start]);
-			std::cout << "op: " << front[start] << std::endl;
 			start--;
 			keep = start;
 			while (('0' <= front[start] && front[start] <= '9') || front[start] == '.')
 				start--;
 			if (front[start] == '+' || front[start] == '-')
 				start--;
-
 			nb.push_back(atof(front.substr(start + 1, keep - start).c_str()));
-			std::cout << "nb: " << front.substr(start + 1, keep - start) << std::endl;
 			front = front.substr(0, start + 1);
-			std::cout << "front: " << front << std::endl;
 		}
 
 
 
 		end = 0;
-		std::cout << "222222222HERE" << std::endl;
-		std::cout << "back:" << back << std::endl;
-
 		//to handle back string ->fix here
 		while ((back[end] == '*' || back[end] == '/') && back[end] != '\0')
 		{
-			std::cout << "BACK-----" << std::endl;
-			std::cout << "str[end]: " << back[end] << std::endl;
 			op.push_back(back[end]);
 			std::cout << "op: " << back[end] << std::endl;
 			end++;
@@ -572,14 +538,10 @@ std::cout << "back: " << back << std::endl;
 				end++;
 			while (('0' <= back[end] && back[end] <= '9') || back[end] == '.')
 				end++;
-
 			nb.push_back(atof(back.substr(keep, end - keep).c_str()));
-			std::cout << "nb: " << back.substr(keep, end - keep) << std::endl;
 			back = back.substr(end - keep + 1, std::string::npos);
-			std::cout << "back: " << back << std::endl;
 			end = 0;
 		}
-
 
 
 
@@ -611,12 +573,7 @@ std::cout << "back: " << back << std::endl;
 		nb.clear();
 		tmp_degree.clear();
 		tmp_term_float.clear();
-
 		str = front + tmp + back;
-		std::cout << "******calculated*****************************" << std::endl;
-		std::cout << "str: " << str << std::endl;
-		std::cout << "*********************************************" << std::endl;
-
 	}
 	return (1);
 }
@@ -638,14 +595,6 @@ int	Parse::check_str(std::string str)
 
 	if (!(reduce_bracket(left_str) && reduce_bracket(right_str)))
 		return (0);
-	str = left_str + "=" + right_str;
-	std::cout << "left + right: " << left_str + "=" + right_str << std::endl;
-
-
-
-
-
-
 
 	std::vector<std::string>	l_term;
 	std::vector<std::string>	r_term;
@@ -673,8 +622,7 @@ std::vector<std::string>	Parse::split_term(std::string str)
 {
 	std::vector<std::string>	term;
 	size_t				i = 0;
-	size_t				open = 0;
-	std::string tmp;
+	std::string			tmp;
 
 	while (1)
 	{
@@ -686,22 +634,6 @@ std::vector<std::string>	Parse::split_term(std::string str)
 			if ((str[i] == '*' || str[i] == '/')
 				&& (str[i + 1]) && (str[i + 1] == '+' || str[i + 1] == '-'))
 				i = i + 2;
-			if (str[i] == '(')
-			{
-				tmp = str;
-				while (tmp.find("(") < tmp.find(")"))
-				{
-					open++;
-					i += tmp.find("(");
-					tmp = tmp.substr(i + 1, std::string::npos);
-				}
-				while (open)
-				{
-					i += tmp.find(")");
-					tmp = tmp.substr(i + 1, std::string::npos);
-					open--;
-				}
-			}
 			if (str[i] == '^')
 			{
 				if (str[i + 1] && (str[i + 1] == '+' || str[i + 1] == '-'))
@@ -741,12 +673,6 @@ float	Parse::find_degree(std::string str)
 		}
 		else if (str[i] == this->_variable)
 			degree += sign * 1;
-
-		if (str[i] == '(')
-		{
-			while (str[i] != ')')
-				i++;
-		}
 		if (str[i] == '*')
 			sign = 1;
 		if (str[i] == '/')
@@ -927,28 +853,6 @@ std::string	Parse::calculate(std::string str)
 	return (float_to_string(nb[0]));
 }
 
-int	Parse::remove_bracket(std::string &str)
-{
-	size_t		i = 0;
-	size_t		open;
-	size_t		close;
-	std::string	tmp;
-
-	while (str.find(")") != std::string::npos)
-	{
-		i = str.find(")");
-		close = i;
-		while (str[i] != '(')
-			i--;
-		open = i;
-
-		tmp = str.substr(open + 1, close - open - 1);
-		tmp = calculate(tmp);
-		str = str.substr(0, open) + tmp + str.substr(close + 1, std::string::npos);
-	}
-	return (1);
-}
-
 std::string	Parse::float_to_string(float num)
 {
 	std::stringstream	ss;
@@ -965,7 +869,7 @@ int	Parse::get_term(std::string str,
 		degree.push_back(find_degree(term[i]));
 	for (std::vector<std::string>::iterator it = term.begin(); it != term.end(); it++)
 	{
-		if (!(remove_variable(*it) && remove_bracket(*it)))
+		if (!remove_variable(*it))
 			return (0);
 	}
 	for (size_t i = 0; i < term.size(); i++)

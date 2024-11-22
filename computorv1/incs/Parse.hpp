@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/20 21:37:09 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/22 23:00:56 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ protected:
 	int				check_caret(std::string str);
 	int				check_syntax(std::string str);
 
+
 	int				reduce_bracket(std::string &str);
 	int				check_str(std::string str);
 
@@ -68,7 +69,6 @@ protected:
 						std::vector<float> &nb, std::vector<char> &op);
 	float				calc(float nb1, float n2, char op);
 	std::string			calculate(std::string str);
-	int				remove_bracket(std::string &str);
 	std::string			float_to_string(float num);
 	int				get_term(std::string str,
 						std::vector<std::string> &term,
