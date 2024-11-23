@@ -276,6 +276,17 @@ int	Parse::check_sign(std::string str)
 		}
 		i++;
 	}
+
+	i = 0;
+	while (i < str.length())
+	{
+		if (str[i] == ')' && str[i + 1] && str[i + 1] == '(')
+		{
+			this->_err_msg = "invalid syntax: operator";
+				throw (this->_err_msg);
+		}
+		i++;
+	}
 	return (1);
 }
 
@@ -461,7 +472,6 @@ int	Parse::remove_bracket(std::string &str)
 	std::vector<char>		op;
 	std::vector<float>		nb;
 	
-	//no need to calculate in the bracket
 	remove_bracket_one_term(str);
 
 	//need to calculate in the bracket
