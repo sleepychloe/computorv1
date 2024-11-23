@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/22 23:07:16 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/23 02:19:01 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,14 @@
 # define TYPE_FRACTIONAL		-1
 # define TYPE_HIGH_DEGREE		-2
 # define TYPE_ZERO			0
+
+# define START				0
+# define END				1
+# define KEEP				2
+
+# define FRONT				0
+# define BACK				1
+# define BRACKET			2
 
 class Parse
 {
@@ -57,6 +65,11 @@ protected:
 	int				check_caret(std::string str);
 	int				check_syntax(std::string str);
 
+	void				remove_bracket_without_calc(std::string &str,
+						std::vector<std::string> &s);
+	int				find_next_bracket(std::vector<size_t> &i,
+						std::vector<std::string> &s);
+	void				remove_bracket_one_term(std::string &str);
 	int				remove_bracket(std::string &str);
 
 	std::vector<std::string>	split_term(std::string str);

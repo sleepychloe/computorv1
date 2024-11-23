@@ -371,14 +371,87 @@ int	Parse::check_syntax(std::string str)
 	return (1);
 }
 
+void	Parse::remove_bracket_without_calc(std::string &str,
+				std::vector<std::string> &s)
+{
+	if (s[FRONT][s[FRONT].length() - 1] == '+')
+	{
+		if (s[BRACKET][0] == '+')
+			s[BRACKET] = s[BRACKET].substr(1, std::string::npos);
+		else
+			s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
+	}
+	else if (s[FRONT][s[FRONT].length() - 1] == '-')
+	{
+		s[BRACKET] = s[BRACKET].substr(1, std::string::npos);
+		if (s[BRACKET][0] == '-')
+		{
+			s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
+			s[FRONT] = s[FRONT] + "+";
+		}
+	}
+	str = s[FRONT] + s[BRACKET] + s[BACK];
+}
+
+int	Parse::find_next_bracket(std::vector<size_t> &i,
+				std::vector<std::string> &s)
+{
+	i[KEEP] = 0;
+	if (s[BACK] == "")
+		return (0);
+	while (s[BACK][i[KEEP]] != ')' && s[BACK][i[KEEP]] != '\0')
+		i[KEEP]++;
+	if (s[BACK][i[KEEP]] == '\0')
+		return (0);
+	i[END] = s[FRONT].length() + s[BRACKET].length() + 2 + s[BACK].find(")");
+	i[END]--;
+	return (1);
+}
+
+void	Parse::remove_bracket_one_term(std::string &str)
+{
+	std::vector<size_t>		i(3, 0);
+	std::vector<std::string>	s(3, "");
+	std::vector<std::string>	tmp_term;
+
+	while (1)
+	{
+		if (str[i[END]] == '\0' || str.find(")") == std::string::npos)
+			break ;
+		while (str[i[END]] != ')' && str[i[END]] != '\0')
+			i[END]++;
+		if (str[i[END]] == '\0')
+			break ;
+		i[START] = i[END];
+		while (str[i[START]] != '(')
+			i[START]--;
+		s[FRONT] = str.substr(0, i[START]);
+		s[BRACKET] = str.substr(i[START] + 1, i[END] - i[START] - 1);
+		s[BACK] = str.substr(i[END] + 1, std::string::npos);
+		if (s[BRACKET] == "")
+		{
+			this->_err_msg = "invalid syntax: brackets";
+			throw (this->_err_msg);
+		}
+
+		tmp_term = split_term(s[BRACKET]);
+		if (tmp_term.size() == 1)
+			remove_bracket_without_calc(str, s);
+		else
+		{
+			if (!find_next_bracket(i, s))
+				break ;
+		}
+		tmp_term.clear();
+		i[END]++;
+	}
+}
+
 int	Parse::remove_bracket(std::string &str)
 {
-	size_t		start = 0;
-	size_t		end = 0;
+	std::vector<size_t>		i(3, 0);
+	std::vector<std::string>	s(3, "");
 
-	std::string	tmp = "";
-	std::string	front = "";
-	std::string	back = "";
 	std::vector<float>		term;
 	std::vector<float>		degree;
 	std::vector<std::string>	tmp_term;
@@ -387,97 +460,35 @@ int	Parse::remove_bracket(std::string &str)
 
 	std::vector<char>		op;
 	std::vector<float>		nb;
-	int				keep;
 	
-	end = str.find(")");
 	//no need to calculate in the bracket
-	while (1)
-	{
-		if (str[end] == '\0' || str.find(")") == std::string::npos)
-			break ;
-		while (str[end] != ')' && str[end] != '\0')
-			end++;
-		if (str[end] == '\0')
-			break ;
-		start = end;
-		while (str[start] != '(')
-			start--;
-		front = str.substr(0, start);
-		tmp = str.substr(start + 1, end - start - 1);
-		back = str.substr(end + 1, std::string::npos);
+	remove_bracket_one_term(str);
 
-		if (tmp == "")
-		{
-			this->_err_msg = "invalid syntax: brackets";
-			throw (this->_err_msg);
-		}
-
-		tmp_term = split_term(tmp);
-		if (tmp_term.size() == 1)
-		{
-			if (front[front.length() - 1] == '+')
-			{
-				if (tmp[0] == '+')
-					tmp = tmp.substr(1, std::string::npos);
-				else
-					front = front.substr(0, front.length() - 1);
-			}
-			else if (front[front.length() - 1] == '-')
-			{
-				tmp = tmp.substr(1, std::string::npos);
-				if (tmp[0] == '-')
-				{
-					front = front.substr(0, front.length() - 1);
-					front = front + "+";
-				}
-			}
-			str = front + tmp + back;
-			tmp_term.clear();
-		}
-		else
-		{
-			tmp_term.clear();
-			keep = 0;
-			if (back == "")
-				break ;
-			while (back[keep] != ')' && back[keep] != '\0')
-				keep++;
-			if (back[keep] == '\0')
-				break ;
-			end = front.length() + tmp.length() + 2 + back.find(")");
-			end--;
-		}
-		end++;
-	}
-
-	start = 0;
-	end = 0;
-	keep = 0;
 	//need to calculate in the bracket
 	while (1)
 	{
 		if (str.find(")") == std::string::npos)
 			break;
 
-		end = str.find(")");
-		start = end;
-		while (str[start] != '(')
-			start--;
+		i[END] = str.find(")");
+		i[START] = i[END];
+		while (str[i[START]] != '(')
+			i[START]--;
 
-		front = str.substr(0, start + 1);
-		tmp = str.substr(start + 1, end - start - 1);
-		back = str.substr(end + 1, std::string::npos);
-		if (tmp == "")
+		s[FRONT] = str.substr(0, i[START] + 1);
+		s[BRACKET] = str.substr(i[START] + 1, i[END] - i[START] - 1);
+		s[BACK] = str.substr(i[END] + 1, std::string::npos);
+		if (s[BRACKET] == "")
 		{
 			this->_err_msg = "invalid syntax: brackets";
 			throw (this->_err_msg);
 		}
 
 
-		split_expression(tmp, nb, op);
+		split_expression(s[BRACKET], nb, op);
 		nb.clear();
 		op.clear();
-		if (!(get_term(tmp, tmp_term, tmp_degree)))
+		if (!(get_term(s[BRACKET], tmp_term, tmp_degree)))
 		{
 			std::cout << "error1" << std::endl;
 			return (0);
@@ -485,61 +496,61 @@ int	Parse::remove_bracket(std::string &str)
 
 		
 
-		//to handle front string
-		if (front.length() > 2
-			&& ((front[front.length() - 1] == '('
-				&& (front[front.length() - 2] == '-' || front[front.length() - 2] == '+'))
-			|| (front[front.length() - 1] == '('
-				&& ('0' <= front[front.length() - 2] && front[front.length() - 2] <= '9'))))
+		//to handle s[FRONT] string
+		if (s[FRONT].length() > 2
+			&& ((s[FRONT][s[FRONT].length() - 1] == '('
+				&& (s[FRONT][s[FRONT].length() - 2] == '-' || s[FRONT][s[FRONT].length() - 2] == '+'))
+			|| (s[FRONT][s[FRONT].length() - 1] == '('
+				&& ('0' <= s[FRONT][s[FRONT].length() - 2] && s[FRONT][s[FRONT].length() - 2] <= '9'))))
 		{
-			if (start != 0)
-				start--;
-			front = front.substr(0, front.length() - 1);
+			if (i[START] != 0)
+				i[START]--;
+			s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
 
-			if (front[front.length() - 1] == '-' || front[front.length() - 1] == '+')
+			if (s[FRONT][s[FRONT].length() - 1] == '-' || s[FRONT][s[FRONT].length() - 1] == '+')
 			{
-				front = front + "1*";
-				start = start + 2;
+				s[FRONT] = s[FRONT] + "1*";
+				i[START] = i[START] + 2;
 			}
 			else
 			{
-				front = front + "*";
-				start = start + 1;
+				s[FRONT] = s[FRONT] + "*";
+				i[START] = i[START] + 1;
 			}
 			
 		}
 		else
-			front = front.substr(0, front.length() - 1);
-		start = front.length() - 1;
-		while (front.length() >= 1 && front[start] != '\0' && front[start] == '*')
+			s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
+		i[START] = s[FRONT].length() - 1;
+		while (s[FRONT].length() >= 1 && s[FRONT][i[START]] != '\0' && s[FRONT][i[START]] == '*')
 		{
-			op.push_back(front[start]);
-			start--;
-			keep = start;
-			while ((front[start] != '\0' && '0' <= front[start] && front[start] <= '9') || front[start] == '.')
-				start--;
-			if (front[start] != '\0' && (front[start] == '+' || front[start] == '-'))
-				start--;
-			nb.push_back(atof(front.substr(start + 1, keep - start).c_str()));
-			front = front.substr(0, start + 1);
+			op.push_back(s[FRONT][i[START]]);
+			i[START]--;
+			i[KEEP] = i[START];
+			while ((s[FRONT][i[START]] != '\0' && '0' <= s[FRONT][i[START]] && s[FRONT][i[START]] <= '9') || s[FRONT][i[START]] == '.')
+				i[START]--;
+			if (s[FRONT][i[START]] != '\0' && (s[FRONT][i[START]] == '+' || s[FRONT][i[START]] == '-'))
+				i[START]--;
+			nb.push_back(atof(s[FRONT].substr(i[START] + 1, i[KEEP] - i[START]).c_str()));
+			s[FRONT] = s[FRONT].substr(0, i[START] + 1);
 		}
 
 
 
-		end = 0;
-		//to handle back string ->fix here
-		while ((back[end] == '*' || back[end] == '/') && back[end] != '\0')
+		i[END] = 0;
+		//to handle s[BACK] string ->fix here
+		while ((s[BACK][i[END]] == '*' || s[BACK][i[END]] == '/') && s[BACK][i[END]] != '\0')
 		{
-			op.push_back(back[end]);
-			end++;
-			keep = end;
-			if (back[end] == '+' || back[end] == '-')
-				end++;
-			while (('0' <= back[end] && back[end] <= '9') || back[end] == '.')
-				end++;
-			nb.push_back(atof(back.substr(keep, end - keep).c_str()));
-			back = back.substr(end - keep + 1, std::string::npos);
-			end = 0;
+			op.push_back(s[BACK][i[END]]);
+			i[END]++;
+			i[KEEP] = i[END];
+			if (s[BACK][i[END]] == '+' || s[BACK][i[END]] == '-')
+				i[END]++;
+			while (('0' <= s[BACK][i[END]] && s[BACK][i[END]] <= '9') || s[BACK][i[END]] == '.')
+				i[END]++;
+			nb.push_back(atof(s[BACK].substr(i[KEEP], i[END] - i[KEEP]).c_str()));
+			s[BACK] = s[BACK].substr(i[END] - i[KEEP] + 1, std::string::npos);
+			i[END] = 0;
 		}
 
 
@@ -556,22 +567,22 @@ int	Parse::remove_bracket(std::string &str)
 				tmp_term_float[j] = calc(tmp_term_float[j], nb[i], op[i]);
 		}
 
-		tmp = "";
+		s[BRACKET] = "";
 		for (size_t i = 0; i < tmp_term_float.size(); i++)
 		{
 			term.push_back(tmp_term_float[i]);
 			if (tmp_term_float[i] >= 0)
-				tmp += "+";
-			tmp += float_to_string(tmp_term_float[i]);
-			tmp += "*" + std::string(1, this->_variable) + "^";
-			tmp += float_to_string(tmp_degree[i]);
+				s[BRACKET] += "+";
+			s[BRACKET] += float_to_string(tmp_term_float[i]);
+			s[BRACKET] += "*" + std::string(1, this->_variable) + "^";
+			s[BRACKET] += float_to_string(tmp_degree[i]);
 		}
 		tmp_term.clear();
 		op.clear();
 		nb.clear();
 		tmp_degree.clear();
 		tmp_term_float.clear();
-		str = front + tmp + back;
+		str = s[FRONT] + s[BRACKET] + s[BACK];
 	}
 	return (1);
 }
