@@ -458,23 +458,110 @@ void	Parse::remove_bracket_one_term(std::string &str)
 	}
 }
 
-int	Parse::remove_bracket(std::string &str)
+void	Parse::find_mul_dev_front_str(std::vector<size_t> &i, std::vector<std::string> &s,
+				std::pair<std::vector<char>, std::vector<float>> &op_nb)
+{
+	if (s[FRONT].length() > 2
+		&& ((s[FRONT][s[FRONT].length() - 1] == '('
+				&& (s[FRONT][s[FRONT].length() - 2] == '-'
+					|| s[FRONT][s[FRONT].length() - 2] == '+'))
+			|| (s[FRONT][s[FRONT].length() - 1] == '('
+				&& ('0' <= s[FRONT][s[FRONT].length() - 2]
+					&& s[FRONT][s[FRONT].length() - 2] <= '9'))))
+	{
+		if (i[START] != 0)
+			i[START]--;
+		s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
+
+		if (s[FRONT][s[FRONT].length() - 1] == '-'
+			|| s[FRONT][s[FRONT].length() - 1] == '+')
+		{
+			s[FRONT] = s[FRONT] + "1*";
+			i[START] = i[START] + 2;
+		}
+		else
+		{
+			s[FRONT] = s[FRONT] + "*";
+			i[START] = i[START] + 1;
+		}
+	}
+	else
+		s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
+
+	i[START] = s[FRONT].length() - 1;
+	while (s[FRONT].length() >= 1 && s[FRONT][i[START]] != '\0'
+		&& (s[FRONT][i[START]] == '*' || s[FRONT][i[START]] == '/'))
+	{
+		op_nb.first.push_back(s[FRONT][i[START]]);
+		i[START]--;
+		i[KEEP] = i[START];
+		while ((s[FRONT][i[START]] != '\0'
+			&& '0' <= s[FRONT][i[START]] && s[FRONT][i[START]] <= '9')
+				|| s[FRONT][i[START]] == '.')
+			i[START]--;
+		if (s[FRONT][i[START]] != '\0'
+			&& (s[FRONT][i[START]] == '+' || s[FRONT][i[START]] == '-'))
+			i[START]--;
+		op_nb.second.push_back(atof(s[FRONT].substr(i[START] + 1, i[KEEP] - i[START]).c_str()));
+		s[FRONT] = s[FRONT].substr(0, i[START] + 1);
+	}
+}
+
+void	Parse::find_mul_dev_back_str(std::vector<size_t> &i, std::vector<std::string> &s,
+				std::pair<std::vector<char>, std::vector<float>> &op_nb)
+{
+	i[END] = 0;
+	while (s[BACK][i[END]] != '\0'
+		&& (s[BACK][i[END]] == '*' || s[BACK][i[END]] == '/'))
+	{
+		op_nb.first.push_back(s[BACK][i[END]]);
+		i[END]++;
+		i[KEEP] = i[END];
+		if (s[BACK][i[END]] == '+' || s[BACK][i[END]] == '-')
+			i[END]++;
+		while ((s[BACK][i[END]] != '\0'
+			&& '0' <= s[BACK][i[END]] && s[BACK][i[END]] <= '9')
+				|| s[BACK][i[END]] == '.')
+			i[END]++;
+		op_nb.second.push_back(atof(s[BACK].substr(i[KEEP], i[END] - i[KEEP]).c_str()));
+		s[BACK] = s[BACK].substr(i[END] - i[KEEP] + 1, std::string::npos);
+		i[END] = 0;
+	}
+}
+
+void	Parse::calculate_bracket_str(std::vector<std::string> &s,
+				std::pair<std::vector<char>, std::vector<float>> &op_nb,
+				std::pair<std::vector<std::string>,
+							std::vector<float>> &term_degree)
+{
+	std::vector<float>	term_float;
+
+	for (size_t i = 0; i < term_degree.first.size();i++)
+		term_float.push_back(atof(term_degree.first[i].c_str()));
+	for (size_t i = 0; i < op_nb.first.size(); i++)
+	{
+		for (size_t j = 0; j < term_float.size(); j++)
+			term_float[j] = calc(term_float[j], op_nb.second[i], op_nb.first[i]);
+	}
+	s[BRACKET] = "";
+	for (size_t i = 0; i < term_float.size(); i++)
+	{
+		if (term_float[i] >= 0)
+			s[BRACKET] += "+";
+		s[BRACKET] += float_to_string(term_float[i]);
+		s[BRACKET] += "*" + std::string(1, this->_variable) + "^";
+		s[BRACKET] += float_to_string(term_degree.second[i]);
+	}
+}
+
+void	Parse::remove_bracket_multiple_term(std::string &str)
 {
 	std::vector<size_t>		i(3, 0);
 	std::vector<std::string>	s(3, "");
 
-	std::vector<float>		term;
-	std::vector<float>		degree;
-	std::vector<std::string>	tmp_term;
-	std::vector<float>		tmp_degree;
-	std::vector<float>		tmp_term_float;
+	std::pair<std::vector<std::string>, std::vector<float>>	term_degree;
+	std::pair<std::vector<char>, std::vector<float>>	op_nb;
 
-	std::vector<char>		op;
-	std::vector<float>		nb;
-	
-	remove_bracket_one_term(str);
-
-	//need to calculate in the bracket
 	while (1)
 	{
 		if (str[i[END]] == '\0' || str.find(")") == std::string::npos)
@@ -486,7 +573,6 @@ int	Parse::remove_bracket(std::string &str)
 		i[START] = i[END];
 		while (str[i[START]] != '(')
 			i[START]--;
-
 		s[FRONT] = str.substr(0, i[START] + 1);
 		s[BRACKET] = str.substr(i[START] + 1, i[END] - i[START] - 1);
 		s[BACK] = str.substr(i[END] + 1, std::string::npos);
@@ -495,99 +581,28 @@ int	Parse::remove_bracket(std::string &str)
 			this->_err_msg = "invalid syntax: brackets";
 			throw (this->_err_msg);
 		}
-
-		split_expression(s[BRACKET], nb, op);
-		nb.clear();
-		op.clear();
-		if (!(get_term(s[BRACKET], tmp_term, tmp_degree)))
+		if (!(get_term(s[BRACKET], term_degree)))
 		{
 			this->_err_msg = "cannot seperate the terms";
 			throw (this->_err_msg);
 		}
 
-		//front
-		if (s[FRONT].length() > 2
-			&& ((s[FRONT][s[FRONT].length() - 1] == '('
-				&& (s[FRONT][s[FRONT].length() - 2] == '-' || s[FRONT][s[FRONT].length() - 2] == '+'))
-			|| (s[FRONT][s[FRONT].length() - 1] == '('
-				&& ('0' <= s[FRONT][s[FRONT].length() - 2] && s[FRONT][s[FRONT].length() - 2] <= '9'))))
-		{
-			if (i[START] != 0)
-				i[START]--;
-			s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
-
-			if (s[FRONT][s[FRONT].length() - 1] == '-' || s[FRONT][s[FRONT].length() - 1] == '+')
-			{
-				s[FRONT] = s[FRONT] + "1*";
-				i[START] = i[START] + 2;
-			}
-			else
-			{
-				s[FRONT] = s[FRONT] + "*";
-				i[START] = i[START] + 1;
-			}
-		}
-		else
-			s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
-		i[START] = s[FRONT].length() - 1;
-		while (s[FRONT].length() >= 1 && s[FRONT][i[START]] != '\0' && s[FRONT][i[START]] == '*')
-		{
-			op.push_back(s[FRONT][i[START]]);
-			i[START]--;
-			i[KEEP] = i[START];
-			while ((s[FRONT][i[START]] != '\0' && '0' <= s[FRONT][i[START]] && s[FRONT][i[START]] <= '9') || s[FRONT][i[START]] == '.')
-				i[START]--;
-			if (s[FRONT][i[START]] != '\0' && (s[FRONT][i[START]] == '+' || s[FRONT][i[START]] == '-'))
-				i[START]--;
-			nb.push_back(atof(s[FRONT].substr(i[START] + 1, i[KEEP] - i[START]).c_str()));
-			s[FRONT] = s[FRONT].substr(0, i[START] + 1);
-		}
-
-		//back
-		i[END] = 0;
-		while ((s[BACK][i[END]] == '*' || s[BACK][i[END]] == '/') && s[BACK][i[END]] != '\0')
-		{
-			op.push_back(s[BACK][i[END]]);
-			i[END]++;
-			i[KEEP] = i[END];
-			if (s[BACK][i[END]] == '+' || s[BACK][i[END]] == '-')
-				i[END]++;
-			while (('0' <= s[BACK][i[END]] && s[BACK][i[END]] <= '9') || s[BACK][i[END]] == '.')
-				i[END]++;
-			nb.push_back(atof(s[BACK].substr(i[KEEP], i[END] - i[KEEP]).c_str()));
-			s[BACK] = s[BACK].substr(i[END] - i[KEEP] + 1, std::string::npos);
-			i[END] = 0;
-		}
-
-		//calc
-		for (size_t i = 0; i < tmp_term.size();i++)
-		{
-			tmp_term_float.push_back(atof(tmp_term[i].c_str()));
-			degree.push_back(tmp_degree[i]);
-		}
-
-		for (size_t i = 0; i < op.size(); i++)
-		{
-			for (size_t j = 0; j < tmp_term_float.size(); j++)
-				tmp_term_float[j] = calc(tmp_term_float[j], nb[i], op[i]);
-		}
-		s[BRACKET] = "";
-		for (size_t i = 0; i < tmp_term_float.size(); i++)
-		{
-			term.push_back(tmp_term_float[i]);
-			if (tmp_term_float[i] >= 0)
-				s[BRACKET] += "+";
-			s[BRACKET] += float_to_string(tmp_term_float[i]);
-			s[BRACKET] += "*" + std::string(1, this->_variable) + "^";
-			s[BRACKET] += float_to_string(tmp_degree[i]);
-		}
-		tmp_term.clear();
-		op.clear();
-		nb.clear();
-		tmp_degree.clear();
-		tmp_term_float.clear();
+		find_mul_dev_front_str(i, s, op_nb);
+		find_mul_dev_back_str(i, s, op_nb);
+		calculate_bracket_str(s, op_nb, term_degree);
+		
+		op_nb.first.clear();
+		op_nb.second.clear();
+		term_degree.first.clear();
+		term_degree.second.clear();
 		str = s[FRONT] + s[BRACKET] + s[BACK];
 	}
+}
+
+int	Parse::remove_bracket(std::string &str)
+{	
+	remove_bracket_one_term(str);
+	remove_bracket_multiple_term(str);
 	return (1);
 }
 
@@ -835,29 +850,31 @@ std::string	Parse::float_to_string(float num)
 }
 
 int	Parse::get_term(std::string str,
-			std::vector<std::string> &term, std::vector<float> &degree)
+				std::pair<std::vector<std::string>, std::vector<float>> &term_degree)
 {
-	term = split_term(str);
-	for (size_t i = 0; i < term.size(); i++)
-		degree.push_back(find_degree(term[i]));
-	for (std::vector<std::string>::iterator it = term.begin(); it != term.end(); it++)
+	term_degree.first = split_term(str);
+	for (size_t i = 0; i < term_degree.first.size(); i++)
+		term_degree.second.push_back(find_degree(term_degree.first[i]));
+	for (std::vector<std::string>::iterator it = term_degree.first.begin();
+		it != term_degree.first.end(); it++)
 	{
 		if (!remove_variable(*it))
 			return (0);
 	}
-	for (size_t i = 0; i < term.size(); i++)
-		term[i] = calculate(term[i]);
+	for (size_t i = 0; i < term_degree.first.size(); i++)
+		term_degree.first[i] = calculate(term_degree.first[i]);
 
-	for (size_t i = 0; i < term.size(); i++)
+	for (size_t i = 0; i < term_degree.first.size(); i++)
 	{
-		for (size_t start = i + 1; start < term.size(); start++)
+		for (size_t start = i + 1; start < term_degree.first.size(); start++)
 		{
-			if (degree[i] == degree[start])
+			if (term_degree.second[i] == term_degree.second[start])
 			{
-				term[i] = float_to_string(atof(term[i].c_str())
-								+ atof(term[start].c_str()));
-				term.erase(term.begin() + start);
-				degree.erase(degree.begin() + start);
+				term_degree.first[i]
+					= float_to_string(atof(term_degree.first[i].c_str())
+							+ atof(term_degree.first[start].c_str()));
+				term_degree.first.erase(term_degree.first.begin() + start);
+				term_degree.second.erase(term_degree.second.begin() + start);
 				start--;
 			}
 		}
@@ -1040,7 +1057,6 @@ int	Parse::check_str(std::string str)
 		return (0);
 
 	remove_space(str);
-
 	if (!check_syntax(str))
 		return (0);
 
@@ -1049,27 +1065,27 @@ int	Parse::check_str(std::string str)
 
 	if (!(remove_bracket(left_str) && remove_bracket(right_str)))
 		return (0);
-	
+
 	str = left_str + "=" + right_str;
 
-	std::vector<std::string>	l_term;
-	std::vector<std::string>	r_term;
-	std::vector<float>		l_degree;
-	std::vector<float>		r_degree;
+	std::pair<std::vector<std::string>, std::vector<float>>	l_term_degree;
+	std::pair<std::vector<std::string>, std::vector<float>>	r_term_degree;
 
-	if (!(get_term(str.substr(0, str.find("=")), l_term, l_degree)
-		&& get_term(str.substr(str.find("=") + 1, std::string::npos), r_term, r_degree)))
+	if (!(get_term(str.substr(0, str.find("=")), l_term_degree)
+		&& get_term(str.substr(str.find("=") + 1, std::string::npos), r_term_degree)))
 		return (0);
-	for (size_t i = 0; i < l_term.size(); i++)
+
+	for (size_t i = 0; i < l_term_degree.first.size(); i++)
 	{
-		this->_reduced_form.push_back(atof(l_term[i].c_str()));
-		this->_degree.push_back(l_degree[i]);
+		this->_reduced_form.push_back(atof(l_term_degree.first[i].c_str()));
+		this->_degree.push_back(l_term_degree.second[i]);
 	}
-	for (size_t i = 0; i < r_term.size(); i++)
+	for (size_t i = 0; i < r_term_degree.first.size(); i++)
 	{
-		this->_reduced_form.push_back(-1 * atof(r_term[i].c_str()));
-		this->_degree.push_back(r_degree[i]);
+		this->_reduced_form.push_back(-1 * atof(r_term_degree.first[i].c_str()));
+		this->_degree.push_back(r_term_degree.second[i]);
 	}
+
 	make_reduced_form();
 	return (1);
 }

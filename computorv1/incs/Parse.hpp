@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/23 02:19:01 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/23 22:31:10 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <cmath>
 #include <sstream>
 #include <iomanip>
+#include <utility>
 #include "../incs/Color.hpp"
 
 # define TYPE_FRACTIONAL		-1
@@ -53,28 +54,50 @@ public:
 	void				parse_start(char *argv, int flag_bonus);
 
 protected:
+	// check basic elements
 	int				is_equation_form(std::string str);
 	int				check_variable(std::string str);
 	int				check_invalid_character(std::string str);
 	int				check_number(std::string str);
 	void				remove_space(std::string &str);
 
+	// check syntax
 	int				check_brackets(std::string str);
 	int				check_sign(std::string str);
 	int				check_point(std::string str);
 	int				check_caret(std::string str);
 	int				check_syntax(std::string str);
 
+	// remove brackets: term == 1
 	void				remove_bracket_without_calc(std::string &str,
 						std::vector<std::string> &s);
 	int				find_next_bracket(std::vector<size_t> &i,
 						std::vector<std::string> &s);
 	void				remove_bracket_one_term(std::string &str);
+
+	// remove brackets: term > 1
+	void				calculate_bracket_str(std::vector<std::string> &s,
+						std::pair<std::vector<char>,
+							std::vector<float>> &op_nb,
+						std::pair<std::vector<std::string>,
+							std::vector<float>> &term_degree);
+	void				find_mul_dev_front_str(std::vector<size_t> &i,
+						std::vector<std::string> &s,
+						std::pair<std::vector<char>,
+							std::vector<float>> &op_nb);
+	void				find_mul_dev_back_str(std::vector<size_t> &i,
+						std::vector<std::string> &s,
+						std::pair<std::vector<char>,
+							std::vector<float>> &op_nb);
+	void				remove_bracket_multiple_term(std::string &str);
 	int				remove_bracket(std::string &str);
 
+	// handle terms
 	std::vector<std::string>	split_term(std::string str);
 	float				find_degree(std::string str);
 	int				remove_variable(std::string &str);
+
+	// calculate
 	int				check_operation(std::string str);
 	void				split_expression(std::string str,
 						std::vector<float> &nb, std::vector<char> &op);
@@ -82,9 +105,10 @@ protected:
 	std::string			calculate(std::string str);
 	std::string			float_to_string(float num);
 	int				get_term(std::string str,
-						std::vector<std::string> &term,
-						std::vector<float> &degree);
+						std::pair<std::vector<std::string>,
+							std::vector<float>> &term_degree);
 
+	// set equation string
 	void				set_equation_type(void);
 	void				make_form_ascending_order(void);
 	void				set_equation_str(void);
