@@ -477,10 +477,12 @@ int	Parse::remove_bracket(std::string &str)
 	//need to calculate in the bracket
 	while (1)
 	{
-		if (str.find(")") == std::string::npos)
-			break;
-
-		i[END] = str.find(")");
+		if (str[i[END]] == '\0' || str.find(")") == std::string::npos)
+			break ;
+		while (str[i[END]] != ')' && str[i[END]] != '\0')
+			i[END]++;
+		if (str[i[END]] == '\0')
+			break ;
 		i[START] = i[END];
 		while (str[i[START]] != '(')
 			i[START]--;
@@ -494,19 +496,16 @@ int	Parse::remove_bracket(std::string &str)
 			throw (this->_err_msg);
 		}
 
-
 		split_expression(s[BRACKET], nb, op);
 		nb.clear();
 		op.clear();
 		if (!(get_term(s[BRACKET], tmp_term, tmp_degree)))
 		{
-			std::cout << "error1" << std::endl;
-			return (0);
+			this->_err_msg = "cannot seperate the terms";
+			throw (this->_err_msg);
 		}
 
-		
-
-		//to handle s[FRONT] string
+		//front
 		if (s[FRONT].length() > 2
 			&& ((s[FRONT][s[FRONT].length() - 1] == '('
 				&& (s[FRONT][s[FRONT].length() - 2] == '-' || s[FRONT][s[FRONT].length() - 2] == '+'))
@@ -527,7 +526,6 @@ int	Parse::remove_bracket(std::string &str)
 				s[FRONT] = s[FRONT] + "*";
 				i[START] = i[START] + 1;
 			}
-			
 		}
 		else
 			s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
@@ -545,10 +543,8 @@ int	Parse::remove_bracket(std::string &str)
 			s[FRONT] = s[FRONT].substr(0, i[START] + 1);
 		}
 
-
-
+		//back
 		i[END] = 0;
-		//to handle s[BACK] string ->fix here
 		while ((s[BACK][i[END]] == '*' || s[BACK][i[END]] == '/') && s[BACK][i[END]] != '\0')
 		{
 			op.push_back(s[BACK][i[END]]);
@@ -563,8 +559,7 @@ int	Parse::remove_bracket(std::string &str)
 			i[END] = 0;
 		}
 
-
-
+		//calc
 		for (size_t i = 0; i < tmp_term.size();i++)
 		{
 			tmp_term_float.push_back(atof(tmp_term[i].c_str()));
@@ -576,7 +571,6 @@ int	Parse::remove_bracket(std::string &str)
 			for (size_t j = 0; j < tmp_term_float.size(); j++)
 				tmp_term_float[j] = calc(tmp_term_float[j], nb[i], op[i]);
 		}
-
 		s[BRACKET] = "";
 		for (size_t i = 0; i < tmp_term_float.size(); i++)
 		{
