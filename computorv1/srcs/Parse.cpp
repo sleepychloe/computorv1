@@ -347,7 +347,7 @@ int	Parse::check_caret(std::string str)
 				&& (str[i + 1] && (str[i + 1] == '+' || str[i + 1] == '-'
 						|| ('0' <= str[i + 1] && str[i + 1] <= '9')))))
 			{
-				this->_err_msg = "invalid syntax: caret(^)1";
+				this->_err_msg = "invalid syntax: caret(^)";
 				throw (this->_err_msg);
 			}
 			i++;
@@ -555,7 +555,6 @@ void	Parse::find_mul_dev_front_str(std::vector<size_t> &i, std::vector<std::stri
 	{
 		i[START]--;
 		i[KEEP] = i[START];
-
 		while ((s[FRONT][i[START]] != '\0'
 			&& '0' <= s[FRONT][i[START]] && s[FRONT][i[START]] <= '9')
 				|| s[FRONT][i[START]] == '.'
@@ -615,6 +614,11 @@ void	Parse::apply_operation_from_back(std::string &tmp,
 		{
 			for (size_t j = 0; j < term_degree.first.size(); j++)
 			{
+				if (atof(tmp_term_degree.first[0].c_str()) == 0)
+				{
+					this->_err_msg = "cannot divided by 0";
+					throw (this->_err_msg);
+				}
 				term_degree.first[j] = float_to_string(atof(term_degree.first[j].c_str())
 								/ atof(tmp_term_degree.first[0].c_str()));
 			}
@@ -645,19 +649,22 @@ void	Parse::find_mul_dev_back_str(std::vector<size_t> &i, std::vector<std::strin
 			s[BACK] = s[BACK].substr(s[BACK].find(")") + 1, std::string::npos);
 			i[END] = 0;
 		}
-		i[END]++;
-		i[KEEP] = i[END];
-		if (s[BACK][i[END]] == '+' || s[BACK][i[END]] == '-')
+		else
+		{
 			i[END]++;
-		while ((s[BACK][i[END]] != '\0'
-			&& '0' <= s[BACK][i[END]] && s[BACK][i[END]] <= '9')
-				|| s[BACK][i[END]] == '.'
-				|| s[BACK][i[END]] == this->_variable || s[BACK][i[END]] == '^')
-			i[END]++;
-		tmp = s[BACK].substr(i[KEEP], i[END] - i[KEEP]);
-		apply_operation_from_back(tmp, i, s, term_degree);
-		s[BACK] = s[BACK].substr(i[END] - i[KEEP] + 1, std::string::npos);
-		i[END] = 0;
+			i[KEEP] = i[END];
+			if (s[BACK][i[END]] == '+' || s[BACK][i[END]] == '-')
+				i[END]++;
+			while ((s[BACK][i[END]] != '\0'
+				&& '0' <= s[BACK][i[END]] && s[BACK][i[END]] <= '9')
+					|| s[BACK][i[END]] == '.'
+					|| s[BACK][i[END]] == this->_variable || s[BACK][i[END]] == '^')
+				i[END]++;
+			tmp = s[BACK].substr(i[KEEP], i[END] - i[KEEP]);
+			apply_operation_from_back(tmp, i, s, term_degree);
+			s[BACK] = s[BACK].substr(i[END] - i[KEEP] + 1, std::string::npos);
+			i[END] = 0;
+		}
 	}
 }
 
