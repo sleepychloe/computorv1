@@ -343,19 +343,16 @@ int	Parse::check_caret(std::string str)
 	{
 		if (str[i] == '^')
 		{
-			if (!((str[i - 1] && (str[i - 1] == this->_variable))
-				&& (str[i + 1] && (str[i + 1] == '+' || str[i + 1] == '-'
-						|| ('0' <= str[i + 1] && str[i + 1] <= '9')))))
+			if (!(str[i - 1] && (str[i - 1] == this->_variable)
+				&& (str[i + 1] && '0' <= str[i + 1] && str[i + 1] <= '9')))
 			{
 				this->_err_msg = "invalid syntax: caret(^)";
 				throw (this->_err_msg);
 			}
 			i++;
-			if (str[i] == '+' || str[i] == '-'
-				|| ('0' <= str[i + 1] && str[i + 1] <= '9'))
+			if ('0' <= str[i] && str[i] <= '9')
 			{
-				while (str[i] == '+' || str[i] == '-'
-					|| ('0' <= str[i] && str[i] <= '9') || str[i] == '.')
+				while ('0' <= str[i] && str[i] <= '9')
 					i++;
 				if (!(str[i] == '+' || str[i] == '-'
 					|| str[i] == '*' || str[i] == '/' || str[i] == '='))
@@ -363,6 +360,7 @@ int	Parse::check_caret(std::string str)
 					this->_err_msg = "invalid syntax: caret(^)";
 					throw (this->_err_msg);
 				}
+				i++;
 			}
 		}
 		i++;
@@ -774,7 +772,6 @@ std::vector<std::string>	Parse::split_term(std::string str)
 float	Parse::find_degree(std::string str)
 {
 	float	degree = 0;
-	int	sign = 1;
 	size_t	i;
 	size_t	tmp;
 
@@ -786,18 +783,18 @@ float	Parse::find_degree(std::string str)
 		{
 			i = i + 2;
 			tmp = i;
-			if (str[i] == '+' || str[i] == '-')
+			while ('0' <= str[i] && str[i] <= '9')
 				i++;
-			while (('0' <= str[i] && str[i] <= '9') || str[i] == '.')
-				i++;
-			degree += sign * atof(str.substr(tmp, i - tmp).c_str());
+			degree += atof(str.substr(tmp, i - tmp).c_str());
 		}
 		else if (str[i] == this->_variable)
-			degree += sign * 1;
-		if (str[i] == '*')
-			sign = 1;
-		if (str[i] == '/')
-			sign = -1;
+			degree +=  1;
+		if (str.find("/") != std::string::npos
+			&& str.find(std::string(1, this->_variable)) != std::string::npos)
+		{
+			if (str.find("/") < str.find(std::string(1, this->_variable)))
+				degree *= -1;
+		}
 		i++;
 	}
 	return (degree);
@@ -849,8 +846,7 @@ int	Parse::remove_variable(std::string &str)
 			i++;
 			if (str[i] == '^')
 				i++;
-			while (str[i] == '+' || str[i] == '-'
-				|| ('0' <= str[i] && str[i] <= '9') || str[i] == '.')
+			while ('0' <= str[i] && str[i] <= '9')
 				i++;
 			end = i - 1;
 			if (!(str[start - 1] == '*' || str[start - 1] == '/'))
@@ -1026,8 +1022,7 @@ void	Parse::set_equation_type(void)
 {
 	for (size_t i = 0; i < this->_degree.size(); i++)
 	{
-		if (this->_degree[i] < 0
-			|| this->_degree[i] - (int)(this->_degree[i]) != 0)
+		if (this->_degree[i] < 0)
 		{
 			this->_equation_type = TYPE_FRACTIONAL;
 			return ;
