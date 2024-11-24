@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/24 15:40:52 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/25 00:30:58 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -373,14 +373,19 @@ void	Computor::make_perfect_square_form(std::vector<float> &num,
 			+ "/" + float_to_string(tmp2);
 	else
 		str[C_PRIME] = float_to_string(num[C_PRIME]);
+
 	//print
 	if (num[SQUARE_CONSTANT])
 	{
 		tmp += " = ";
-		tmp += str[C_PRIME];
+		if (this->_discriminant < 0)
+			tmp += "-";
+		if (str[C_PRIME][0] == '-')
+			tmp += str[C_PRIME].substr(1, std::string::npos);
+		else
+			tmp += str[C_PRIME];
 	}
 	std::cout << "\t" << tmp << std::endl;
-
 }
 
 void	Computor::remove_square(std::vector<float> &num,
@@ -398,10 +403,16 @@ void	Computor::remove_square(std::vector<float> &num,
 		tmp += str[B_PRIME];
 	}
 	tmp += " = ";
-	if (num[C_PRIME] != 0)
+	if (num[C_PRIME] > 0)
 		tmp += "± √(" + str[C_PRIME] + ")";
-	else
+	else if (num[C_PRIME] == 0)
 		tmp += "0";
+	else
+	{
+		if (str[C_PRIME][0] == '-')
+			str[C_PRIME] = str[C_PRIME].substr(1, std::string::npos);
+		tmp += "± √(" + str[C_PRIME] + ")" + "i";
+	}
 	std::cout << "\t" << tmp << std::endl;
 }
 
@@ -424,10 +435,20 @@ void	Computor::find_x(std::vector<float> &num,
 		tmp += " = ";
 		tmp += str[B_PRIME];
 		tmp += " ± ";
-		if (!is_int(sqrt(num[C_PRIME])))
-			tmp += "√(" + str[C_PRIME] + ")";
+		if (num[C_PRIME] > 0)
+		{
+			if (!is_int(sqrt(num[C_PRIME])))
+				tmp += "√(" + str[C_PRIME] + ")";
+			else
+				tmp += float_to_string(sqrt(num[C_PRIME]));
+		}
 		else
-			tmp += float_to_string(sqrt(num[C_PRIME]));
+		{
+			if (!is_int(sqrt(num[C_PRIME])))
+				tmp += "√(" + str[C_PRIME] + ")" + "i";
+			else
+				tmp += float_to_string(sqrt(num[C_PRIME])) + "i";
+		}
 		std::cout << "\t" << tmp << std::endl;
 	}
 }
@@ -497,12 +518,23 @@ void	Computor::fraction_reduction(float &n1, float &n2, float &n3)
 	n3 /= common;
 }
 
-void	Computor::calc_x(std::vector<float> &num)
+void	Computor::calc_x(std::vector<float> &num, std::vector<std::string> &str)
 {
+	int	flag_imaginary = 0;
+
+	if (num[C_PRIME] < 0)
+	{
+		flag_imaginary = 1;
+		num[C_PRIME] *= -1;
+	}
+
 	float	x1 = -1 * num[B];
 	float	x2_int = 1;
 	float	x2_real = num[B] * num[B] - (4 * num[A] * num[C]);
 	float	x3 = 2 * num[A];
+
+	if (flag_imaginary)
+		x2_real *= -1;
 
 	split_square_num(x2_int, x2_real);
 
@@ -511,23 +543,33 @@ void	Computor::calc_x(std::vector<float> &num)
 
 	if (is_int(sqrt(x2_real)))
 	{
-		x2_int *= sqrt(x2_real);
+		if (!flag_imaginary)
+		{
+			x2_int *= sqrt(x2_real);
 
-		float 	tmp1 = x1 - x2_int;
-		float	tmp2 = x3;
-		fraction_reduction(tmp1, tmp2);
+			float 	tmp1 = x1 - x2_int;
+			float	tmp2 = x3;
+			fraction_reduction(tmp1, tmp2);
 
-		float	tmp3 = x1 + x2_int;
-		float	tmp4 = x3;
-		fraction_reduction(tmp3, tmp4);
+			float	tmp3 = x1 + x2_int;
+			float	tmp4 = x3;
+			fraction_reduction(tmp3, tmp4);
 
+			solution_1 += float_to_string(tmp1);
+			if (tmp2 != 1)
+				solution_1 += "/" + float_to_string(tmp2);
+			solution_2 += float_to_string(tmp3);
+			if (tmp4 != 1)
+				solution_2 += "/" + float_to_string(tmp4);
+		}
+		else
+		{
+			solution_1 += str[B_PRIME] + " + ";
+			solution_1 += float_to_string(sqrt(num[C_PRIME])) + "i";
 
-		solution_1 += float_to_string(tmp1);
-		if (tmp2 != 1)
-			solution_1 += "/" + float_to_string(tmp2);
-		solution_2 += float_to_string(tmp3);
-		if (tmp4 != 1)
-			solution_2 += "/" + float_to_string(tmp4);
+			solution_2 += str[B_PRIME] + " - ";
+			solution_2 += float_to_string(sqrt(num[C_PRIME])) + "i";
+		}
 	}
 	else
 	{
@@ -545,6 +587,8 @@ void	Computor::calc_x(std::vector<float> &num)
 		if (x2_int != 1)
 			solution_1 += float_to_string(x2_int);
 		solution_1 += "√(" + float_to_string(x2_real) + ")";
+		if (flag_imaginary)
+			solution_1 += "i";
 		if (x1 && x2_int && x3 != 1)
 			solution_1 += ")";
 		if (x3 != 1)
@@ -559,6 +603,8 @@ void	Computor::calc_x(std::vector<float> &num)
 		if (x2_int != 1)
 			solution_2 += float_to_string(x2_int);
 		solution_2 += "√(" + float_to_string(x2_real) + ")";
+		if (flag_imaginary)
+			solution_2 += "i";
 		if (x1 && x2_int && x3 != 1)
 			solution_2 += ")";
 		if (x3 != 1)
@@ -587,6 +633,7 @@ void	Computor::print_process_quadratic(void)
 	num[C] = this->_term_descending_order[2];
 
 	int	tmp = 1;
+
 	while (!(is_int(num[A]) && is_int(num[B]) && is_int(num[C])))
 	{
 		if (!is_int(num[A]))
@@ -633,14 +680,14 @@ void	Computor::print_process_quadratic(void)
 	// (x + b/(2a))² = b²/(2²*a²) - c/a
 	make_perfect_square_form(num, str);
 
-	// discriminant value >= 0
+	// check discriminant value
 	if (this->_discriminant < 0)
 	{
 		std::cout << YELLOW
-			<< "\tWithin the real number range, the square of any number cannot be less than 0"
-			<< std::endl
-			<< "\t∴ it has no solution" << BLACK << std::endl;
-		return ;
+			<< "\tWithin the real number range," << std::endl
+			<< "\tthe square of any number cannot be less than 0." << std::endl << std::endl
+			<< "\tIt has no solution within the real number range," << std::endl
+			<< "\tbut it has two solution within the imaginary range"<< BLACK << std::endl;
 	}
 
 	// ↔ x + b/(2*a) = ± √((b²-4*a*c)/(2*a))
@@ -658,7 +705,7 @@ void	Computor::print_process_quadratic(void)
 			+ " = " + str[B_PRIME] << std::endl;
 	}
 	else
-		calc_x(num);
+		calc_x(num, str);
 }
 
 void	Computor::solve_quadratic(void)
