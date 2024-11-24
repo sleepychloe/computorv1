@@ -291,6 +291,13 @@ int	Parse::check_sign(std::string str)
 		}
 		i++;
 	}
+	if (str[0] == '*' || str[0] == '/'
+		|| str[str.length() - 1] == '+' || str[str.length() - 1] == '-'
+		|| str[str.length() - 1] == '*' || str[str.length() - 1] == '/')
+	{
+		this->_err_msg = "invalid syntax: operator";
+			throw (this->_err_msg);
+	}
 
 	i = 0;
 	while (str[i] == '+' || str[i] == '-' || str[i] == '(')
@@ -423,20 +430,12 @@ void	Parse::remove_bracket_without_calc(std::string &str,
 				std::vector<std::string> &s)
 {
 	if (s[FRONT][s[FRONT].length() - 1] == '+')
-	{
-		if (s[BRACKET][0] == '+')
-			s[BRACKET] = s[BRACKET].substr(1, std::string::npos);
-		else
-			s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
-	}
+		s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
 	else if (s[FRONT][s[FRONT].length() - 1] == '-')
 	{
 		s[BRACKET] = s[BRACKET].substr(1, std::string::npos);
 		if (s[BRACKET][0] == '-')
-		{
-			s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
-			s[FRONT] = s[FRONT] + "+";
-		}
+			s[FRONT][s[FRONT].length() - 1] = '+';
 	}
 	str = s[FRONT] + s[BRACKET] + s[BACK];
 }
@@ -491,7 +490,7 @@ void	Parse::remove_bracket_one_term(std::string &str)
 				break ;
 		}
 		tmp_term.clear();
-		i[END]++;
+		i[END]++; //fix here
 	}
 }
 
@@ -501,7 +500,8 @@ void	Parse::check_front_str(std::vector<size_t> &i, std::vector<std::string> &s)
 		&& !(s[FRONT][s[FRONT].length() - 2] == '+'
 			|| s[FRONT][s[FRONT].length() - 2] == '-'
 			|| s[FRONT][s[FRONT].length() - 2] == '*'
-			|| s[FRONT][s[FRONT].length() - 2] == '/'))
+			|| s[FRONT][s[FRONT].length() - 2] == '/'
+			|| s[FRONT][s[FRONT].length() - 2] == '('))
 	{
 		this->_err_msg = "invalid syntax: operator";
 		throw (this->_err_msg);
@@ -670,11 +670,15 @@ void	Parse::find_mul_dev_back_str(std::vector<size_t> &i, std::vector<std::strin
 	std::string	tmp = "";
 
 	i[END] = 0;
-	if ('0' <= s[BACK][i[END]] && s[BACK][i[END]] <= '9')
+	if (s[BACK][i[END]] != '\0'
+		&& !(s[BACK][i[END]] == '+' || s[BACK][i[END]] == '-'
+			|| s[BACK][i[END]] == '*' || s[BACK][i[END]] == '/'
+			|| s[BACK][i[END]] == ')'))
 	{
 		this->_err_msg = "invalid syntax: operator";
 		throw (this->_err_msg);
 	}
+
 	while (s[BACK][i[END]] != '\0'
 		&& (s[BACK][i[END]] == '*' || s[BACK][i[END]] == '/'))
 	{
@@ -766,6 +770,8 @@ void	Parse::remove_bracket_multiple_term(std::string &str)
 		term_degree.first.clear();
 		term_degree.second.clear();
 		str = s[FRONT] + s[BRACKET] + s[BACK];
+		std::cout << "str: " << str << std::endl;
+		std::cout << "---------------------------" << std::endl;
 	}
 }
 
@@ -811,12 +817,17 @@ std::vector<std::string>	Parse::split_term(std::string str)
 float	Parse::find_degree(std::string str)
 {
 	float	degree = 0;
-	size_t	i;
+	int	sign = 1;
+	size_t	i = 0;
 	size_t	tmp;
 
-	i = str.find(this->_variable);
 	while (i < str.length())
 	{
+		if (str[i] == '*')
+			sign = 1;
+		else if (str[i] == '/')
+			sign = -1;
+
 		if (str[i] == this->_variable
 			&& str[i + 1] && str[i + 1] == '^')
 		{
@@ -824,18 +835,13 @@ float	Parse::find_degree(std::string str)
 			tmp = i;
 			while ('0' <= str[i] && str[i] <= '9')
 				i++;
-			degree += atof(str.substr(tmp, i - tmp).c_str());
+			degree += sign * atof(str.substr(tmp, i - tmp).c_str());
 		}
 		else if (str[i] == this->_variable)
-			degree +=  1;
-		if (str.find("/") != std::string::npos
-			&& str.find(std::string(1, this->_variable)) != std::string::npos)
-		{
-			if (str.find("/") < str.find(std::string(1, this->_variable)))
-				degree *= -1;
-		}
+			degree += sign * 1;
 		i++;
 	}
+	std::cout << "term: " << str << ", degree: " << degree << std::endl;
 	return (degree);
 }
 
