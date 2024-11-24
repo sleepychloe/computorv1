@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/23 22:31:10 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/24 01:27:05 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,25 +76,25 @@ protected:
 	void				remove_bracket_one_term(std::string &str);
 
 	// remove brackets: term > 1
-	void				calculate_bracket_str(std::vector<std::string> &s,
-						std::pair<std::vector<char>,
-							std::vector<float>> &op_nb,
-						std::pair<std::vector<std::string>,
-							std::vector<float>> &term_degree);
+	void				check_front_str(std::vector<size_t> &i,
+						std::vector<std::string> &s);
 	void				find_mul_dev_front_str(std::vector<size_t> &i,
 						std::vector<std::string> &s,
-						std::pair<std::vector<char>,
-							std::vector<float>> &op_nb);
+						std::pair<std::vector<char>, std::vector<float>> &op_nb);
 	void				find_mul_dev_back_str(std::vector<size_t> &i,
 						std::vector<std::string> &s,
-						std::pair<std::vector<char>,
-							std::vector<float>> &op_nb);
+						std::pair<std::vector<std::string>, std::vector<float>> &term_degree,
+						std::pair<std::vector<char>, std::vector<float>> &op_nb);
+	void				calculate_bracket_str(std::vector<std::string> &s,
+						std::pair<std::vector<char>, std::vector<float>> &op_nb,
+						std::pair<std::vector<std::string>, std::vector<float>> &term_degree);
 	void				remove_bracket_multiple_term(std::string &str);
 	int				remove_bracket(std::string &str);
 
 	// handle terms
 	std::vector<std::string>	split_term(std::string str);
 	float				find_degree(std::string str);
+	void				add_coefficient_of_variable(std::string &str);
 	int				remove_variable(std::string &str);
 
 	// calculate
@@ -105,8 +105,7 @@ protected:
 	std::string			calculate(std::string str);
 	std::string			float_to_string(float num);
 	int				get_term(std::string str,
-						std::pair<std::vector<std::string>,
-							std::vector<float>> &term_degree);
+						std::pair<std::vector<std::string>, std::vector<float>> &term_degree);
 
 	// set equation string
 	void				set_equation_type(void);

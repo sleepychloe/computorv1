@@ -458,35 +458,40 @@ void	Parse::remove_bracket_one_term(std::string &str)
 	}
 }
 
-void	Parse::find_mul_dev_front_str(std::vector<size_t> &i, std::vector<std::string> &s,
-				std::pair<std::vector<char>, std::vector<float>> &op_nb)
+void	Parse::check_front_str(std::vector<size_t> &i, std::vector<std::string> &s)
 {
-	if (s[FRONT].length() > 2
-		&& ((s[FRONT][s[FRONT].length() - 1] == '('
-				&& (s[FRONT][s[FRONT].length() - 2] == '-'
-					|| s[FRONT][s[FRONT].length() - 2] == '+'))
-			|| (s[FRONT][s[FRONT].length() - 1] == '('
-				&& ('0' <= s[FRONT][s[FRONT].length() - 2]
-					&& s[FRONT][s[FRONT].length() - 2] <= '9'))))
+	if (s[FRONT].length() >= 2 && s[FRONT][s[FRONT].length() - 1] == '('
+		&& !(s[FRONT][s[FRONT].length() - 2] == '+'
+			|| s[FRONT][s[FRONT].length() - 2] == '-'
+			|| s[FRONT][s[FRONT].length() - 2] == '*'
+			|| s[FRONT][s[FRONT].length() - 2] == '/'))
+	{
+		this->_err_msg = "invalid syntax: operator";
+		throw (this->_err_msg);
+	}
+
+	if (s[FRONT].length() >= 2 && ((s[FRONT][s[FRONT].length() - 1] == '('
+		&& (s[FRONT][s[FRONT].length() - 2] == '-'
+			|| s[FRONT][s[FRONT].length() - 2] == '+'))))
 	{
 		if (i[START] != 0)
 			i[START]--;
 		s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
-
 		if (s[FRONT][s[FRONT].length() - 1] == '-'
 			|| s[FRONT][s[FRONT].length() - 1] == '+')
 		{
 			s[FRONT] = s[FRONT] + "1*";
 			i[START] = i[START] + 2;
 		}
-		else
-		{
-			s[FRONT] = s[FRONT] + "*";
-			i[START] = i[START] + 1;
-		}
 	}
 	else
 		s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
+}
+
+void	Parse::find_mul_dev_front_str(std::vector<size_t> &i, std::vector<std::string> &s,
+				std::pair<std::vector<char>, std::vector<float>> &op_nb)
+{
+	check_front_str(i, s);
 
 	i[START] = s[FRONT].length() - 1;
 	while (s[FRONT].length() >= 1 && s[FRONT][i[START]] != '\0'
@@ -508,12 +513,64 @@ void	Parse::find_mul_dev_front_str(std::vector<size_t> &i, std::vector<std::stri
 }
 
 void	Parse::find_mul_dev_back_str(std::vector<size_t> &i, std::vector<std::string> &s,
+				std::pair<std::vector<std::string>, std::vector<float>> &term_degree,
 				std::pair<std::vector<char>, std::vector<float>> &op_nb)
 {
+	std::string			tmp = "";
+	std::pair<std::vector<std::string>, std::vector<float>>	tmp_term_degree;
+	std::pair<std::vector<std::string>, std::vector<float>> keep_term_degree = term_degree;
+
 	i[END] = 0;
+	if ('0' <= s[BACK][i[END]] && s[BACK][i[END]] <= '9')
+	{
+		this->_err_msg = "invalid syntax: operator";
+		throw (this->_err_msg);
+	}
 	while (s[BACK][i[END]] != '\0'
 		&& (s[BACK][i[END]] == '*' || s[BACK][i[END]] == '/'))
 	{
+		if (s[BACK][i[END] + 1] != '\0' && s[BACK][i[END] + 1] == '(')
+		{
+			tmp = s[BACK].substr(2, s[BACK].find(")") - 2);
+			if (!get_term(tmp, tmp_term_degree))
+			{
+				this->_err_msg = "cannot seperate the terms";
+				throw (this->_err_msg);
+			}
+			if (s[BACK][i[END]] == '*')
+			{
+				term_degree.first.clear();
+				term_degree.second.clear();
+				for (size_t k = 0; k < tmp_term_degree.first.size(); k++)
+				{
+					for (size_t j = 0; j < keep_term_degree.first.size(); j++)
+					{
+						term_degree.first.push_back(float_to_string(atof(tmp_term_degree.first[k].c_str())
+										* atof(keep_term_degree.first[j].c_str())));
+						term_degree.second.push_back(tmp_term_degree.second[k]
+										+ keep_term_degree.second[j]);
+					}
+				}
+			}
+			else
+			{
+				for (size_t k = 0; k < tmp_term_degree.first.size(); k++)
+				{
+					if (tmp_term_degree.second[k] > 0)
+					{
+						this->_err_msg = "this program does not support to calculate expression containing variable in fraction";
+						throw (this->_err_msg);
+					}
+					if (k > 0)
+						tmp_term_degree.first[0] = float_to_string(atof(tmp_term_degree.first[0].c_str())
+										+ atof(tmp_term_degree.first[k].c_str()));
+				}
+				op_nb.first.push_back('/');
+				op_nb.second.push_back(atof(tmp_term_degree.first[0].c_str()));
+			}
+			s[BACK] = s[BACK].substr(s[BACK].find(")") + 1, std::string::npos);
+			continue ;
+		}
 		op_nb.first.push_back(s[BACK][i[END]]);
 		i[END]++;
 		i[KEEP] = i[END];
@@ -531,8 +588,7 @@ void	Parse::find_mul_dev_back_str(std::vector<size_t> &i, std::vector<std::strin
 
 void	Parse::calculate_bracket_str(std::vector<std::string> &s,
 				std::pair<std::vector<char>, std::vector<float>> &op_nb,
-				std::pair<std::vector<std::string>,
-							std::vector<float>> &term_degree)
+				std::pair<std::vector<std::string>, std::vector<float>> &term_degree)
 {
 	std::vector<float>	term_float;
 
@@ -549,8 +605,11 @@ void	Parse::calculate_bracket_str(std::vector<std::string> &s,
 		if (term_float[i] >= 0)
 			s[BRACKET] += "+";
 		s[BRACKET] += float_to_string(term_float[i]);
-		s[BRACKET] += "*" + std::string(1, this->_variable) + "^";
-		s[BRACKET] += float_to_string(term_degree.second[i]);
+		if (term_degree.second[i] > 0)
+		{
+			s[BRACKET] += "*" + std::string(1, this->_variable) + "^";
+			s[BRACKET] += float_to_string(term_degree.second[i]);
+		}
 	}
 }
 
@@ -588,14 +647,15 @@ void	Parse::remove_bracket_multiple_term(std::string &str)
 		}
 
 		find_mul_dev_front_str(i, s, op_nb);
-		find_mul_dev_back_str(i, s, op_nb);
+		find_mul_dev_back_str(i, s, term_degree, op_nb);
 		calculate_bracket_str(s, op_nb, term_degree);
-		
+
 		op_nb.first.clear();
 		op_nb.second.clear();
 		term_degree.first.clear();
 		term_degree.second.clear();
 		str = s[FRONT] + s[BRACKET] + s[BACK];
+		std::cout << "str: " << str << std::endl;
 	}
 }
 
@@ -670,11 +730,9 @@ float	Parse::find_degree(std::string str)
 	return (degree);
 }
 
-int	Parse::remove_variable(std::string &str)
+void	Parse::add_coefficient_of_variable(std::string &str)
 {
 	size_t		i = 0;
-	size_t		start;
-	size_t		end;
 	std::string	tmp;
 
 	while (i < str.length())
@@ -697,8 +755,17 @@ int	Parse::remove_variable(std::string &str)
 		}
 		i++;
 	}
+}
 
-	i = 0;
+int	Parse::remove_variable(std::string &str)
+{
+	size_t		i = 0;
+	size_t		start;
+	size_t		end;
+	std::string	tmp;
+
+	add_coefficient_of_variable(str);
+
 	while (i < str.length())
 	{
 		tmp = "";
