@@ -136,6 +136,21 @@ int	Parse::check_variable(std::string str)
 		this->_err_msg = "cannot determine the variable";
 		throw (this->_err_msg);
 	}
+
+	i = 0;
+	while (i < str.length())
+	{
+		if (str[i] == this->_variable)
+		{
+			i++;
+			if (str[i] == this->_variable)
+			{
+				this->_err_msg = "inappropriate variable form";
+				throw (this->_err_msg);
+			}
+		}
+		i++;
+	}
 	return (1);
 }
 
@@ -207,31 +222,54 @@ int	Parse::check_brackets(std::string str)
 {
 	int	open = 0;
 	int	close = 0;
-	size_t	i = 0;
-	size_t	j = 0;
+	int	cnt_open = 0;
+	int	cnt_close = 0;
 
+	size_t	i = 0;
 	while (i < str.length())
 	{
+		if (str[i] == '(')
+			cnt_open++;
 		if (str[i] == ')')
-		{
-			close++;
-			while (j < i)
-			{
-				if (str[j] == '(')
-				{
-					open++;
-					j++;
-					break ;
-				}
-				j++;
-			}
-		}
+			cnt_close++;
 		i++;
 	}
-	if (close != open)
+	if (cnt_open != cnt_close)
 	{
 		this->_err_msg = "invalid syntax: brackets";
 		throw (this->_err_msg);
+	}
+
+	i = 0;
+	while (i < str.length())
+	{
+		if (str.find(")") == std::string::npos)
+			break ;
+		if (str[i] == ')')
+		{
+			close = i;
+			if (str.substr(0, close).find("(") == std::string::npos)
+				break ;
+			while (str[i] != '(' && i >= 0)
+				i--;
+			open = i;
+			str = str.substr(0, open)
+				+ str.substr(open + 1, close - open - 1)
+				+ str.substr(close + 1, std::string::npos);
+			i = 0;
+		}
+		i++;
+	}
+
+	i = 0;
+	while (i < str.length())
+	{
+		if (str[i] == '(' || str[i] == ')')
+		{
+			this->_err_msg = "invalid syntax: brackets";
+			throw (this->_err_msg);
+		}
+		i++;
 	}
 	return (1);
 }
@@ -355,8 +393,9 @@ int	Parse::check_caret(std::string str)
 				while ('0' <= str[i] && str[i] <= '9')
 					i++;
 				if (!(str[i] == '+' || str[i] == '-'
-					|| str[i] == '*' || str[i] == '/' || str[i] == '='))
+					|| str[i] == '*' || str[i] == '/' || str[i] == '=' || str[i] == '\0'))
 				{
+					std::cout << str[i - 2] << str[i - 1] << ", i: "<< str[i] << std::endl;
 					this->_err_msg = "invalid syntax: caret(^)";
 					throw (this->_err_msg);
 				}

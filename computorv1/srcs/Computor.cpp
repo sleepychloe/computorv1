@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/21 00:33:44 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/24 15:40:52 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -710,4 +710,9 @@ void	Computor::solve_equation(void)
 		solve_linear();
 	else
 		solve_quadratic();
+	for (size_t i = 0; i < this->_solution.size(); i++)
+	{
+		if (this->_solution[i] == -0)
+			this->_solution[i] = 0;
+	}
 }
