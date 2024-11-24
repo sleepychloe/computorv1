@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/24 01:27:05 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/24 09:38:14 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,10 +81,13 @@ protected:
 	void				find_mul_dev_front_str(std::vector<size_t> &i,
 						std::vector<std::string> &s,
 						std::pair<std::vector<char>, std::vector<float>> &op_nb);
+	void				apply_operation_from_back(std::string &tmp,
+						std::vector<size_t> &i,
+						std::vector<std::string> &s,
+						std::pair<std::vector<std::string>, std::vector<float>> &term_degree);
 	void				find_mul_dev_back_str(std::vector<size_t> &i,
 						std::vector<std::string> &s,
-						std::pair<std::vector<std::string>, std::vector<float>> &term_degree,
-						std::pair<std::vector<char>, std::vector<float>> &op_nb);
+						std::pair<std::vector<std::string>, std::vector<float>> &term_degree);
 	void				calculate_bracket_str(std::vector<std::string> &s,
 						std::pair<std::vector<char>, std::vector<float>> &op_nb,
 						std::pair<std::vector<std::string>, std::vector<float>> &term_degree);
