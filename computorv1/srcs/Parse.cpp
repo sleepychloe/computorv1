@@ -549,6 +549,7 @@ void	Parse::find_mul_dev_front_str(std::vector<size_t> &i, std::vector<std::stri
 	std::pair<std::vector<std::string>, std::vector<float>> keep_term_degree = term_degree;
 
 	check_front_str(i, s);
+
 	i[START] = s[FRONT].length() - 1;
 	while (s[FRONT].length() >= 1 && s[FRONT][i[START]] != '\0'
 		&& (s[FRONT][i[START]] == '*' || s[FRONT][i[START]] == '/'))
@@ -668,19 +669,13 @@ void	Parse::find_mul_dev_back_str(std::vector<size_t> &i, std::vector<std::strin
 	}
 }
 
-void	Parse::calculate_bracket_str(std::vector<std::string> &s,
-				std::pair<std::vector<char>, std::vector<float>> &op_nb,
+void	Parse::get_bracket_str(std::vector<std::string> &s,
 				std::pair<std::vector<std::string>, std::vector<float>> &term_degree)
 {
 	std::vector<float>	term_float;
 
 	for (size_t i = 0; i < term_degree.first.size();i++)
 		term_float.push_back(atof(term_degree.first[i].c_str()));
-	for (size_t i = 0; i < op_nb.first.size(); i++)
-	{
-		for (size_t j = 0; j < term_float.size(); j++)
-			term_float[j] = calc(term_float[j], op_nb.second[i], op_nb.first[i]);
-	}
 	s[BRACKET] = "";
 	for (size_t i = 0; i < term_float.size(); i++)
 	{
@@ -701,7 +696,6 @@ void	Parse::remove_bracket_multiple_term(std::string &str)
 	std::vector<std::string>	s(3, "");
 
 	std::pair<std::vector<std::string>, std::vector<float>>	term_degree;
-	std::pair<std::vector<char>, std::vector<float>>	op_nb;
 
 	while (1)
 	{
@@ -730,10 +724,8 @@ void	Parse::remove_bracket_multiple_term(std::string &str)
 
 		find_mul_dev_front_str(i, s, term_degree);
 		find_mul_dev_back_str(i, s, term_degree);
-		calculate_bracket_str(s, op_nb, term_degree);
+		get_bracket_str(s, term_degree);
 
-		op_nb.first.clear();
-		op_nb.second.clear();
 		term_degree.first.clear();
 		term_degree.second.clear();
 		str = s[FRONT] + s[BRACKET] + s[BACK];

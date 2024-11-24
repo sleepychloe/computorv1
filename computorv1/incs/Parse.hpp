@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/24 10:36:11 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/24 11:52:10 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,7 @@ protected:
 	void				find_mul_dev_back_str(std::vector<size_t> &i,
 						std::vector<std::string> &s,
 						std::pair<std::vector<std::string>, std::vector<float>> &term_degree);
-	void				calculate_bracket_str(std::vector<std::string> &s,
-						std::pair<std::vector<char>, std::vector<float>> &op_nb,
+	void				get_bracket_str(std::vector<std::string> &s,
 						std::pair<std::vector<std::string>, std::vector<float>> &term_degree);
 	void				remove_bracket_multiple_term(std::string &str);
 	int				remove_bracket(std::string &str);
