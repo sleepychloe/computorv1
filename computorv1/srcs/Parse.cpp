@@ -250,7 +250,7 @@ int	Parse::check_brackets(std::string str)
 			close = i;
 			if (str.substr(0, close).find("(") == std::string::npos)
 				break ;
-			while (str[i] != '(' && i >= 0)
+			while (str[i] != '(' && i > 0)
 				i--;
 			open = i;
 			str = str.substr(0, open)
@@ -402,7 +402,6 @@ int	Parse::check_caret(std::string str)
 				if (!(str[i] == '+' || str[i] == '-'
 					|| str[i] == '*' || str[i] == '/' || str[i] == '=' || str[i] == '\0'))
 				{
-					std::cout << str[i - 2] << str[i - 1] << ", i: "<< str[i] << std::endl;
 					this->_err_msg = "invalid syntax: caret(^)";
 					throw (this->_err_msg);
 				}
@@ -430,12 +429,21 @@ void	Parse::remove_bracket_without_calc(std::string &str,
 				std::vector<std::string> &s)
 {
 	if (s[FRONT][s[FRONT].length() - 1] == '+')
-		s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
+	{
+		if (s[BRACKET][0] == '+')
+			s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
+		else if (s[BRACKET][0] == '-')
+			s[FRONT] = s[FRONT].substr(0, s[FRONT].length() - 1);
+	}
 	else if (s[FRONT][s[FRONT].length() - 1] == '-')
 	{
-		s[BRACKET] = s[BRACKET].substr(1, std::string::npos);
-		if (s[BRACKET][0] == '-')
+		if (s[BRACKET][0] == '+')
+			s[BRACKET] = s[BRACKET].substr(1, std::string::npos);
+		else if (s[BRACKET][0] == '-')
+		{
+			s[BRACKET] = s[BRACKET].substr(1, std::string::npos);
 			s[FRONT][s[FRONT].length() - 1] = '+';
+		}
 	}
 	str = s[FRONT] + s[BRACKET] + s[BACK];
 }
@@ -483,14 +491,17 @@ void	Parse::remove_bracket_one_term(std::string &str)
 
 		tmp_term = split_term(s[BRACKET]);
 		if (tmp_term.size() == 1)
+		{
 			remove_bracket_without_calc(str, s);
+			i[END] = 0;
+		}
 		else
 		{
 			if (!find_next_bracket(i, s))
 				break ;
 		}
 		tmp_term.clear();
-		i[END]++; //fix here
+		i[END]++;
 	}
 }
 
@@ -770,8 +781,6 @@ void	Parse::remove_bracket_multiple_term(std::string &str)
 		term_degree.first.clear();
 		term_degree.second.clear();
 		str = s[FRONT] + s[BRACKET] + s[BACK];
-		std::cout << "str: " << str << std::endl;
-		std::cout << "---------------------------" << std::endl;
 	}
 }
 
@@ -841,7 +850,6 @@ float	Parse::find_degree(std::string str)
 			degree += sign * 1;
 		i++;
 	}
-	std::cout << "term: " << str << ", degree: " << degree << std::endl;
 	return (degree);
 }
 

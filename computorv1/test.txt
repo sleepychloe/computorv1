@@ -1,18 +1,26 @@
------wrong: equation form------------------------------------
+=============================================================
+===== wrong =================================================
+=============================================================
+
+-----equation form-------------------------------------------
 
 valgrind ./computor "adfasdfasf"
 valgrind ./computor "adfasdf="
 valgrind ./computor "adfasdf=     "
-valgrind ./computor "adfasdf=asdfasdf"
-valgrind ./computor "aaaaa = aaaaa"
 valgrind ./computor "a == a"
 valgrind ./computor "a = a = a"
 
------wrong: number-------------------------------------------
+-----variable------------------------------------------------
+
+valgrind ./computor "adfasdf=asdfasdf"
+valgrind ./computor "aaaaa = aaaaa"
+
+-----number--------------------------------------------------
 
 valgrind ./computor "1 1= (x + 1)"
+valgrind ./computor "0= (x + 1 1)"
 
------wrong: syntax: brackets---------------------------------
+-----syntax: brackets----------------------------------------
 
 valgrind ./computor "((x + 1)=0"
 valgrind ./computor "(x + 1))=0"
@@ -20,7 +28,7 @@ valgrind ./computor ")x + 1(=0"
 valgrind ./computor "(x)) + 1(()x^2=0"
 valgrind ./computor "(x)) + 1((+2)x^2=0"
 
------wrong: syntax: sign-------------------------------------
+-----syntax: sign--------------------------------------------
 
 valgrind ./computor "x^2++1=0"
 valgrind ./computor "x^2+-1=0"
@@ -44,14 +52,14 @@ valgrind ./computor "x^2+1=1-"
 valgrind ./computor "x^2+1=1*"
 valgrind ./computor "x^2+1=1/"
 
------wrong: syntax: float point------------------------------
+-----syntax: float point-------------------------------------
 
 valgrind ./computor "1+x+.3x^2=0"
 valgrind ./computor "1+x+3.x^2=0"
 valgrind ./computor "1+x+0..3x^2=0"
 valgrind ./computor "1+x+0.3.3x^2=0"
 
------wrong: syntax: caret------------------------------------
+-----syntax: caret-------------------------------------------
 
 valgrind ./computor "(x + 1)^2 = 0"
 valgrind ./computor "(x)^2=0"
@@ -61,11 +69,10 @@ valgrind ./computor "x^+1+2=0"
 valgrind ./computor "x^-1+2=0"
 valgrind ./computor "x^1.3+2=0"
 
+=============================================================
+===== right =================================================
+=============================================================
 
-
-
-
------right
 valgrind ./computor "1 * x^0 + 2 * x^1 + 3 * x^2 = 0"
 valgrind ./computor "0 = 1 * x^0 + 2 * x^1 + 3 * x^2"
 valgrind ./computor "1 * x^0 + 2 * x^1 + 3 * x^2 = 4 * x^0 + 5 * x^1 + 6 * x^2"
@@ -82,30 +89,27 @@ valgrind ./computor "1 + 2 / x + 3 / x^2 = 0"
 valgrind ./computor "1 + 2 / x + 3 / x * 1 / x = 0"
 valgrind ./computor "0=1+2/x+3/x*1/x"
 valgrind ./computor "x^2+(1)=0"
-
-valgrind ./computor "x^2-(-1)=0"
-valgrind ./computor "x^2-(+1)=0"
 valgrind ./computor "x^2+(+1)=0"
 valgrind ./computor "x^2+(-1)=0"
-
-
+valgrind ./computor "x^2-(1)=0"
+valgrind ./computor "x^2-(+1)=0"
+valgrind ./computor "x^2-(-1)=0"
+valgrind ./computor "x^2+(+(1))=0"
 valgrind ./computor "x^2+(+(-1))=0"
+valgrind ./computor "x^2+(+(+1))=0"
+valgrind ./computor "x^2+(-(1))=0"
+valgrind ./computor "x^2+(-(-1))=0"
+valgrind ./computor "x^2+(-(+1))=0"
 valgrind ./computor "x^2+(+(-1))*(+2)=0"
 valgrind ./computor "x^2+(+(-1))*(-2)=0"
+valgrind ./computor "x^2+(-(+1))*(+2)=0"
+valgrind ./computor "x^2+(-(+1))*(-2)=0"
 valgrind ./computor "x^2+(+(-1))/(+2)=0"
 valgrind ./computor "x^2+(+(-1))/(-2)=0"
+valgrind ./computor "x^2+(-(-1))/(+2)=0"
+valgrind ./computor "x^2+(-(-1))/(-2)=0"
 valgrind ./computor "(5*3/2+1)*x^2+(+(-1))/(-2)*x^1+3*1/2=0"
 valgrind ./computor "(5*3/2+1)*x*x^1+(+(-1))/(-2)*x^1+3*1/2=0"
-
-
---------------------------------------------------------------------------------
-
---------------------------------------------------------------------------------
-
-
-todo
-
-test more with complex expression with brackets
 
 valgrind ./computor "((2+4+6x-1*(3x-3+1*3*(-2)*(+1*2*(-1)*(-1)*(+3x)*2+x+3)*(-1)*(2)))+3)-1=0"
 	=> - 25 * x^0 - 153 * x^1 = 0
