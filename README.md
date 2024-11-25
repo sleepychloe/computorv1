@@ -10,36 +10,36 @@ Tested on Linux
 * program has 6 significant digits as same as default precision value in C++<br>
 <br>
 
-#### 1. check basic equation form
+### 1. check basic equation form
 
 - if equal sign is not missing<br>
 - if equal sign used only once<br>
 - if left term and right term are both not empty<br>
 
-#### 2. set variable
+### 2. set variable
 
 - set variable, which is a character between a to z or A to Z<br>
 - check if variable exists<br>
 - check if variable used properly without duplicate<br>
 
-#### 3. check invalid character
+### 3. check invalid character
 
 - only allow variable, 0 to 9, float point, caret, brackets,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;operations, equal sign, space and tab<br>
 
-#### 4. check numbers
+### 4. check numbers
 
 - check if numbers used properly, without any gaps on each number<br>
 
-#### 5. remove every space and tab
+### 5. remove every space and tab
 
-#### 6. check syntax: brackets, operators, float point, and caret
+### 6. check syntax: brackets, operators, float point, and caret
 
-###### 1) brackets: check right and left term seperately
+##### 1) brackets: check right and left term seperately
 - if open and close brackets used same times<br>
 - check if brackets are brackets are pair,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;by removing one by one<br>
-###### 2) operators(+, -, *, /): check right and left term seperately
+##### 2) operators(+, -, *, /): check right and left term seperately
 - if operation used properly without dulipicate<br>
 - if the position of operation is appropriate,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;should not exists front and end of string<br>
@@ -47,16 +47,16 @@ Tested on Linux
 &nbsp;&nbsp;&nbsp;&nbsp;: the next string of each operation should be considered of<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(+-)number including float point, variable, caret or and brackets<br>
 - if any operation exists between terms enclosed in brackets<br>
-###### 3) float point
+##### 3) float point
 - if it exists between 0 to 9<br>
 - if it exists only once per number<br>
 - limit the maximum decimal place to 5<br>
-###### 4) caret
+##### 4) caret
 - if it exists between variable and number of 0 to 9<br>
 - do not allow any sign or bracket after caret<br>
 
-#### 7. remove brackets: right and left term seperately
-###### 1) remove brackets when the expression enclosed in bracket is consisted of a term
+### 7. remove brackets: right and left term seperately
+##### 1) remove brackets when the expression enclosed in bracket is consisted of a term
 - does not need caluclate<br>
 <details>
 <summary><b><ins>how to check if the expression enclosed in bracket is consisted of a term<br></ins></b></summary>
@@ -98,7 +98,6 @@ Tested on Linux
 <details>
 <summary><b><ins>how to check if the expression enclosed in bracket is consisted of multiple term<br></ins></b></summary>
 - void Parse::remove_bracket_multiple_term(std::string &str)<br>
-<br>
 
 1. find start and end index of open and close bracket,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;split string to 3 part, s[FRONT], s[BRACKET], and s[BACK]<br>
@@ -185,7 +184,6 @@ Tested on Linux
 7. repeat until str.find(")") == std::string::npos <br>
 <br>
 </details>
-<br>
 
 ### 8. get terms: right and left term seperately
 
