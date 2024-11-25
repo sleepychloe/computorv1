@@ -8,6 +8,12 @@ Tested on Linux
 <br>
 program has 6 significant digits as same as default precision value in C++<br>
 
+Bonus: Manage entry mistakes(vocabulary and syntax),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Manage free form entrie,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Display solutions asd an irreducible fraction,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Display the intermediate steps,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find the solutions within imaginary range<br>
+
 ## Computorv1
 
 ### 1. check basic equation form
