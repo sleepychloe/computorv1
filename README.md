@@ -58,8 +58,8 @@ program has 6 significant digits as same as default precision value in C++<br>
 ### 7. remove brackets: right and left term seperately
 ##### 1) remove brackets when the expression enclosed in bracket is consisted of a term
 - does not need caluclate<br>
-<details>
-&nbsp;&nbsp;&nbsp;&nbsp;<summary><b><ins>how to check if the expression enclosed in bracket is consisted of a term<br></ins></b></summary>
+&nbsp;&nbsp;&nbsp;&nbsp;<details>
+<summary><b><ins>how to check if the expression enclosed in bracket is consisted of a term<br></ins></b></summary>
 <br>
 - void Parse::remove_bracket_one_term(std::string &str)<br>
 <br>
@@ -96,12 +96,12 @@ program has 6 significant digits as same as default precision value in C++<br>
 ```
 
 <br>
-</details>
+&nbsp;&nbsp;&nbsp;&nbsp;</details>
 
 ##### 2) remove brackets when the expression enclosed in bracket is consisted of multiple term
 - need to calculate<br>
 <details>
-&nbsp;&nbsp;&nbsp;&nbsp;<summary><b><ins>how to check if the expression enclosed in bracket is consisted of multiple term<br></ins></b></summary>
+<summary><b><ins>how to check if the expression enclosed in bracket is consisted of multiple term<br></ins></b></summary>
 <br>
 - void Parse::remove_bracket_multiple_term(std::string &str)<br>
 <br>
