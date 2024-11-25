@@ -5,9 +5,8 @@ Mandatory + every Bonus part
 Tested on Linux
 
 <br>
-<br>
 program has 6 significant digits as same as default precision value in C++<br>
-
+<br>
 Bonus: Manage entry mistakes(vocabulary and syntax),<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Manage free form entrie,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Display solutions asd an irreducible fraction,<br>
