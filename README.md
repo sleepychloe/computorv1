@@ -60,6 +60,7 @@ program has 6 significant digits as same as default precision value in C++<br>
 - does not need caluclate<br>
 <details>
 <summary><b><ins>how to check if the expression enclosed in bracket is consisted of a term<br></ins></b></summary>
+<br>
 - void Parse::remove_bracket_one_term(std::string &str)<br>
 <br>
 
@@ -101,7 +102,9 @@ program has 6 significant digits as same as default precision value in C++<br>
 - need to calculate<br>
 <details>
 <summary><b><ins>how to check if the expression enclosed in bracket is consisted of multiple term<br></ins></b></summary>
+<br>
 - void Parse::remove_bracket_multiple_term(std::string &str)<br>
+<br>
 
 ```
 1. find start and end index of open and close bracket,
