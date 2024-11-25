@@ -63,32 +63,30 @@ program has 6 significant digits as same as default precision value in C++<br>
 - void Parse::remove_bracket_one_term(std::string &str)<br>
 <br>
 
-1. find start and end index of open and close bracket,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;split string to 3 part, s[FRONT], s[BRACKET], and s[BACK]<br>
+##### 1. find start and end index of open and close bracket,<br> split string to 3 part, s[FRONT], s[BRACKET], and s[BACK]
 
 		```	
 			ex. 1+2-(-3)+4 → s[FRONT] = "1+2-"
 					s[BRACET] = "-3"
 					s[BACK] = "+4"
 		```
-2. check s[BRACKET] string, using split_term()<br>
-3. if size of returned std::vector<std::string> is 1 : remove brackets<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- check last of s[FRONT] and first of s[BRACKET] to determinate sign<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1) s[FRONT][s[FRONT].length() - 1] == '+'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- if (s[BRACKET] == '+'): result sign is +<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: remove last character of s[FRONT]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- else if (s[BRACKET] == '-'): result sign is -<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: remove last character of s[FRONT]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- else: result sign is is +, do not remove anything<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2) s[FRONT][s[FRONT].length() - 1] == '-'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- if (s[BRACKET] == '+'): result sign is is -<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: remove first charactor of s[BRACKET]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- else if (s[BRACKET] == '-'): result sign is +<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: remove first charactor of s[BRACKET],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove last vcharactor of s[FRONT],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s[FRONT] += '+'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- else: result sign is -, do not remove anything<br>
-4. else: find next bracket and repeat<br>
+##### 2. check s[BRACKET] string, using split_term()
+##### 3. if size of returned std::vector<std::string> is 1 : remove brackets<br>
+- check last of s[FRONT] and first of s[BRACKET] to determinate sign<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1) s[FRONT][s[FRONT].length() - 1] == '+'<br>
+- if (s[BRACKET] == '+'): result sign is +<br>
+&nbsp;&nbsp;&nbsp;&nbsp;: remove last character of s[FRONT]<br>
+- else if (s[BRACKET] == '-'): result sign is -<br>
+&nbsp;&nbsp;: remove last character of s[FRONT]<br>
+- else: result sign is is +, do not remove anything<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2) s[FRONT][s[FRONT].length() - 1] == '-'<br>
+- if (s[BRACKET] == '+'): result sign is is -<br>
+&nbsp;&nbsp;: remove first charactor of s[BRACKET]<br>
+- else if (s[BRACKET] == '-'): result sign is +<br>
+&nbsp;&nbsp;: remove first charactor of s[BRACKET],<br>
+&nbsp;&nbsp;remove last vcharactor of s[FRONT], s[FRONT] += '+'<br>
+- else: result sign is -, do not remove anything<br>
+##### 4. else: find next bracket and repeat<br>
 <br>
 </details>
 <br>
@@ -99,8 +97,7 @@ program has 6 significant digits as same as default precision value in C++<br>
 <summary><b><ins>how to check if the expression enclosed in bracket is consisted of multiple term<br></ins></b></summary>
 - void Parse::remove_bracket_multiple_term(std::string &str)<br>
 
-1. find start and end index of open and close bracket,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;split string to 3 part, s[FRONT], s[BRACKET], and s[BACK]<br>
+##### 1. find start and end index of open and close bracket,<br> split string to 3 part, s[FRONT], s[BRACKET], and s[BACK]
 
 ```	
 	ex1. 1+2*3*(4-x)*(5+x)*6 → s[FRONT] = "1+2*3*("
@@ -110,9 +107,7 @@ program has 6 significant digits as same as default precision value in C++<br>
 			s[BRACET] = "2+x"
 			s[BACK] = "*3"
 ```
-2. find term and degree of s[BRACKET] string, using get_term()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;: each term and degree is saved on<br>
-&nbsp;&nbsp;&nbsp;&nbsp;std::pair<std::vector<std::string>, std::vector<float>><br>
+##### 2. find term and degree of s[BRACKET] string, using get_term()<br> : each term and degree is saved on<br> std::pair<std::vector<std::string>, std::vector<float>>
 
 ```
 	s[BRACKET] = "4-x"
@@ -121,11 +116,9 @@ program has 6 significant digits as same as default precision value in C++<br>
 		→ degree: pair<std::vector<std::string>, std::vector<float>>.second
 			: {0, 1}
 ```
-3. check * and / operation from s[FRONT],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;update s[FRONT], std::pair<std::vector<std::string>, std::vector<float>><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- if s[FRONT] ends with "+(" or "-("<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: remove last character of s[FRONT],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s[FRONT] *= "1*"<br>
+##### 3. check * and / operation from s[FRONT],<br> update s[FRONT], std::pair<std::vector<std::string>, std::vector<float>>
+- if s[FRONT] ends with "+(" or "-("<br>
+&nbsp;&nbsp;: remove last character of s[FRONT], s[FRONT] *= "1*"<br>
 
 	```
 		ex2. s[FRONT] = "1-("
@@ -139,49 +132,48 @@ program has 6 significant digits as same as default precision value in C++<br>
 			→ s[FRONT] = "1+2*3"
 	```
 
-                        - find * or / from s[FRONT]<br>
-                                    * make tmp for coefficient of '*' or '/'<br>
-                                    * make std::pair<std::vector<std::string>, std::vector<float>><br>
-                                            for tmp's term and degree<br>
-                                    * find tmp's term and degree using get_term()<br>
-                                    * if s[FRONT][s[FRONT].length() -1] is '*'<br>
-                                                ⋅ update original term[i] to original term[i] * tmp term[j]<br>
-                                                ⋅ update original degree[i] to original degree[i] + tmp degree[j]<br>
-                                    * if s[FRONT][s[FRONT].length() -1] is '/'<br>
-                                                ⋅ check each original degree is 0,<br>
-                                                        because this program does not support calculating<br>
-                                                        expressions with variables in the denominator.<br>
-                                                ⋅ make nb to store every term's coefficient<br>
-                                                ⋅ if nb is not 0, replace original term and degree<br>
-                                                        to tmp term and degree<br>
-                                                ⋅ update original term[i] to original term[i] / nb<br>
-                                    * remove tmp from s[FRONT]<br>
-                                    * repeat until s[FRONT][s[FRONT].length() - 1] is not '*' nor '/'<br>
+- find * or / from s[FRONT]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* make tmp for coefficient of '*' or '/'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* make std::pair<std::vector<std::string>, std::vector<float>><br>
+&nbsp;&nbsp;&nbsp;&nbsp;for tmp's term and degree<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* find tmp's term and degree using get_term()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* if s[FRONT][s[FRONT].length() -1] is '*'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ update original term[i] to original term[i] * tmp term[j]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ update original degree[i] to original degree[i] + tmp degree[j]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* if s[FRONT][s[FRONT].length() -1] is '/'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ check each original degree is 0,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;because this program does not support calculating<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expressions with variables in the denominator.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ make nb to store every term's coefficient<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ if nb is not 0, replace original term and degree<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to tmp term and degree<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ update original term[i] to original term[i] / nb<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* remove tmp from s[FRONT]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* repeat until s[FRONT][s[FRONT].length() - 1] is not '*' nor '/'<br>
 
-4. check * and / operation from s[BACK],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;update s[BACK], std::pair<std::vector<std::string>, std::vector<float>><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- if s[BACK] starts with "*(" or "/("<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* make tmp for string enclosed in brackets, in front of s[BACK]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* make std::pair<std::vector<std::string>, std::vector<float>><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for tmp's term and degree<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* find tmp's term and degree using get_term()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* if s[BACK][0] is '*'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ update original term[i] to original term[i] * tmp term[j]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ update original degree[i] to original degree[i] + tmp degree[j]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* if s[BACK][0] is '/'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ check each tmp degree is 0,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;because this program does not support calculating<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expressions with variables in the denominator.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ when i > 0, do tmp term[0] = tmp term[0] * tmp term[i]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to  store every term's coefficient<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ update original term[i] to original term[i] / tmp term[0]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* remove tmp from s[BACK]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* repeat until s[BACK][0] is not '*' nor '/'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- if s[BACK] is '*' or '/'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: do same step as above, but tmp is coefficient of '*' or '/'<br>
-5. make new s[BRACKET] string using updated term and degree<br>
-6. change entire string to updated s[FRONT], s[BRACKET], s[BACK]<br>
-7. repeat until str.find(")") == std::string::npos <br>
+##### 4. check * and / operation from s[BACK],<br> update s[BACK], std::pair<std::vector<std::string>, std::vector<float>>
+- if s[BACK] starts with "*(" or "/("<br>
+&nbsp;&nbsp;make tmp for string enclosed in brackets, in front of s[BACK]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* make std::pair<std::vector<std::string>, std::vector<float>><br>
+&nbsp;&nbsp;&nbsp;&nbsp;for tmp's term and degree<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* find tmp's term and degree using get_term()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* if s[BACK][0] is '*'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ update original term[i] to original term[i] * tmp term[j]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ update original degree[i] to original degree[i] + tmp degree[j]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* if s[BACK][0] is '/'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ check each tmp degree is 0,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;because this program does not support calculating<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expressions with variables in the denominator.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ when i > 0, do tmp term[0] = tmp term[0] * tmp term[i]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to  store every term's coefficient<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅ update original term[i] to original term[i] / tmp term[0]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* remove tmp from s[BACK]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;* repeat until s[BACK][0] is not '*' nor '/'<br>
+- if s[BACK] is '*' or '/'<br>
+&nbsp;&nbsp;: do same step as above, but tmp is coefficient of '*' or '/'<br>
+##### 5. make new s[BRACKET] string using updated term and degree<br>
+##### 6. change entire string to updated s[FRONT], s[BRACKET], s[BACK]<br>
+##### 7. repeat until str.find(")") == std::string::npos <br>
 <br>
 </details>
 
