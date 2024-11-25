@@ -4,11 +4,11 @@ Mandatory + every Bonus part
 
 Tested on Linux
 
+<br>
+program has 6 significant digits as same as default precision value in C++<br>
+<br>
 
 ## Computorv1
-
-* program has 6 significant digits as same as default precision value in C++<br>
-<br>
 
 ### 1. check basic equation form
 
