@@ -5,8 +5,8 @@ Mandatory + every Bonus part
 Tested on Linux
 
 <br>
-program has 6 significant digits as same as default precision value in C++<br>
 <br>
+program has 6 significant digits as same as default precision value in C++<br>
 
 ## Computorv1
 
