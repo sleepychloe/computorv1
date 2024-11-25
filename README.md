@@ -91,7 +91,7 @@ program has 6 significant digits as same as default precision value in C++<br>
 </details>
 <br>
 
-###### 2) remove brackets when the expression enclosed in bracket is consisted of multiple term
+##### 2) remove brackets when the expression enclosed in bracket is consisted of multiple term
 - need to calculate<br>
 <details>
 <summary><b><ins>how to check if the expression enclosed in bracket is consisted of multiple term<br></ins></b></summary>
