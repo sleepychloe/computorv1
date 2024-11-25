@@ -190,11 +190,11 @@ program has 6 significant digits as same as default precision value in C++<br>
 
 ### 8. get terms: right and left term seperately
 
-1) split each term, seperated by + and -<br>
-2) find degree of each term<br>
-3) replace every variable to 1, to calculate easily<br>
-4) calculate each terms<br>
-5) merge terms which degrees are same<br>
+- split each term, seperated by + and -<br>
+- find degree of each term<br>
+- replace every variable to 1, to calculate easily<br>
+- calculate each terms<br>
+- merge terms which degrees are same<br>
 
 ### 9. move left term to right term
 
