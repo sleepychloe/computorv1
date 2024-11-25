@@ -102,6 +102,13 @@ int	Parse::is_equation_form(std::string str)
 	i = 0;
 	while (i < str.length())
 	{
+		while (str[i] == ' ' || str[i] == '\t')
+			i++;
+		if (str[i] == '=')
+		{
+			this->_err_msg = "invalid equation form";
+			throw (this->_err_msg);
+		}
 		while (str[i] != '=')
 			i++;
 		i++;
@@ -314,6 +321,21 @@ int	Parse::check_sign(std::string str)
 				i++;
 			if (!(str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
 				|| str[i] == '\0'))
+			{
+				this->_err_msg = "invalid syntax: operator";
+				throw (this->_err_msg);
+			}
+		}
+		i++;
+	}
+
+	i = 0;
+	while (i < str.length())
+	{
+		if (str[i] == this->_variable)
+		{
+			i++;
+			if (str[i] == this->_variable)
 			{
 				this->_err_msg = "invalid syntax: operator";
 				throw (this->_err_msg);
@@ -1096,9 +1118,7 @@ void	Parse::set_equation_type(void)
 			max = this->_degree[i];
 	}
 	this->_max_degree = max;
-	if (max < 0)
-		this->_equation_type = TYPE_FRACTIONAL;
-	else if (max > 2)
+	if (max > 2)
 		this->_equation_type = TYPE_HIGH_DEGREE;
 	else
 		this->_equation_type = max;

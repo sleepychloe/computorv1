@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/25 00:30:58 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/25 16:06:43 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ void	Computor::print_process_linear(void)
 		}
 		tmp += float_to_string(this->_solution[0]);
 	}
+
 	std::cout << "\t" << tmp << std::endl;
 }
 

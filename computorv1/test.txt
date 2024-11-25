@@ -7,6 +7,7 @@
 valgrind ./computor "adfasdfasf"
 valgrind ./computor "adfasdf="
 valgrind ./computor "adfasdf=     "
+valgrind ./computor "       =sfsdf"
 valgrind ./computor "a == a"
 valgrind ./computor "a = a = a"
 
