@@ -32,6 +32,8 @@ or
 	make bonus
 ```
 
+<br>
+
 ## Usage
 
 ```
