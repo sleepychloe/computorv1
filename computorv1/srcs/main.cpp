@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 21:07:38 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/18 14:09:11 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/27 00:54:48 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,14 @@ void	print_help(void)
 	std::cout << "as subject requires." << std::endl;
 	std::cout << std::endl << std::endl;
 	std::cout << YELLOW << "USAGE:" << BLACK << std::endl;
-	std::cout << "\t./computer \"POLYNOMIAL_SECOND_OR_LOWER_DEGREE_EQUATION" << std::endl;
+	std::cout << "\t./computer \"POLYNOMIAL_SECOND_OR_LOWER_DEGREE_EQUATION\"" << std::endl;
+	std::cout << std::endl;
+	std::cout << "\t./computer_bonus \"POLYNOMIAL_SECOND_OR_LOWER_DEGREE_EQUATION\"" << std::endl;
 	std::cout << std::endl;
 	std::cout << YELLOW << "EXAMPLES:" << BLACK << std::endl;
 	std::cout << "\t./computer \"5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0\"" << std::endl;
 	std::cout << std::endl;
-	std::cout << "\t./computer \"5 * X^0 + 4 * X^1 = 4 * X^0\"" << std::endl;
+	std::cout << "\t./computer_bonus \"5 * X^0 + 4 * X^1 = 4 * X^0\"" << std::endl;
 	std::cout << std::endl;
 	std::cout << YELLOW << "OPTIONS:" << BLACK << std::endl;
 	std::cout << CYAN << "\t-h" << BLACK << ", " << CYAN << "--help" << BLACK << std::endl;
@@ -45,8 +47,9 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	int	flag_bonus = 0;
-	if (strlen(argv[0]) == strlen("./computor_bonus")
+	if ((strlen(argv[0]) == strlen("./computor_bonus")
 		&& !strncmp(argv[0], "./computor_bonus", strlen("computor_bonus")))
+		|| std::string(argv[0]).find("computor_bonus") != std::string::npos)
 		flag_bonus = 1;
 	if ((strlen(argv[1]) == strlen("-h") && !strncmp(argv[1], "-h", strlen("-h")))
 		|| (strlen(argv[1]) == strlen("--help") && !strncmp(argv[1], "--help", strlen("--help"))))

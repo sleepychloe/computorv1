@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/25 16:06:43 by yhwang           ###   ########.fr       */
+/*   Updated: 2024/11/27 00:25:57 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -743,7 +743,7 @@ void	Computor::solve_quadratic(void)
 		this->_type_solution = SOLUTION_ZERO;
 
 		std::cout << CYAN << "Discriminant is strictly negative." << std::endl
-			<< "It has no solution" << BLACK << std::endl;
+			<< "It has no solution within the real number range" << BLACK << std::endl;
 	}
 
 	if (this->_flag_bonus)

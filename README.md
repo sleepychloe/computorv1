@@ -14,6 +14,42 @@ Bonus: Manage entry mistakes(vocabulary and syntax),<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Display the intermediate steps,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find the solutions within imaginary range<br>
 
+
+## Installation
+```
+	git clone https://github.com/sleepychloe/computorv1.git
+	bash test.sh
+	bash test_bonus.sh
+```
+
+or
+
+```
+	git clone https://github.com/sleepychloe/computorv1.git
+	cd computorv1
+	make
+	make bonus
+```
+
+## Usage
+
+```
+	./computer "POLYNOMIAL_SECOND_OR_LOWER_DEGREE_EQUATION"
+	./computor_bonus "POLYNOMIAL_SECOND_OR_LOWER_DEGREE_EQUATION"
+	./computor --help
+	./computor -h
+```
+
+example
+
+```
+	./computer "5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0"
+	./computer_bonus "5 * X^0 + 4 * X^1 = 4 * X^0"
+```
+
+<br>
+
+
 ## Computorv1
 
 ### 1. check basic equation form
