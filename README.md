@@ -12,9 +12,8 @@ Bonus: Manage entry mistakes(vocabulary and syntax),<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Display the intermediate steps,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find the solutions within imaginary range<br>
 
-- program has 6 significant digits as same as default precision value in C++<br>
 <br>
-
+- program has 6 significant digits as same as default precision value in C++<br>
 <br>
 
 ## Installation
