@@ -4,13 +4,6 @@ Mandatory + every Bonus part
 
 Tested on Linux
 
-<br>
-
-Bonus: Manage entry mistakes(vocabulary and syntax),<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Manage free form entrie,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Display solutions asd an irreducible fraction,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Display the intermediate steps,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find the solutions within imaginary range<br>
 
 <br>
 - program has 6 significant digits as same as default precision value in C++<br>
@@ -54,6 +47,39 @@ example
 
 
 ## Computorv1
+
+
+### Introduction
+
+This project introduces polynomial equations as a fundamental mathematical tool.<br>
+It builds a foundation for handling functions in programming and computational logic<br>
+while encouraging error management and user-friendly outputs.<br>
+
+<br>
+
+### Mandatory Part
+
+⋅ Solve second or lower-degree polynomial equations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(every input term respect the form of a ∗ xᵖ)<br>
+⋅ Display:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅The reduced form of the equation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅The degree of the polynomial<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⋅The solution(s), along with discriminant details<br>
+⋅ Handle various edge cases such as inconsistent or indeterminate equations<br>
+
+<br>
+
+### Bonus Part
+
+⋅ Manage entry mistakes(vocabulary and syntax)<br>
+⋅ Manage free form entrie<br>
+⋅ Display solutions asd an irreducible fraction<br>
+⋅ Display the intermediate steps<br>
+⋅ Find the solutions within imaginary range<br>
+
+<br>
+
+## Project Breakdown
 
 ### 1. check basic equation form
 
