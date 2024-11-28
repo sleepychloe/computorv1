@@ -7,6 +7,7 @@ Tested on Linux
 
 - program has 6 significant digits as same as default precision value in C++
 
+<br>
 
 ## Installation
 ```
@@ -78,7 +79,7 @@ while encouraging error management and user-friendly outputs.
 - Find the solutions within imaginary range
 
 
----------------------
+<br>
 
 
 ## Project Breakdown
