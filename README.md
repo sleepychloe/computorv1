@@ -43,6 +43,7 @@ example
 
 
 
+<br>
 
 ## Computorv1
 
@@ -76,6 +77,8 @@ while encouraging error management and user-friendly outputs.
 - Display the intermediate steps
 - Find the solutions within imaginary range
 
+
+---------------------
 
 
 ## Project Breakdown
