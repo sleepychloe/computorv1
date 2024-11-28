@@ -34,12 +34,12 @@ OBJS = $(addsuffix .o, $(FILES))
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CPP) $(CPPFLAGS) $^ -o $@ $(LDFLAGS)
+	$(CPP) $(CPPFLAGS) $^ -o $@
 
 bonus: $(NAME_BONUS)
 
 $(NAME_BONUS): $(OBJS)
-	$(CPP) $(CPPFLAGS) $^ -o $@ $(LDFLAGS)
+	$(CPP) $(CPPFLAGS) $^ -o $@
 
 clean:
 	$(RM) $(OBJS)
