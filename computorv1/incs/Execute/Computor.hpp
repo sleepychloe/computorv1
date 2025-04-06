@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:37 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/06 07:55:30 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/06 08:09:52 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,7 @@
 
 #include <iostream>
 #include <vector>
-// #include <cstdlib>
 #include <cmath>
-// #include <iomanip>
-// #include <utility>
 #include "../Utils.hpp"
 #include "../Struct.hpp"
 #include "../Define.hpp"

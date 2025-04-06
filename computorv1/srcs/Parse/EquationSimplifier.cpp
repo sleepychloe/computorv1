@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 07:08:27 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/06 08:04:13 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/06 08:09:37 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,7 @@ std::string	EquationSimplifier::bonus(void)
 	str += "= 0";
 	return (str);
 }
-#include <iostream>
+
 std::string	EquationSimplifier::set_equation_str(void)
 {
 	std::string	str  = "";
