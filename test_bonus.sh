@@ -456,3 +456,8 @@ echo -e "${YELLOW}════════════════════�
 
 echo -e ""
 echo -e "\n${YELLOW}All tests completed${RESET}"
+echo -e ""
+make fclean -C ./computorv1
+echo -e ""
+echo -e "${YELLOW}All .o files and executable removed!${RESET}"
+echo -e ""

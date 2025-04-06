@@ -6,7 +6,7 @@
 #    By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/11 21:06:43 by yhwang            #+#    #+#              #
-#    Updated: 2024/11/20 12:44:17 by yhwang           ###   ########.fr        #
+#    Updated: 2025/04/06 07:57:43 by yhwang           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,8 +22,14 @@ CPPFLAGS = -Wall -Wextra -Werror -std=c++17 -g3
 RM = rm -f
 
 FILES = $(SRC_DIR)main \
-		$(SRC_DIR)Parse \
-		$(SRC_DIR)Computor
+		$(SRC_DIR)Parse/Parse \
+		$(SRC_DIR)Parse/InputConvertor \
+		$(SRC_DIR)Parse/SyntaxChecker \
+		$(SRC_DIR)Parse/TermAnalyzer \
+		$(SRC_DIR)Parse/BracketRemover \
+		$(SRC_DIR)Parse/EquationSimplifier \
+		$(SRC_DIR)Execute/Computor \
+		$(SRC_DIR)Utils
 
 SRCS = $(addsuffix .cpp, $(FILES))
 OBJS = $(addsuffix .o, $(FILES))

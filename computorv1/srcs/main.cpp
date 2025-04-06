@@ -6,12 +6,13 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 21:07:38 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/27 00:54:48 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/06 07:58:05 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../incs/Parse.hpp"
-#include "../incs/Computor.hpp"
+#include "../incs/Struct.hpp"
+#include "../incs/Parse/Parse.hpp"
+#include "../incs/Execute/Computor.hpp"
 
 void	print_help(void)
 {
@@ -46,11 +47,13 @@ int	main(int argc, char **argv)
 		std::cout << RED << "error: invalid number of argument" << BLACK << std::endl;
 		return (1);
 	}
+
 	int	flag_bonus = 0;
 	if ((strlen(argv[0]) == strlen("./computor_bonus")
 		&& !strncmp(argv[0], "./computor_bonus", strlen("computor_bonus")))
 		|| std::string(argv[0]).find("computor_bonus") != std::string::npos)
 		flag_bonus = 1;
+
 	if ((strlen(argv[1]) == strlen("-h") && !strncmp(argv[1], "-h", strlen("-h")))
 		|| (strlen(argv[1]) == strlen("--help") && !strncmp(argv[1], "--help", strlen("--help"))))
 	{
@@ -58,14 +61,21 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 
+	t_parse		parse_info;
+
 	try
 	{
-		Computor	c(argv[1], flag_bonus);
+		Parse		parse;
+
+		parse.parse(argv[1], flag_bonus);
+		parse_info = parse.get_info();
 	}
-	catch(std::string err_msg)
+	catch(const ParseError::ParseException& e)
 	{
-		std::cerr << RED << "error: invalid input: " << err_msg << BLACK << std::endl;
+		std::cerr << e.what() << std::endl;
 		return (1);
 	}
+
+	Computor	computor(parse_info);
 	return (0);
 }

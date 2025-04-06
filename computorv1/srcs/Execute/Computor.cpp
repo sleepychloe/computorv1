@@ -6,25 +6,24 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/27 00:25:57 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/06 07:55:08 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../incs/Computor.hpp"
+#include "../../incs/Execute/Computor.hpp"
 
 Computor::Computor(): _type_solution(""), _discriminant(0)
 {
 }
 
-Computor::Computor(char *argv, int flag_bonus)
+Computor::Computor(t_parse info): _info(info)
 {
-	Parse::parse_start(argv, flag_bonus);
 	print_info();
 
-	if (this->_equation_type >= 0)
+	if (this->_info.equation_type >= 0)
 	{
-		for (size_t i = this->_reduced_form.size(); i > 0; i--)
-			this->_term_descending_order.push_back(this->_reduced_form[i - 1]);
+		for (size_t i = this->_info.reduced_form.size(); i > 0; i--)
+			this->_term_descending_order.push_back(this->_info.reduced_form[i - 1]);
 		if (this->_term_descending_order[0] < 0)
 		{
 			for (size_t i = 0; i < this->_term_descending_order.size(); i++)
@@ -34,7 +33,7 @@ Computor::Computor(char *argv, int flag_bonus)
 	}
 }
 
-Computor::Computor(const Computor& computor): Parse(computor)
+Computor::Computor(const Computor& computor)
 {
 	*this = computor;
 }
@@ -43,7 +42,7 @@ Computor& Computor::operator=(const Computor& computor)
 {
 	if (this == &computor)
 		return (*this);
-	Parse::operator=(computor);
+	this->_info = computor._info;
 	this->_type_solution = computor._type_solution;
 	this->_discriminant = computor._discriminant;
 	this->_solution = computor._solution;
@@ -58,18 +57,18 @@ Computor::~Computor()
 void	Computor::print_info(void)
 {
 	std::cout << CYAN << "Reduced form\t\t: " << BLACK;
-	std::cout << this->_equation_str << std::endl;
+	std::cout << this->_info.equation_str << std::endl;
 
 	std::cout << CYAN << "Polynomial degree\t: " << BLACK;
-	if (this->_equation_type == TYPE_FRACTIONAL)
+	if (this->_info.equation_type == TYPE_FRACTIONAL)
 	{
 		std::cout << "The equation is fractional equation." << std::endl;
 		std::cout << YELLOW << "The equation is not a polynomial equation, I can't solve."
 			<< BLACK << std::endl;
 		return ;
 	}
-	std::cout << this->_max_degree << std::endl;
-	if (this->_equation_type == TYPE_HIGH_DEGREE)
+	std::cout << this->_info.max_degree << std::endl;
+	if (this->_info.equation_type == TYPE_HIGH_DEGREE)
 	{
 		std::cout << YELLOW <<
 			"The polynomial degree is strictly greater than 2, I can't solve."
@@ -80,7 +79,7 @@ void	Computor::print_info(void)
 
 void	Computor::solve_constant(void)
 {
-	if (this->_reduced_form[0] == 0)
+	if (this->_info.reduced_form[0] == 0)
 	{
 		this->_type_solution = SOLUTION_INDETERMINATE;
 
@@ -111,7 +110,7 @@ void	Computor::print_process_linear(void)
 	std::cout << MAGENTA
 		<< "Intermediate steps:" << BLACK << std::endl;
 
-	tmp = float_to_string(a) + " * " + std::string(1, this->_variable);
+	tmp = float_to_string(a) + " * " + std::string(1, this->_info.variable);
 	if (b > 0)
 		tmp += " + ";
 	else if (b < 0)
@@ -124,14 +123,14 @@ void	Computor::print_process_linear(void)
 	if (b != 0)
 	{
 		tmp = " → " + float_to_string(a) + " * "
-			+ std::string(1, this->_variable) + " = ";
+			+ std::string(1, this->_info.variable) + " = ";
 		if (-b < 0)
 			tmp += "-";
 		tmp += float_to_string(std::abs(-b));
 		std::cout << "\t" << tmp << std::endl;
 	}
 
-	tmp = "∴ " + std::string(1, this->_variable) + " = ";
+	tmp = "∴ " + std::string(1, this->_info.variable) + " = ";
 	if (b == 0)
 		tmp += "0";
 	else
@@ -164,9 +163,9 @@ void	Computor::solve_linear(void)
 		this->_solution[0] = 0;
 
 	std::cout << CYAN << "The solution is\t\t: " << BLACK;
-	std::cout << this->_variable << " = " << this->_solution[0] << std::endl;
+	std::cout << this->_info.variable << " = " << this->_solution[0] << std::endl;
 
-	if (this->_flag_bonus)
+	if (this->_info.flag_bonus)
 		print_process_linear();
 }
 
@@ -176,7 +175,7 @@ void	Computor::print_descending_order(std::vector<float> num)
 
 	if (num[A] != 1)
 		tmp += float_to_string(num[A]) + " * ";
-	tmp += std::string(1, this->_variable) + "²";
+	tmp += std::string(1, this->_info.variable) + "²";
 	if (num[B] != 0)
 	{
 		if (num[B] < 0)
@@ -186,7 +185,7 @@ void	Computor::print_descending_order(std::vector<float> num)
 
 		if (num[B] != 1)
 			tmp += float_to_string(std::abs(num[B])) + " * ";
-		tmp += std::string(1, this->_variable);
+		tmp += std::string(1, this->_info.variable);
 	}
 	if (num[C] != 0)
 	{
@@ -215,20 +214,20 @@ void	Computor::divide_by_quad_coefficient(std::vector<float> &num,
 	num[C_PRIME] = num[C] / num[A];
 
 	if (num[B_PRIME] == 1)
-		str[B_PRIME] = std::string(1, this->_variable);
+		str[B_PRIME] = std::string(1, this->_info.variable);
 	else
 	{
 		if (!is_int(num[B_PRIME]))
 			str[B_PRIME] = float_to_string(std::abs(num[B]))
 				+ "/" + float_to_string(num[A])
-				+ std::string(1, this->_variable);
+				+ std::string(1, this->_info.variable);
 		else
 		{
 			if (num[B_PRIME] != 1)
 				str[B_PRIME] = float_to_string(std::abs(num[B_PRIME]))
-					+ " * " + std::string(1, this->_variable);
+					+ " * " + std::string(1, this->_info.variable);
 			else
-				str[B_PRIME] = std::string(1, this->_variable);
+				str[B_PRIME] = std::string(1, this->_info.variable);
 		}
 			
 	}
@@ -243,7 +242,7 @@ void	Computor::divide_by_quad_coefficient(std::vector<float> &num,
 
 	if (num[A] != 1)
 	{
-		tmp += " → " + std::string(1, this->_variable) + "²";
+		tmp += " → " + std::string(1, this->_info.variable) + "²";
 		if (num[B_PRIME] != 0)
 		{
 			if (num[B_PRIME] < 0)
@@ -277,7 +276,7 @@ void	Computor::find_perfect_square_coefficient(std::vector<float> &num,
 	// print
 	if (num[B_PRIME] != 0)
 	{
-		tmp += " → (" + std::string(1, this->_variable) + "²";
+		tmp += " → (" + std::string(1, this->_info.variable) + "²";
 		if (num[B_PRIME] < 0)
 			tmp += " - ";
 		else
@@ -320,7 +319,7 @@ void	Computor::make_perfect_square_form(std::vector<float> &num,
 
 	if (num[B_PRIME] != 0)
 	{
-		tmp += " → (" + std::string(1, this->_variable);
+		tmp += " → (" + std::string(1, this->_info.variable);
 		if (num[B_PRIME] < 0)
 			tmp += " - ";
 		else
@@ -338,7 +337,7 @@ void	Computor::make_perfect_square_form(std::vector<float> &num,
 	}
 	else
 	{
-		tmp += " → " + std::string(1, this->_variable) + "²";
+		tmp += " → " + std::string(1, this->_info.variable) + "²";
 		tmp += " = ";
 		if (num[C_PRIME] < 0)
 			tmp += "-";
@@ -394,7 +393,7 @@ void	Computor::remove_square(std::vector<float> &num,
 {
 	std::string	tmp = "";
 
-	tmp += "↔ " + std::string(1, this->_variable);
+	tmp += "↔ " + std::string(1, this->_info.variable);
 	if (num[B_PRIME] != 0)
 	{
 		if (num[B_PRIME] < 0)
@@ -432,7 +431,7 @@ void	Computor::find_x(std::vector<float> &num,
 
 	if (num[B_PRIME] != 0 && num[C_PRIME] != 0)
 	{
-		tmp = " → " + std::string(1, this->_variable);
+		tmp = " → " + std::string(1, this->_info.variable);
 		tmp += " = ";
 		tmp += str[B_PRIME];
 		tmp += " ± ";
@@ -615,9 +614,9 @@ void	Computor::calc_x(std::vector<float> &num, std::vector<std::string> &str)
 	//print
 	std::string	tmp = "";
 
-	tmp += " ∴ " + std::string(1, this->_variable);
+	tmp += " ∴ " + std::string(1, this->_info.variable);
 	tmp += " = " + solution_1 + ",";
-	tmp += "\n\t   " + std::string(1, this->_variable);
+	tmp += "\n\t   " + std::string(1, this->_info.variable);
 	tmp += " = " + solution_2;
 
 	std::cout << "\t" << tmp << std::endl;
@@ -702,7 +701,7 @@ void	Computor::print_process_quadratic(void)
 	{
 		if (num[B_PRIME] == 0)
 			return ;
-		std::cout << "\t ∴ " + std::string(1, this->_variable)
+		std::cout << "\t ∴ " + std::string(1, this->_info.variable)
 			+ " = " + str[B_PRIME] << std::endl;
 	}
 	else
@@ -724,8 +723,8 @@ void	Computor::solve_quadratic(void)
 
 		std::cout << CYAN << "Discriminant is strictly positive." << std::endl
 			<< "The two solutions are\t: " << BLACK;
-		std::cout << this->_variable << " = " << this->_solution[0] << "," << std::endl
-			<< "\t\t\t  " << this->_variable << " = " << this->_solution[1]
+		std::cout << this->_info.variable << " = " << this->_solution[0] << "," << std::endl
+			<< "\t\t\t  " << this->_info.variable << " = " << this->_solution[1]
 			<< std::endl;
 	}
 	else if (this->_discriminant == 0)
@@ -735,7 +734,7 @@ void	Computor::solve_quadratic(void)
 
 		std::cout << CYAN << "Discriminant is zero." << std::endl
 			<< "The solution is\t\t: " << BLACK;
-		std::cout << this->_variable << " = " << this->_solution[0]
+		std::cout << this->_info.variable << " = " << this->_solution[0]
 			<< std::endl;
 	}
 	else
@@ -746,15 +745,15 @@ void	Computor::solve_quadratic(void)
 			<< "It has no solution within the real number range" << BLACK << std::endl;
 	}
 
-	if (this->_flag_bonus)
+	if (this->_info.flag_bonus)
 		print_process_quadratic();
 }
 
 void	Computor::solve_equation(void)
 {
-	if (this->_equation_type == TYPE_CONSTANT)
+	if (this->_info.equation_type == TYPE_CONSTANT)
 		solve_constant();
-	else if (this->_equation_type == TYPE_LINEAR)
+	else if (this->_info.equation_type == TYPE_LINEAR)
 		solve_linear();
 	else
 		solve_quadratic();

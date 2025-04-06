@@ -6,14 +6,23 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:37 by yhwang            #+#    #+#             */
-/*   Updated: 2024/11/24 23:20:04 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/06 07:55:30 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef COMPUTOR_HPP
 # define COMPUTOR_HPP
 
-#include "./Parse.hpp"
+#include <iostream>
+#include <vector>
+// #include <cstdlib>
+#include <cmath>
+// #include <iomanip>
+// #include <utility>
+#include "../Utils.hpp"
+#include "../Struct.hpp"
+#include "../Define.hpp"
+#include "../Color.hpp"
 
 # define TYPE_CONSTANT			0
 # define TYPE_LINEAR			1
@@ -31,10 +40,10 @@
 # define C_PRIME			4
 # define SQUARE_CONSTANT		5
 
-class Computor: public Parse
+class Computor
 {
 public:
-	Computor(char *argv, int flag_bonus);
+	Computor(t_parse info);
 	Computor(const Computor& computor);
 	Computor& operator=(const Computor& computor);
 	~Computor();
@@ -71,6 +80,7 @@ private:
 
 	void				solve_equation(void);
 
+	t_parse				_info;
 	std::string			_type_solution;
 	float				_discriminant;
 	std::vector<float>		_solution;
