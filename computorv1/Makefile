@@ -6,7 +6,7 @@
 #    By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/11 21:06:43 by yhwang            #+#    #+#              #
-#    Updated: 2025/04/13 23:58:33 by yhwang           ###   ########.fr        #
+#    Updated: 2025/04/14 00:41:12 by yhwang           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ FILES = $(SRC_DIR)main \
 		$(SRC_DIR)Execute/QuadraticEquationSolver \
 		$(SRC_DIR)Execute/SolutionStrGenerator \
 		$(SRC_DIR)Execute/ExecuteUtils \
-		$(SRC_DIR)Utils
+		$(SRC_DIR)Utils \
 
 SRCS = $(addsuffix .cpp, $(FILES))
 OBJS = $(addsuffix .o, $(FILES))
