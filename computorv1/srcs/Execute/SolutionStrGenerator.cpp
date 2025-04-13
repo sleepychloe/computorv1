@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 19:06:41 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/13 21:37:19 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 00:16:37 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,15 +144,16 @@ void	SolutionStrGenerator::general_solution_general(std::string &str_1, std::str
 	}
 	str_1 += "√(" + float_to_string(this->_term.second_term_real) + ")";
 	str_2 += "√(" + float_to_string(this->_term.second_term_real) + ")";
-	if (this->_term.denominator != 1)
-	{
-		str_1 += "/" + float_to_string(this->_term.denominator);
-		str_2 += "/" + float_to_string(this->_term.denominator);
-	}
 	if (this->_discriminant < 0)
 	{
 		str_1 += "i";
 		str_2 += "i";
+	}
+
+	if (this->_term.denominator != 1)
+	{
+		str_1 += "/" + float_to_string(this->_term.denominator);
+		str_2 += "/" + float_to_string(this->_term.denominator);
 	}
 }
 

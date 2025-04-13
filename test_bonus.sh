@@ -92,9 +92,9 @@ declare -a reduced_form_complicated_expression=(
 )
 
 declare -a answer_complicated_expression=(
-	"x = (-1 - √(203)i)/34, x = (-1 + √(203)i)/34"
+	"x = -1/34 - √(203)i/34 = -0.0294118 - 0.419053i,\n\t\t   x = -1/34 + √(203)i/34 = -0.0294118 + 0.419053i"
 	"x = -25/153 = -0.163399"
-	"x = (-7 - √(33))/8, x = (-7 + √(33))/8"
+	"x = -7/8 - √(33)/8 = -1.59307,\n\t\t   x = -7/8 + √(33)/8 = -0.15693"
 )
 
 declare -a inconsistent_equation=(
@@ -119,10 +119,10 @@ declare -a indeterminate_equation=(
 )
 
 declare -a answer_indeterminate_equation=(
-	"It has infinitely many solutions"
-	"It has infinitely many solutions"
-	"It has infinitely many solutions"
-	"It has infinitely many solutions"
+	"It has infinitely many solutions(any real number is a solution)"
+	"It has infinitely many solutions(any real number is a solution)"
+	"It has infinitely many solutions(any real number is a solution)"
+	"It has infinitely many solutions(any real number is a solution)"
 )
 
 declare -a linear_equation=(
@@ -139,16 +139,16 @@ declare -a linear_equation=(
 )
 
 declare -a answer_linear_equation=(
-	"x = 8/2 = 4/1 = 4"
-	"x = 25/5 = 5/1 = 5"
+	"x = 4"
+	"x = 5"
 	"x = 29/7 = 4.14286"
-	"x = 27/9 = 3/1 = 3"
-	"x = 8/1 = 8"
-	"x = 7/7 = 1/1 = 1"
+	"x = 3"
+	"x = 8"
+	"x = 1"
 	"x = 9/5 = 1.8"
 	"x = 7/4 = 1.75"
-	"x = 9/3 = 3/1 = 3"
-	"x = 9/6 = 3/2 = 1.5"
+	"x = 3"
+	"x = 3/2 = 1.5"
 )
 
 
@@ -171,21 +171,21 @@ declare -a quadratic_equation_d_positive=(
 )
 
 declare -a answer_quadratic_equation_d_positive=(
-	"x = 1, x = 2"
-	"x = 2, x = 3"
-	"x = -4, x = 2"
-	"x = 3, x = 4"
-	"x = 2, x = 3"
-	"x = 3, x = 5"
-	"x = 4/3, x = 3"
-	"x = 1, x = 2"
-	"x = -2 - √(5), x = -2 + √(5)"
-	"x = 3 - 2√(2), x = 3 + 2√(2)"
-	"x = (3 - √(37))/2, x = (3 + √(37))/2"
-	"x = (-5 - √(33))/2, x = (-5 + √(33))/2"
-	"x = (-3 - √(41))/2, x = (-3 + √(41))/2"
-	"x = (7 - √(5))/2, x = (7 + √(5))/2"
-	"x = -1 - √(10), x = -1 + √(10)"
+	"x = 1,\n\t\t   x = 2"
+	"x = 2,\n\t\t   x = 3"
+	"x = -4,\n\t\t   x = 2"
+	"x = 3,\n\t\t   x = 4"
+	"x = 2,\n\t\t   x = 3"
+	"x = 3,\n\t\t   x = 5"
+	"x = 4/3 = 1.33333,\n\t\t   x = 3"
+	"x = 1,\n\t\t   x = 2"
+	"x = -2 - √(5) = -4.23607,\n\t\t   x = -2 + √(5) = 0.236068"
+	"x = 3 - 2√(2) = 0.171573,\n\t\t   x = 3 + 2√(2) = 5.82843"
+	"x = 3/2 - √(37)/2 = -1.54138,\n\t\t   x = 3/2 + √(37)/2 = 4.54138"
+	"x = -5/2 - √(33)/2 = -5.37228,\n\t\t   x = -5/2 + √(33)/2 = 0.372281"
+	"x = -3/2 - √(41)/2 = -4.70156,\n\t\t   x = -3/2 + √(41)/2 = 1.70156"
+	"x = 7/2 - √(5)/2 = 2.38197,\n\t\t   x = 7/2 + √(5)/2 = 4.61803"
+	"x = -1 - √(10) = -4.16228,\n\t\t   x = -1 + √(10) = 2.16228"
 )
 
 declare -a quadratic_equation_d_zero=(
@@ -203,7 +203,7 @@ declare -a answer_quadratic_equation_d_zero=(
 	"x = -3"
 	"x = 2"
 	"x = 5"
-	"x = 1/2"
+	"x = 1/2 = 0.5"
 	"x = 3"
 	"x = -7"
 )
@@ -222,16 +222,16 @@ declare -a quadratic_equation_d_negative=(
 )
 
 declare -a answer_quadratic_equation_d_negative=(
-	"x = -1 + 2i, x = -1 - 2i"
-	"x = 2 - √(6)i, x = 2 + √(6)i"
-	"x = -3 + 2i, x = -3 - 2i"
-	"x = 1 + 2i, x = 1 - 2i"
-	"x = -4 + 2i, x = -4 - 2i"
-	"x = 3 + 4i, x = 3 - 4i"
-	"x = -5 + 2i, x = -5 - 2i"
-	"x = (1 - √(7)i)/2, x = (1 + √(7)i)/2"
-	"x = (-3 - √(31)i)/2, x = (-3 + √(31)i)/2"
-	"x = (5 - √(35)i)/2, x = (5 + √(35)i)/2"
+	"x = -1 + 2i,\n\t\t   x = -1 - 2i"
+	"x = 2 - √(6)i = 2 - 2.44949i,\n\t\t   x = 2 + √(6)i = 2 + 2.44949i"
+	"x = -3 + 2i,\n\t\t   x = -3 - 2i"
+	"x = 1 + 2i,\n\t\t   x = 1 - 2i"
+	"x = -4 + 2i,\n\t\t   x = -4 - 2i"
+	"x = 3 + 4i,\n\t\t   x = 3 - 4i"
+	"x = -5 + 2i,\n\t\t   x = -5 - 2i"
+	"x = 1/2 - √(7)i/2 = 0.5 - 1.32288i,\n\t\t   x = 1/2 + √(7)i/2 = 0.5 + 1.32288i"
+	"x = -3/2 - √(31)i/2 = -1.5 - 2.78388i,\n\t\t   x = -3/2 + √(31i)/2 = -1.5 + 2.78388i"
+	"x = 5/2 - √(35)i/2 = 2.5 - 2.95804i,\n\t\t   x = 5/2 + √(35)i/2 = 2.5 + 2.95804i"
 
 )
 

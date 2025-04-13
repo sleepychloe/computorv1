@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:18:39 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/13 23:08:48 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 00:27:17 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ void	QuadraticEquationSolver::is_negative_discriminant(void)
 	this->_str_solution = this->_generator.get_str_solution();
 
 	print_solution("complex", 0);
-	std::cout << std::endl;
+	std::cout << "," << std::endl;
 
 	std::cout << "\t\t\t       ";
 	print_solution("complex", 1);

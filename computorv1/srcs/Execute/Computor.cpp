@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:46 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/14 00:04:02 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 00:18:27 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,15 +88,17 @@ void	Computor::solve_equation(void)
 		{
 			std::cout << CYAN
 				<< "The equation is an indeterminate equation:" << std::endl
-				<< "It has infinitely many solutions(Any real number is a solution)"
-				<< BLACK << std::endl;
+				<< BLACK
+				<< "It has infinitely many solutions(any real number is a solution)"
+				<< std::endl;
 		}
 		else
 		{
 			std::cout << CYAN
 				<< "The equation is an inconsistent equation:" << std::endl
+				<< BLACK
 				<< "It has no solution"
-				<< BLACK << std::endl;
+				<< std::endl;
 		}
 	}
 	else if (this->_info.equation_type == TYPE_LINEAR)
