@@ -86,9 +86,9 @@ declare -a complicated_expression=(
 )
 
 declare -a reduced_form_complicated_expression=(
-	"1.5 * x^0 + 0.5 * x^1 + 8.5 * x^2 = 0"
-	"- 25 * x^0 - 153 * x^1 = 0"
-	"1 * x^0 + 7 * x^1 + 4 * x^2 = 0"
+	"1.5 + 0.5 * x + 8.5 * x^2 = 0"
+	"- 25 - 153 * x = 0"
+	"1 + 7 * x^1 + 4 * x^2 = 0"
 )
 
 declare -a answer_complicated_expression=(
@@ -334,7 +334,8 @@ echo -e "${YELLOW}╚═══════════════════�
 echo -e ""
 for i in "${!complicated_expression[@]}"; do
 	echo -e "${YELLOW}Testing input:${RESET} \"${complicated_expression[i]}\""
-	echo -e "${YELLOW}Expected reduced form:${RESET} ${answer_complicated_expression[i]}"
+	echo -e "${YELLOW}Expected reduced form:${RESET} ${reduced_form_complicated_expression[i]}"
+	echo -e "${YELLOW}Expected solution:${RESET} ${answer_complicated_expression[i]}"
 	echo ""
 	./computorv1/computor_bonus "${complicated_expression[i]}"
 	echo -e ""

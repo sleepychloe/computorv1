@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 21:07:38 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/06 07:58:05 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/13 22:12:20 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,16 @@ int	main(int argc, char **argv)
 	try
 	{
 		Parse		parse;
-
 		parse.parse(argv[1], flag_bonus);
 		parse_info = parse.get_info();
+
+		Computor	computor(parse_info);
+		computor.solve();
 	}
 	catch(const ParseError::ParseException& e)
 	{
 		std::cerr << e.what() << std::endl;
 		return (1);
 	}
-
-	Computor	computor(parse_info);
 	return (0);
 }

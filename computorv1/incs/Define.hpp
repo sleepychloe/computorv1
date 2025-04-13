@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 03:59:38 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/06 07:27:41 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 00:05:36 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,15 @@
 # define TYPE_FRACTIONAL		-1
 # define TYPE_HIGH_DEGREE		-2
 # define TYPE_ZERO			0
+# define TYPE_LINEAR			1
+# define TYPE_QUADRATIC			2
+
+/* process quadratic equation */
+# define A				0
+# define B				1
+# define C				2
+# define B_PRIME			3
+# define C_PRIME			4
+# define SQUARE_CONSTANT		5
 
 # endif

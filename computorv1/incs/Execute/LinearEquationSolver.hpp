@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Computor.hpp                                       :+:      :+:    :+:   */
+/*   LinearEquationSolver.hpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 00:59:37 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/14 00:10:46 by yhwang           ###   ########.fr       */
+/*   Created: 2025/04/10 16:06:00 by yhwang            #+#    #+#             */
+/*   Updated: 2025/04/13 22:26:17 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef COMPUTOR_HPP
-# define COMPUTOR_HPP
+#ifndef LINER_EQUATION_SOLER_HPP
+# define LINER_EQUATION_SOLER_HPP
 
 #include <iostream>
 #include <vector>
 #include <cmath>
 #include <variant>
-#include "../../matrix/incs/Complex.hpp"
-#include "./LinearEquationSolver.hpp"
-#include "./QuadraticEquationSolver.hpp"
-#include "./ExecuteUtils.hpp"
 #include "../Utils.hpp"
 #include "../Struct.hpp"
 #include "../Define.hpp"
@@ -29,27 +25,30 @@
 using	ValueSet = std::variant<float,
 				Complex<float>>;
 
-class Computor
+class LinerEquationSolver
 {
 public:
-	Computor(t_parse info);
-	Computor(const Computor& computor);
-	Computor& operator=(const Computor& computor);
-	~Computor();
+	LinerEquationSolver(t_parse info, float a, float b);
+	LinerEquationSolver(const LinerEquationSolver& solver);
+	LinerEquationSolver& operator=(const LinerEquationSolver& solver);
+	~LinerEquationSolver();
 
-	void				print_info(void);
+	std::vector<ValueSet>		get_solution(void) const;
+	std::vector<std::string>	get_str_solution(void) const;
 
 	void				solve(void);
 
 private:
-	Computor();
+	LinerEquationSolver();
 
-	void				solve_equation(void);
+	void				print_solution(void);
+	void				make_str_solution(void);
 
 	t_parse				_info;
-	std::vector<float>		_term_descending_order;
+	float				_a;
+	float				_b;
 	std::vector<ValueSet>		_solution;
 	std::vector<std::string>	_str_solution;
 };
 
-# endif
+#endif

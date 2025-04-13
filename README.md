@@ -275,7 +275,7 @@ while encouraging error management and user-friendly outputs.
 - 2 < degree : TYPE_HIGH_DEGREE(= -2)
 
 #### 12. solve equation if equation type >= 0
-- type == TYPE_CONSTANT(= 0)
+- type == TYPE_ZERO(= 0)
 	+ 0 = 0: indeterminate equation: infinitely many solution
 	+ a = 0 (a != 0): inconsistent equation: no solution
 - type == TYPE_LINEAR(= 1)

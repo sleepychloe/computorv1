@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 07:08:27 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/06 08:09:37 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 00:01:38 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,14 @@ std::string	EquationSimplifier::set_equation_str(void)
 	std::string	str  = "";
 	if (this->_info.equation_type == TYPE_ZERO)
 	{
-		this->_info.equation_str = float_to_string(this->_info.reduced_form[0]) + " = 0";
+		if (!this->_info.flag_bonus)
+			this->_info.equation_str
+				= float_to_string(this->_info.reduced_form[0])
+					+ " * " + std::string(1, this->_info.variable) + "^0"
+					+ " = 0";
+		else
+			this->_info.equation_str
+				= float_to_string(this->_info.reduced_form[0]) + " = 0";
 		return (this->_info.equation_str);
 	}
 

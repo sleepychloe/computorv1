@@ -333,7 +333,8 @@ echo -e "${YELLOW}╚═══════════════════�
 echo -e ""
 for i in "${!complicated_expression[@]}"; do
 	echo -e "${YELLOW}Testing input:${RESET} \"${complicated_expression[i]}\""
-	echo -e "${YELLOW}Expected reduced form:${RESET} ${answer_complicated_expression[i]}"
+	echo -e "${YELLOW}Expected reduced form:${RESET} ${reduced_form_complicated_expression[i]}"
+	echo -e "${YELLOW}Expected solution:${RESET} ${answer_complicated_expression[i]}"
 	echo ""
 	./computorv1/computor "${complicated_expression[i]}"
 	echo -e ""
