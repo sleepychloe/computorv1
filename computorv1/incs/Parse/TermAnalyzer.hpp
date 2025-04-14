@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 06:06:07 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/06 07:05:02 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 18:36:52 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <vector>
 #include <sstream>
 #include "./ParseError.hpp"
+#include "../MathUtils.hpp"
 #include "../Utils.hpp"
 #include "../Struct.hpp"
 #include "../Define.hpp"

@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 19:06:41 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/14 00:16:37 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 19:20:41 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ SolutionStrGenerator::SolutionStrGenerator(float a, float b, float c, float disc
 {
 	this->_term.first_term = -1 * this->_b;
 	this->_term.second_term_int = 1;
-	this->_term.second_term_real = std::abs(this->_b * this->_b - 4 * this->_a * this->_c);
+	this->_term.second_term_real = ft_abs(this->_b * this->_b - 4 * this->_a * this->_c);
 	split_square_num(this->_term.second_term_int, this->_term.second_term_real);
 	this->_term.denominator = 2 * this->_a;
 }
@@ -57,7 +57,7 @@ void	SolutionStrGenerator::generate(void)
 {
 	if (this->_discriminant == 0)
 		double_solution();
-	else if (this->_discriminant > 0 && is_int(sqrt(this->_term.second_term_real)))
+	else if (this->_discriminant > 0 && is_int(ft_sqrt(this->_term.second_term_real)))
 		real_solution_square_num();
 	else
 		general_solution();
@@ -84,7 +84,7 @@ void	SolutionStrGenerator::real_solution_square_num(void)
 	std::string	str_solution_1 = "";
 	std::string	str_solution_2 = "";
 
-	this->_term.second_term_int *= sqrt(this->_term.second_term_real);
+	this->_term.second_term_int *= ft_sqrt(this->_term.second_term_real);
 
 	float	solution_1 = this->_term.first_term - this->_term.second_term_int;
 	float	solution_2 = this->_term.first_term + this->_term.second_term_int;
@@ -117,7 +117,7 @@ void	SolutionStrGenerator::real_solution_square_num(void)
 
 void	SolutionStrGenerator::general_solution_square_num(std::string &str_1, std::string &str_2)
 {
-	this->_term.second_term_int *= sqrt(this->_term.second_term_real);
+	this->_term.second_term_int *= ft_sqrt(this->_term.second_term_real);
 	fraction_reduction(this->_term.second_term_int, this->_term.denominator);
 
 	str_1 += float_to_string(this->_term.second_term_int);
@@ -184,7 +184,7 @@ void	SolutionStrGenerator::general_solution(void)
 	this->_term.denominator = 2 * this->_a;
 
 	/* second term: sqrt(b*b-4ac)/2a */	
-	if (is_int(sqrt(this->_term.second_term_real)))
+	if (is_int(ft_sqrt(this->_term.second_term_real)))
 		general_solution_square_num(str_solution_1, str_solution_2);
 	else
 		general_solution_general(str_solution_1, str_solution_2);

@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 07:08:27 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/14 00:01:38 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 18:45:09 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ std::string	EquationSimplifier::mandatory(void)
 			str += "+ ";
 
 		if (this->_info.reduced_form[i] != 0)
-			str += float_to_string(std::abs(this->_info.reduced_form[i]));
+			str += float_to_string(ft_abs(this->_info.reduced_form[i]));
 		else
 			str += "0";
 		str += " * " + std::string(1, this->_info.variable);
@@ -190,7 +190,7 @@ std::string	EquationSimplifier::bonus(void)
 			else
 				str += "+ ";
 
-			str += float_to_string(std::abs(this->_info.reduced_form[i]));
+			str += float_to_string(ft_abs(this->_info.reduced_form[i]));
 			str += " ";
 			if (this->_info.degree[i] != 0)
 			{

@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 05:48:49 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/13 21:28:38 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 18:42:31 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <vector>
 #include <functional>
 #include "../matrix/incs/Complex.hpp"
+#include "./MathUtils.hpp"
 
 std::string			float_to_string(float num);
 std::string			complex_to_string(Complex<float> num);

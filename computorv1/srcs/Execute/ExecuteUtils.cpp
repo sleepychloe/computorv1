@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:17:31 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/13 23:23:23 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 19:08:31 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	print_process_liner(char variable,
 		tmp += " - ";
 
 	if (b != 0)
-		tmp += float_to_string(std::abs(b));
+		tmp += float_to_string(ft_abs(b));
 	tmp += " = 0";
 	std::cout << "\t" << tmp << std::endl;
 
@@ -41,7 +41,7 @@ void	print_process_liner(char variable,
 			+ std::string(1, variable) + " = ";
 		if (b > 0)
 			tmp += "-";
-		tmp += float_to_string(std::abs(-b));
+		tmp += float_to_string(ft_abs(-b));
 		std::cout << "\t" << tmp << std::endl;
 	}
 
@@ -53,13 +53,13 @@ void	print_process_liner(char variable,
 	{
 		if (-b < 0)
 			tmp += "-";
-		tmp += float_to_string(std::abs(-b)) + "/" + float_to_string(a) + " = ";
+		tmp += float_to_string(ft_abs(-b)) + "/" + float_to_string(a) + " = ";
 		fraction_reduction(tmp_a, tmp_b);
 		if (a != tmp_a)
 		{
 			if (b > 0)
 				tmp += "-";
-			tmp += float_to_string(std::abs(tmp_b)) + "/" + float_to_string(tmp_a) + " = ";
+			tmp += float_to_string(ft_abs(tmp_b)) + "/" + float_to_string(tmp_a) + " = ";
 		}
 		tmp += float_to_string(solution);
 	}
@@ -82,7 +82,7 @@ static void	print_descending_order(char variable, std::vector<float> num)
 			tmp += " + ";
 
 		if (num[B] != 1)
-			tmp += float_to_string(std::abs(num[B])) + " * ";
+			tmp += float_to_string(ft_abs(num[B])) + " * ";
 		tmp += std::string(1, variable);
 	}
 	if (num[C] != 0)
@@ -91,7 +91,7 @@ static void	print_descending_order(char variable, std::vector<float> num)
 			tmp += " - ";
 		else
 			tmp += " + ";
-		tmp += float_to_string(std::abs(num[C]));
+		tmp += float_to_string(ft_abs(num[C]));
 	}
 	tmp += " = 0";
 	std::cout << "\t" << tmp << std::endl;
@@ -111,13 +111,13 @@ static void	divide_by_quad_coefficient(char variable,
 	else
 	{
 		if (!is_int(num[B_PRIME]))
-			str[B_PRIME] = float_to_string(std::abs(num[B]))
+			str[B_PRIME] = float_to_string(ft_abs(num[B]))
 				+ "/" + float_to_string(num[A])
 				+ std::string(1, variable);
 		else
 		{
 			if (num[B_PRIME] != 1)
-				str[B_PRIME] = float_to_string(std::abs(num[B_PRIME]))
+				str[B_PRIME] = float_to_string(ft_abs(num[B_PRIME]))
 					+ " * " + std::string(1, variable);
 			else
 				str[B_PRIME] = std::string(1, variable);
@@ -125,10 +125,10 @@ static void	divide_by_quad_coefficient(char variable,
 			
 	}
 	if (!is_int(num[C_PRIME]))
-		str[C_PRIME] = float_to_string(std::abs(num[C]))
+		str[C_PRIME] = float_to_string(ft_abs(num[C]))
 			+ "/" + float_to_string(num[A]);
 	else
-		str[C_PRIME] = float_to_string(std::abs(num[C_PRIME]));
+		str[C_PRIME] = float_to_string(ft_abs(num[C_PRIME]));
 
 	// print
 	std::string	tmp = "";
@@ -163,7 +163,7 @@ static void	find_perfect_square_coefficient(char variable,
 {
 	// set variable
 	num[SQUARE_CONSTANT] = num[B] * num[B] / (4 * num[A] * num[A]);
-	str[SQUARE_CONSTANT] = float_to_string(std::abs(num[B])) + "²/"
+	str[SQUARE_CONSTANT] = float_to_string(ft_abs(num[B])) + "²/"
 					+ "(2²*" + float_to_string(num[A]) + "²)";
 
 	std::string	tmp = "";
@@ -202,14 +202,14 @@ static void	make_perfect_square_form(char variable,
 	num[B_PRIME] /= 2;
 	num[C_PRIME] *= -1;
 
-	float	tmp1 = std::abs(num[B]);
+	float	tmp1 = ft_abs(num[B]);
 	float	tmp2 = 2 * num[A];
 	fraction_reduction(tmp1, tmp2);
 	if (!is_int(num[B_PRIME]))
 		str[B_PRIME] = float_to_string(tmp1)
 				+ "/" + float_to_string(tmp2);
 	else
-		str[B_PRIME] = float_to_string(std::abs(num[B_PRIME]));
+		str[B_PRIME] = float_to_string(ft_abs(num[B_PRIME]));
 
 	//print
 	std::string	tmp = "";
@@ -262,7 +262,7 @@ static void	make_perfect_square_form(char variable,
 
 	// calculate right term, update it to new_c
 	num[C_PRIME] = num[SQUARE_CONSTANT] + num[C_PRIME];
-	tmp1 = std::abs(num[B] * num[B] - 4 * num[A] * num[C]);
+	tmp1 = ft_abs(num[B] * num[B] - 4 * num[A] * num[C]);
 	tmp2 = 4 * num[A] * num[A];
 	fraction_reduction(tmp1, tmp2);
 	if (!is_int(num[C_PRIME]))
@@ -337,18 +337,11 @@ static void	find_x(char variable,
 		tmp += str[B_PRIME];
 		tmp += " ± ";
 		if (num[C_PRIME] > 0)
-		{
-			if (!is_int(sqrt(num[C_PRIME])))
-				tmp += "√(" + str[C_PRIME] + ")";
-			else
-				tmp += float_to_string(sqrt(num[C_PRIME]));
-		}
+			tmp += "√(" + str[C_PRIME] + ")";
 		else
 		{
-			if (!is_int(sqrt(num[C_PRIME])))
-				tmp += "√(" + str[C_PRIME] + ")" + "i";
-			else
-				tmp += float_to_string(sqrt(num[C_PRIME])) + "i";
+			num[C_PRIME] *= -1;
+			tmp += "√(" + str[C_PRIME] + ")" + "i";
 		}
 		std::cout << "\t" << tmp << std::endl;
 	}

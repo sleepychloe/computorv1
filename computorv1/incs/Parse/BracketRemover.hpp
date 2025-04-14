@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 05:14:44 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/06 07:08:41 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 18:36:17 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <string>
 #include "./TermAnalyzer.hpp"
 #include "./ParseError.hpp"
+#include "../MathUtils.hpp"
 #include "../Utils.hpp"
 #include "../Struct.hpp"
 #include "../Define.hpp"

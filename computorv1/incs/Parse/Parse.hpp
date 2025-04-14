@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 08:09:58 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/06 07:47:10 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 18:42:46 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include "./BracketRemover.hpp"
 #include "./EquationSimplifier.hpp"
 #include "./ParseError.hpp"
+#include "../MathUtils.hpp"
 #include "../Utils.hpp"
 #include "../Struct.hpp"
 #include "../Define.hpp"

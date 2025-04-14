@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:18:26 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/13 22:26:05 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 18:44:58 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	LinerEquationSolver::make_str_solution(void)
 	float		b = this->_b;
 	fraction_reduction(a, b);
 
-	str_solution += float_to_string(std::abs(b));
+	str_solution += float_to_string(ft_abs(b));
 	if (a != 1)
 		str_solution += "/" + float_to_string(a);
 	this->_str_solution.push_back(str_solution);

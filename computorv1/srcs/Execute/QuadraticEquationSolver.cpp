@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:18:39 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/14 00:27:17 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 18:41:35 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,8 @@ void	QuadraticEquationSolver::print_solution(std::string type, int idx)
 
 void	QuadraticEquationSolver::is_positive_disriminant(void)
 {
-	float	solution_1 = (-1 * this->_b - std::sqrt(this->_discriminant)) / (2 * this->_a);
-	float	solution_2 = (-1 * this->_b + std::sqrt(this->_discriminant)) / (2 * this->_a);
+	float	solution_1 = (-1 * this->_b - ft_sqrt(this->_discriminant)) / (2 * this->_a);
+	float	solution_2 = (-1 * this->_b + ft_sqrt(this->_discriminant)) / (2 * this->_a);
 
 	this->_solution.push_back(solution_1);
 	this->_solution.push_back(solution_2);
@@ -137,9 +137,9 @@ void	QuadraticEquationSolver::is_zero_discriminant(void)
 
 void	QuadraticEquationSolver::is_negative_discriminant(void)
 {
-	Complex<float>	solution_1(-1 * this->_b, -1 * sqrt(-1 * this->_discriminant));
+	Complex<float>	solution_1(-1 * this->_b, -1 * ft_sqrt(-1 * this->_discriminant));
 	solution_1 /= (2 * this->_a);
-	Complex<float>	solution_2(-1 * this->_b, sqrt(-1 * this->_discriminant));
+	Complex<float>	solution_2(-1 * this->_b, ft_sqrt(-1 * this->_discriminant));
 	solution_2 /= (2 * this->_a);
 
 	this->_solution.push_back(solution_1);

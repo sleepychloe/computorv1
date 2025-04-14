@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:59:37 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/14 00:13:19 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 18:38:08 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 
 #include <iostream>
 #include <vector>
-#include <cmath>
 #include <variant>
 #include "../../matrix/incs/Complex.hpp"
 #include "./LinearEquationSolver.hpp"
 #include "./QuadraticEquationSolver.hpp"
 #include "./ExecuteUtils.hpp"
+#include "../MathUtils.hpp"
 #include "../Utils.hpp"
 #include "../Struct.hpp"
 #include "../Define.hpp"

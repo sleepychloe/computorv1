@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 19:06:20 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/13 20:48:59 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 18:41:21 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 #include <iostream>
 #include <vector>
-#include <cmath>
 #include "../../matrix/incs/Complex.hpp"
+#include "../MathUtils.hpp"
 #include "../Utils.hpp"
 #include "../Struct.hpp"
 #include "../Define.hpp"

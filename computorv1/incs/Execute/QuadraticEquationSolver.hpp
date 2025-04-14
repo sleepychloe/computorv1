@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:12:22 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/13 23:30:51 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 18:40:08 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 
 #include <iostream>
 #include <vector>
-#include <cmath>
 #include <variant>
 #include "../../matrix/incs/Complex.hpp"
 #include "./SolutionStrGenerator.hpp"
+#include "../MathUtils.hpp"
 #include "../Utils.hpp"
 #include "../Struct.hpp"
 #include "../Define.hpp"

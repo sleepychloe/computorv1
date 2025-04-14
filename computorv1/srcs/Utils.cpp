@@ -6,7 +6,7 @@
 /*   By: yhwang <yhwang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 05:49:02 by yhwang            #+#    #+#             */
-/*   Updated: 2025/04/13 21:29:29 by yhwang           ###   ########.fr       */
+/*   Updated: 2025/04/14 18:44:50 by yhwang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ std::string	complex_to_string(Complex<float> num)
 	{
 		if (num.imag() < 0)
 			res += "- ";
-		res += float_to_string(std::abs(num.imag())) + "i";
+		res += float_to_string(ft_abs(num.imag())) + "i";
 	}
 	else
 	{
@@ -47,7 +47,7 @@ std::string	complex_to_string(Complex<float> num)
 
 int	is_int(float num)
 {
-	if (std::abs(num - (int)num) <= 1e-6)
+	if (ft_abs(num - (int)num) <= 1e-6)
 		return (1);
 	return (0);
 }
@@ -57,7 +57,7 @@ void	fraction_reduction(float &n1, float &n2)
 	std::vector<int>	tmp;
 	float			common = 1;
 
-	for (size_t i = 2; i <= std::abs(n1); i++)
+	for (size_t i = 2; i <= ft_abs(n1); i++)
 	{
 		if (is_int(n1 / i))
 			tmp.push_back(i);
@@ -76,7 +76,7 @@ void	fraction_reduction(float &n1, float &n2, float &n3)
 	std::vector<int>	tmp;
 	float			common = 1;
 
-	for (size_t i = 2; i <= std::abs(n1); i++)
+	for (size_t i = 2; i <= ft_abs(n1); i++)
 	{
 		if (is_int(n1 / i))
 			tmp.push_back(i);
