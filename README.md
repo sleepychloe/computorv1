@@ -8,6 +8,75 @@ Success 125/100
 
 <br>
 
+## Demo
+
+<details>
+<summary><b><ins>error cases</ins></b></summary>
+	
+![image](https://github.com/user-attachments/assets/6b3aa231-e199-4e3f-b18d-983b6f597407)
+###### ↳ test01: wrong equation form
+
+![image](https://github.com/user-attachments/assets/26bbc8e8-a140-4575-a8e4-b16028a03c2f)
+###### ↳ test02: wrong variable
+
+![image](https://github.com/user-attachments/assets/72e6555b-5a18-4581-8509-216001e15c2e)
+###### ↳ test03: wrong number
+
+![image](https://github.com/user-attachments/assets/763fdf95-5717-4a46-8e1c-cf2aacf362b8)
+###### ↳ test04: wrong syntax: brackets
+
+![image](https://github.com/user-attachments/assets/e6e06462-5ad4-4fd8-8128-cefd86f5886b)
+###### ↳ test05: wrong syntax: operator
+
+![image](https://github.com/user-attachments/assets/f0fd0c4d-8e7f-4198-8454-4e747baf63d6)
+###### ↳ test06: wrong syntax: float point
+
+![image](https://github.com/user-attachments/assets/89d96f76-4882-4ee8-ae2f-e3562f8d6176)
+###### ↳ test07: wrong syntax: caret
+
+<br>
+
+</details>
+
+### Mandatory Part
+![image](https://github.com/user-attachments/assets/31e1752f-52a1-42db-a23b-8e988f415416)
+###### ↳ complicated expression
+
+![image](https://github.com/user-attachments/assets/33f912b6-a519-447f-a523-026bc894cedf)
+###### ↳ inconsistent equation
+
+![image](https://github.com/user-attachments/assets/564d3b2c-0b66-4102-8b9e-40244f55ca09)
+###### ↳ indeterminate equation
+
+![image](https://github.com/user-attachments/assets/01dd3075-c319-4a79-a787-8a34b33d6628)
+###### ↳ linear equation
+
+![image](https://github.com/user-attachments/assets/32507f50-c7f4-4391-b27a-78b81236ed3c)
+###### ↳ quadratic equation D > 0
+
+![image](https://github.com/user-attachments/assets/db38abe9-3d73-4eee-a949-036dd132d4cc)
+###### ↳ quadratic equation D = 0
+
+![image](https://github.com/user-attachments/assets/302fdbfa-0ec7-482e-b04e-d2079b6b23e1)
+###### ↳ quadratic equation D < 0
+
+### Bonus Part
+![image](https://github.com/user-attachments/assets/5e15f6b4-a97f-4695-87d7-8bba9b8db163)
+###### ↳ complicated expression
+
+![image](https://github.com/user-attachments/assets/40e699ae-fa47-459e-a9a1-91f11785fae0)
+###### ↳ linear equation
+
+![image](https://github.com/user-attachments/assets/486f5ae2-2e2e-4787-8772-62d303dc1f5b)
+###### ↳ quadratic equation D > 0
+
+![image](https://github.com/user-attachments/assets/6d3e7ec9-827f-473e-8ad8-f2f849c97dfd)
+###### ↳ quadratic equation D = 0
+
+![image](https://github.com/user-attachments/assets/f41fa0c0-f2e5-4713-8671-4382c14b07f0)
+###### ↳ quadratic equation D < 0
+
+
 ## Installation
 ```
 	git clone https://github.com/sleepychloe/computorv1.git
