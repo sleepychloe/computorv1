@@ -1,9 +1,8 @@
-Finished, not submitted yet
-
 Mandatory + every Bonus part
 
 Tested on Linux
 
+Success 125/100
 
 - program has 6 significant digits as same as default precision value in C++
 
